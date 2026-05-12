@@ -261,6 +261,54 @@
     .card-price-hint { font-size: 10.5px; color: #999; font-weight: 500; line-height: 1.4; flex-basis: 100%; margin-top: 2px; }
     .card-price-row { flex-wrap: wrap; }
 
+    /* 详情展开（产品亮点+适合人群） */
+    .card-detail-toggle {
+      width: 100%; background: #fff;
+      border: none; border-top: 1px solid #F5F0EB;
+      padding: 9px 16px; cursor: pointer;
+      font-size: 12.5px; font-weight: 600; color: #888;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .card-detail-toggle:hover { background: #FAF8F4; color: #555; }
+    .card-detail-toggle .arrow { font-size: 10px; transition: transform 0.2s; }
+    .card-detail-toggle.open .arrow { transform: rotate(180deg); }
+    .card-detail-toggle.open { color: #FF6B35; background: #FFF8F3; }
+    .card-detail-panel {
+      display: none;
+      padding: 12px 16px 16px;
+      background: #FFFBF5;
+      border-top: 1px dashed #F0E5D2;
+    }
+    .card-detail-panel.open { display: block; }
+    .detail-section { margin-bottom: 12px; }
+    .detail-section:last-of-type { margin-bottom: 6px; }
+    .detail-section h5 {
+      font-size: 11px; font-weight: 800; color: #B8540D;
+      letter-spacing: 1px; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .detail-section h5::before {
+      content: ''; width: 3px; height: 11px;
+      background: #FF6B35; border-radius: 2px;
+    }
+    .detail-section p { font-size: 12px; color: #555; line-height: 1.7; }
+    .detail-section ul { list-style: none; padding: 0; margin: 0; }
+    .detail-section ul li {
+      font-size: 12px; color: #555; line-height: 1.65;
+      padding: 3px 0 3px 16px; position: relative;
+    }
+    .detail-section ul li::before {
+      content: '✓'; position: absolute; left: 0; top: 3px;
+      color: #FF6B35; font-weight: 800; font-size: 11px;
+    }
+    .detail-tip {
+      margin-top: 10px; padding: 8px 12px;
+      background: #FFF3E5; border-radius: 8px;
+      font-size: 11px; color: #A66515; text-align: center;
+      border: 1px dashed #FFD9B0;
+    }
+
     /* QR expand */
     .card-qr-toggle {
       width: 100%;
@@ -660,7 +708,7 @@
       </div>
       <div class="card-body">
         <div class="card-name">六艺通识营</div>
-        <div class="card-subtitle">在游戏和创造中锤炼通用技能 — 协作力、想象力、观察力、自控力、表达力、玩耍力</div>
+        <div class="card-subtitle">在游戏和创造中锤炼通用技能</div>
         <div class="card-dates-wrap">
           <div class="card-date-row">📅 7.4-7.10 &nbsp;|&nbsp; 7.11-7.17</div>
         </div>
@@ -678,6 +726,18 @@
           <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>古为今用的素质拓荒营。将传统六艺转化为现代协作、观察、自控等七大通用能力，通过 GBL（游戏学习）和 PBL（项目学习）结合，打好通识基础。7 天高频互动，保护孩子天然的好奇心，让孩子学会"高水平地玩"，提升应对挑战的学习底气。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>家长希望培养孩子综合素质、不局限于单一技能的全面发展型孩子</li><li>喜欢动手制作、参与集体游戏，乐于探究问题原因的孩子</li><li>需要提升自控力、表达力和社交信心的低年级学生</li></ul>
+      </div>
+      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
     <button class="card-qr-toggle" onclick="toggleQR(this)">
       扫码报名 <span class="arrow">▼</span>
@@ -700,7 +760,7 @@
       </div>
       <div class="card-body">
         <div class="card-name">头脑特工队</div>
-        <div class="card-subtitle">探索情绪力量，萌发行动能力 — 将恐惧转化为适应力，愤怒转化为逻辑思维</div>
+        <div class="card-subtitle">探索情绪力量，萌发行动能力</div>
         <div class="card-dates-wrap">
           <div class="card-date-row">📅 7.4–7.31 共4期可选</div>
         </div>
@@ -718,6 +778,18 @@
           <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>国内少有的深度情绪智力（EQ）训练营。基于心理学理论，将负面情绪转化为适应力、逻辑力和创造力。通过阶梯式情绪挑战为孩子种下"心理疫苗"，让他们学会与愤怒、悲伤、恐惧共处，培养面对困难时的松弛感与成长型思维。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>情绪波动较大，或家长希望提升其情绪调节能力的青少年</li><li>性格偏内向、害羞，需要在安全环境下练习社交突破的孩子</li><li>渴望被理解，需要建立内心安全感和自信心的孩子</li></ul>
+      </div>
+      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
     <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
     <div class="card-qr-panel">
@@ -738,7 +810,7 @@
       </div>
       <div class="card-body">
         <div class="card-name">勇敢者游戏</div>
-        <div class="card-subtitle">挑战赫拉克勒斯6大试炼，觉醒12项英雄之力 — 在挑战中点亮真正的自信与行动力</div>
+        <div class="card-subtitle">挑战赫拉克勒斯的 6 大试炼，觉醒 12 项英雄之力</div>
         <div class="card-dates-wrap">
           <div class="card-date-row">📅 7.18-7.24</div>
         </div>
@@ -756,6 +828,18 @@
           <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>专治"不敢表达、怕输、怕被拒绝"的勇气加持营。以希腊神话为背景，将成长中的挑战转化为英雄试炼。通过游戏化教学，让孩子在对抗失败的过程中觉醒"勇者之心"，重建"我能行"的强大信念，学会重定义问题。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>在生活中比较谨慎、害怕犯错，需要勇气突破的"乖孩子"</li><li>热爱神话故事、剧本冒险，喜欢沉浸式角色体验的孩子</li><li>家长希望其在 AI 时代保持"敢于提问、敢于尝试"特质的孩子</li></ul>
+      </div>
+      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
     <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
     <div class="card-qr-panel">
@@ -776,7 +860,7 @@
       </div>
       <div class="card-body">
         <div class="card-name">招牌通识营 · 世界重启</div>
-        <div class="card-subtitle">模拟大灾变后重建人类文明 — 信息分析、灵活性与适应性、批判性思维</div>
+        <div class="card-subtitle">灾难后重建文明 · 跨学科生存与协作实战</div>
         <div class="card-dates-wrap">
           <div class="card-date-row">📅 7.11-7.17</div>
         </div>
@@ -794,6 +878,18 @@
           <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>生存与文明模拟营。模拟灾难后重建文明，引导孩子学习生存技能、信息分析与协作领导力。跨学科实战现场，既有原始技术发掘，也有对人性的深度思考，旨在培养孩子在极端环境下的应变能力与生存智慧。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>对科学、历史、生存技能有浓厚兴趣的"创造者"</li><li>脑洞大开，对社会运行机制和文明演化充满好奇的少年</li></ul>
+      </div>
+      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
     <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
     <div class="card-qr-panel">
@@ -814,7 +910,7 @@
       </div>
       <div class="card-body">
         <div class="card-name">少年大富翁创业营</div>
-        <div class="card-subtitle">在行动中培养创造幸福的能力 — 赚钱不功利，创造价值才是真本领</div>
+        <div class="card-subtitle">在行动中培养创造幸福的能力</div>
         <div class="card-dates-wrap">
           <div class="card-date-row">📅 7.4-7.10</div>
         </div>
@@ -832,6 +928,18 @@
           <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>一场关于价值与金钱的正确认知课。营员将体验从"产品设计"到"公司成立"的完整闭环，学习储蓄、风险与价值创造。不教钻营之道，只教如何用智慧和良知创造幸福，让孩子理解财富的本质是信任与合作。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>对金钱、买卖、商业世界表现出浓厚兴趣的小"创业者"</li><li>家长希望引导孩子建立正确财富观，告别盲目消费或功利心态</li><li>善于头脑风暴，乐于将创意转化为实际产品的行动派</li></ul>
+      </div>
+      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
     <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
     <div class="card-qr-panel">
@@ -852,7 +960,7 @@
       </div>
       <div class="card-body">
         <div class="card-name">学院制夏令营 2.0</div>
-        <div class="card-subtitle">在创造性的玩耍中成就发光童年 — 分院制·七艺精进·GAP DAY·60+活动任选</div>
+        <div class="card-subtitle">在创造性的玩耍中成就发光童年</div>
         <div class="card-dates-wrap">
           <div class="card-date-row">📅 8.8-8.17</div>
         </div>
@@ -871,6 +979,18 @@
           <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>核心理念是"有意义的玩耍"，不急于灌输成功学，而是让孩子在自由创造中建立自我效能感。通过试错与探索，让孩子在快乐中产生"我可以"的力量，为青少年时期的激情寻找打下坚实的心理基础。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>正处于自我意识萌芽期，需要独立空间和正面引导的孩子</li><li>好奇心旺盛，喜欢在玩耍中学习和发现世界的探索型少年</li><li>家长希望其在快乐童年与未来挑战之间建立平稳过渡</li></ul>
+      </div>
+      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
     <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
     <div class="card-qr-panel">
@@ -898,7 +1018,7 @@
       </div>
       <div class="card-body">
         <div class="card-name">招牌学院制 6.0</div>
-        <div class="card-subtitle">在霍格沃茨般的学习体验中延伸童年 — 分院帽·通识游戏·七艺精进·学院杯</div>
+        <div class="card-subtitle">在霍格沃茨般的学习体验中延伸童年</div>
         <div class="card-dates-wrap">
           <div class="card-date-row">📅 7.4-7.13</div>
         </div>
@@ -918,6 +1038,18 @@
         </div>
       </div>
     </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>钥匙玩校的"王牌口碑营"，主打高热血感的学院对抗与全方位能力进阶。营会提供 60+ 项新奇体验，让孩子在 10 天内扩大舒适区，通过竞技与作品创作双重形式发掘潜能。一场关于荣誉、团队与自我突破的盛夏庆典，能极大提升孩子的集体荣誉感和自信心。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>无论"学霸"还是"贪玩"的孩子，只要渴望交友、渴望证明自己</li><li>性格鲜明、有主见，甚至在常规学校环境中显得"不太听话"的孩子</li><li>喜欢挑战、热爱团队合作，希望体验多元化技能学习的青少年</li></ul>
+      </div>
+      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
+    </div>
     <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
     <div class="card-qr-panel">
       <img src="images/qr-07.png" alt="报名二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
@@ -936,8 +1068,8 @@
         <div class="card-duration">7天</div>
       </div>
       <div class="card-body">
-        <div class="card-name">名侦探学院</div>
-        <div class="card-subtitle">释放解谜求真天性，少年天生是侦探！— 推理·跨学科思考·主动探索</div>
+        <div class="card-name">名侦探学院 2.0</div>
+        <div class="card-subtitle">释放解谜求真天性，少年天生是侦探！</div>
         <div class="card-dates-wrap">
           <div class="card-date-row">📅 8.8-8.14</div>
         </div>
@@ -955,6 +1087,18 @@
           <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>点燃主动学习热情的逻辑解谜营。利用孩子天生的好奇心，将跨学科知识转化为案件线索。通过推理与侦破，让孩子从"被动听令"转为"主动探索"，在追求真相的过程中训练严密的逻辑思维与观察力。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>逻辑控、推理迷，对《名侦探柯南》等侦探题材感兴趣的孩子</li><li>思维活跃，不喜欢标准答案，喜欢追问"为什么"的学生</li><li>需要提升观察细致度、分析判断力的青少年</li></ul>
+      </div>
+      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
     <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
     <div class="card-qr-panel">
@@ -1020,7 +1164,7 @@
       </div>
       <div class="card-body">
         <div class="card-name">职业探索学院制 3.0</div>
-        <div class="card-subtitle">在职业"大航海"中发现天赋和志向 — 职业七艺·KEY Talks嘉宾对话·实战训练</div>
+        <div class="card-subtitle">在职业"大航海"中发现自己的天赋和志向</div>
         <div class="card-dates-wrap">
           <div class="card-date-row">📅 7.14-7.23</div>
         </div>
@@ -1038,6 +1182,18 @@
           <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>专为高中生设计的"人生方向指南针"。通过职场七艺锻造和真实跨界对话，帮助孩子在 AI 时代精准定位个人优势。营员将经历从能力试炼到实战竞技的全过程，并通过与各界大咖的深度沙龙，打破职业认知壁垒，建立应对未来不确定性的独立心态。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>处于职业迷茫期，渴望探索未来专业或就业方向的学生</li><li>希望提升沟通、决策、领导力等"软实力"的准大学生</li><li>对世界充满好奇，喜欢听取不同人生经验、乐于深度思考的孩子</li></ul>
+      </div>
+      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
     <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
     <div class="card-qr-panel">
@@ -1058,7 +1214,7 @@
       </div>
       <div class="card-body">
         <div class="card-name">学习方法升级营</div>
-        <div class="card-subtitle">建立从被动学习到主动学习的意识 — 认知工具+游戏实操（仅限老营员）</div>
+        <div class="card-subtitle">把学习变回一件"激动人心的事"</div>
         <div class="card-dates-wrap">
           <div class="card-date-row">📅 7.23-7.25</div>
         </div>
@@ -1076,6 +1232,18 @@
           <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>解决"厌学"与"低效学习"的工具箱。由资深导师带领，结合认知工具和真实学情，手把手教孩子设计适合自己的学习路径。核心目标是把学习变回一件激动人心的事，让孩子掌握无路标也能行走的能力，实现从被动刷题到主动求知的转变。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>学习努力但方法欠缺，感到身心俱疲、无意义感的高中生</li><li>希望在假期复盘学习策略，提升自主学习效率的自我驱动型学生</li><li>对学习产生抵触情绪，需要重拾学习趣味和掌控感的孩子</li></ul>
+      </div>
+      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
     <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
     <div class="card-qr-panel">
@@ -1096,7 +1264,7 @@
       </div>
       <div class="card-body">
         <div class="card-name">AI游戏设计营</div>
-        <div class="card-subtitle">从玩游戏到做游戏，掌握AI时代的硬核创造力 — AI生成素材·设计玩法·编程实战</div>
+        <div class="card-subtitle">从玩游戏到做游戏，掌握 AI 时代的硬核创造力</div>
         <div class="card-dates-wrap">
           <div class="card-date-row">📅 7.25-7.31</div>
         </div>
@@ -1115,6 +1283,18 @@
           <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>将孩子对游戏的"沉迷"转化为"创造力"的硬核营地。利用前沿 AI 工具，模拟真实游戏公司工作流，学习编程、产品及商业思维。孩子将从游戏消费者华丽转身为开发者，亲手打造作品，在解决复杂问题的过程中培养面对失败的勇气。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>深度游戏爱好者，对游戏背后的逻辑和设计感兴趣</li><li>对 AI 技术、科技趋势有浓厚兴趣，喜欢动手创作的孩子</li><li>具备逻辑思考潜力，未来有志于从事科技、设计或产品工作的学生</li></ul>
+      </div>
+      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
     <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
     <div class="card-qr-panel">
@@ -1135,7 +1315,7 @@
       </div>
       <div class="card-body">
         <div class="card-name">龙与地下城跑团营</div>
-        <div class="card-subtitle">做自己故事的主角 — 角色扮演·协作协商·发展社交与创造力</div>
+        <div class="card-subtitle">做自己故事的主角</div>
         <div class="card-dates-wrap">
           <div class="card-date-row">📅 8.1-8.7</div>
         </div>
@@ -1154,6 +1334,18 @@
           <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>一场拒绝屏幕的深度社交实验。通过沉浸式角色扮演，孩子在虚拟背景下练习现实世界急需的合作、协商与计划技巧。这不仅是游戏，更是灵魂的深度交流，帮助青少年通过"面具"探索自我边界，建立真实的人际连接与共鸣。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>热爱文学想象、奇幻世界观或剧本杀的青少年</li><li>渴望高质量社交、希望在深度互动中寻找共鸣的孩子</li><li>喜欢策略思考，乐于通过语言沟通解决问题的表达型选手</li></ul>
+      </div>
+      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
     <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
     <div class="card-qr-panel">
@@ -1489,6 +1681,13 @@
     el.classList.toggle('open');
     const ans = el.nextElementSibling;
     ans.classList.toggle('open');
+  }
+
+  // 卡片详情面板（亮点+适合人群）
+  function toggleDetail(btn) {
+    btn.classList.toggle('open');
+    const panel = btn.nextElementSibling;
+    panel.classList.toggle('open');
   }
 </script>
 </body>
