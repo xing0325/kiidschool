@@ -1010,18 +1010,24 @@
        详情页：阅读进度条 / 侧边 TOC / 微信原文
        ======================================== */
 
-    /* 阅读进度条（贴 detail-bar 下方） */
-    .detail-progress {
-      position: sticky; top: 56px; z-index: 9;
-      height: 2px;
-      background: #F0EDE8;
+    /* 全局阅读进度条（屏幕最顶端，主页+详情都用） */
+    .global-progress {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: transparent;
+      z-index: 9999;
+      pointer-events: none;
     }
-    .detail-progress-fill {
+    .global-progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #FF6B35, #FF9233);
+      background: linear-gradient(90deg, #FF6B35, #FFD93D);
       width: 0%;
-      transition: width 0.1s linear;
+      transition: width 0.08s linear;
+      box-shadow: 0 1px 4px rgba(255,107,53,0.4);
     }
+    /* 兼容旧 detail-progress（不再需要单独的，保留作占位） */
+    .detail-progress { display: none; }
+    .detail-progress-fill { display: none; }
 
     /* 微信原文容器 */
     .detail-article {
@@ -1161,6 +1167,9 @@
   </style>
 </head>
 <body>
+
+<!-- 全局阅读进度条（始终贴屏幕最顶端） -->
+<div class="global-progress"><div class="global-progress-fill" id="global-progress-fill"></div></div>
 
 <!-- HEADER -->
 <header class="header">
@@ -1583,7 +1592,7 @@
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#A8E6CF,#7FCDCD);">
         <span class="card-status done">✓</span>
-        <img class="poster-img" src="articles/_shared/ff0fb08683c17ea4.gif" onerror="this.style.display='none'" alt="">
+        <video class="poster-img" src="articles/_shared/ff0fb08683c17ea4.mp4" onerror="this.style.display='none'" alt="" autoplay loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="metadata"></video>
         <div class="card-age-badge">9-12岁</div>
         <div class="card-duration">7天</div>
       </div>
@@ -1615,7 +1624,7 @@
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#F77F3C,#FFB347);">
         <span class="card-status done">✓</span>
-        <img class="poster-img" src="articles/_shared/ff0fb08683c17ea4.gif" onerror="this.style.display='none'" alt="">
+        <video class="poster-img" src="articles/_shared/ff0fb08683c17ea4.mp4" onerror="this.style.display='none'" alt="" autoplay loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="metadata"></video>
         <div class="card-age-badge">9-12岁</div>
         <div class="card-duration">7天</div>
       </div>
@@ -1977,7 +1986,7 @@
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
         <span class="card-status done">✓</span>
-        <img class="poster-img" src="articles/_shared/192ac88aac606f73.gif" onerror="this.style.display='none'" alt="">
+        <video class="poster-img" src="articles/_shared/192ac88aac606f73.mp4" onerror="this.style.display='none'" alt="" autoplay loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="metadata"></video>
         <div class="card-age-badge">12-16岁</div>
         <div class="card-duration">7天</div>
       </div>
@@ -2009,7 +2018,7 @@
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF6B9D,#FFA8A8);">
         <span class="card-status done">✓</span>
-        <img class="poster-img" src="articles/_shared/ff0fb08683c17ea4.gif" onerror="this.style.display='none'" alt="">
+        <video class="poster-img" src="articles/_shared/ff0fb08683c17ea4.mp4" onerror="this.style.display='none'" alt="" autoplay loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="metadata"></video>
         <div class="card-age-badge">12-16岁</div>
         <div class="card-duration">7天</div>
       </div>
@@ -2874,7 +2883,7 @@
     body.appendChild(card);
 
     // 重置进度条
-    document.getElementById('detail-progress-fill').style.width = '0%';
+    document.getElementById('global-progress-fill').style.width = '0%';
     document.getElementById('toc-list').innerHTML = '';
     document.getElementById('toc-fab').style.display = 'none';
 
@@ -2948,15 +2957,31 @@
   }
 
   function _updateProgress() {
-    const overlay = document.getElementById('detail-overlay');
-    if (!overlay) return;
-    const scrolled = overlay.scrollTop;
-    const max = overlay.scrollHeight - overlay.clientHeight;
-    const pct = max > 0 ? (scrolled / max * 100) : 0;
-    document.getElementById('detail-progress-fill').style.width = pct + '%';
-    // 高亮当前章节
+    // 详情页内滚动（细节用：TOC 高亮）
     _highlightTOC();
+    // 全局进度条由 updateGlobalProgress 处理
+    updateGlobalProgress();
   }
+
+  function updateGlobalProgress() {
+    const bar = document.getElementById('global-progress-fill');
+    if (!bar) return;
+    let pct = 0;
+    if (document.body.classList.contains('detail-open')) {
+      const overlay = document.getElementById('detail-overlay');
+      const max = overlay.scrollHeight - overlay.clientHeight;
+      pct = max > 0 ? (overlay.scrollTop / max * 100) : 0;
+    } else {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      pct = max > 0 ? (window.pageYOffset / max * 100) : 0;
+    }
+    bar.style.width = pct + '%';
+  }
+
+  // 主页滚动也驱动全局进度条
+  window.addEventListener('scroll', updateGlobalProgress, { passive: true });
+  // 详情打开/关闭后立即重算
+  window.addEventListener('load', updateGlobalProgress);
 
   // ── TOC 构建（按已知小节关键字匹配） ──
   const TOC_MARKERS = [
