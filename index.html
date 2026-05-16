@@ -784,6 +784,69 @@
     .camp-card.featured::before {
       font-size: 9px; padding: 2px 7px 2px 9px; top: 6px;
     }
+
+    /* === 卡片状态标记 (右上角) === */
+    .card-status {
+      position: absolute;
+      top: 6px; right: 6px;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 900;
+      z-index: 5;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      backdrop-filter: blur(2px);
+    }
+    .card-status.done { background: #4CAF50; color: #fff; }
+    .card-status.todo { background: #FFA726; color: #fff; }
+    .card-status.blank {
+      background: rgba(255,255,255,0.92);
+      color: #8B7B5C;
+      border: 1.5px dashed #C0B7A5;
+      box-shadow: none;
+      width: 26px; height: 26px;
+      font-size: 16px; font-weight: 900;
+      font-family: Arial, sans-serif;  /* 避免中文字体 fallback */
+    }
+    .card-status.blank::before {
+      content: '?';
+      line-height: 1;
+    }
+    /* featured 的 ::before 在 top:6 right:0，避免和 status 重叠 → status 下移到 top:32 */
+    .camp-card.featured .card-status { top: 32px; }
+
+    /* 毛坯房卡片 (data-status="blank") 的整体外观 */
+    .camp-card[data-status="blank"] {
+      background: repeating-linear-gradient(135deg, #FFF8F0, #FFF8F0 10px, #FBF3E8 10px, #FBF3E8 20px);
+      border: 1.5px dashed #DCD0BC;
+      box-shadow: none;
+      cursor: default;
+    }
+    .camp-card[data-status="blank"] .card-poster {
+      background: linear-gradient(135deg, #F0E8D8, #E5DCC0) !important;
+      aspect-ratio: 4/3;
+    }
+    .camp-card[data-status="blank"] .card-poster::before {
+      content: '🏗';
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 38px; opacity: 0.55;
+      z-index: 2;
+    }
+    .camp-card[data-status="blank"] .card-name {
+      color: #8B7B5C;
+    }
+    .camp-card[data-status="blank"] .card-price {
+      color: #B0A795;
+    }
+    .camp-card[data-status="blank"] .card-icon,
+    .camp-card[data-status="blank"] .poster-img {
+      display: none;
+    }
+    /* 毛坯房不允许点开看详情 */
+    body:not(.detail-open) .camp-card[data-status="blank"]:active {
+      transform: none;
+    }
     .camp-card:has(.poster-img[src*="images/camps/"])::before {
       /* 移除原本的 ::before 渐变蒙版（mini 卡用不上） */
       content: none;
@@ -900,6 +963,48 @@
     }
     .fab:active { transform: scale(0.97); }
     body.detail-open .fab { display: none; }
+
+    /* ========================================
+       卡片完工状态角标（右上角徽章）
+       ✓ 绿色 = 有详情 (data-slug 设置)
+       ✗ 红色 = 缺详情
+       🚧 灰色 = 毛坯卡（data-blank）
+       ======================================== */
+    .camp-card { position: relative; }
+    .camp-card::after {
+      position: absolute;
+      top: 6px; right: 6px;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 20px;
+      text-align: center;
+      z-index: 5;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+      pointer-events: none;
+    }
+    .camp-card[data-slug]::after {
+      content: '✓';
+      color: #2BB673;
+    }
+    .camp-card:not([data-slug]):not([data-blank])::after {
+      content: '✗';
+      color: #E74C3C;
+    }
+    .camp-card[data-blank]::after {
+      content: '🚧';
+      font-size: 11px;
+      background: rgba(245,243,239,0.95);
+    }
+    /* featured 卡片的"热门"丝带在 top:6px right:0，把状态标记下移避免叠加 */
+    .camp-card.featured::after {
+      top: 28px;
+    }
+    /* 详情层里隐藏角标（避免干扰阅读） */
+    .detail-overlay .camp-card::after { display: none; }
 
     /* ========================================
        详情页：阅读进度条 / 侧边 TOC / 微信原文
@@ -1166,9 +1271,10 @@
   </div>
 
   <!-- 六艺通识营 -->
-  <div class="camp-card" data-age-min="9" data-age-max="12" data-themes="通识" data-dates="7.4-7.10,7.11-7.17" data-group="9-12" data-slug="liuyi">
+  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="通识" data-dates="7.4-7.10,7.11-7.17" data-group="9-12" data-slug="liuyi">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status done">✓</span>
         <img class="poster-img" src="images/camps/liuyi.jpg" onerror="this.style.display='none'" alt="">
         <div class="card-icon">🎨</div>
         <div class="card-age-badge">9-12岁</div>
@@ -1218,9 +1324,10 @@
   </div>
 
   <!-- 头脑特工队 -->
-  <div class="camp-card" data-age-min="9" data-age-max="12" data-themes="通识" data-dates="7.4-7.10,7.11-7.17,7.18-7.24,7.25-7.31" data-group="9-12" data-slug="emotion-team">
+  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="通识" data-dates="7.4-7.10,7.11-7.17,7.18-7.24,7.25-7.31" data-group="9-12" data-slug="emotion-team">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#6C5CE7,#A29BFE);">
+        <span class="card-status done">✓</span>
         <video class="poster-img" src="images/camps/emotion-anim.mp4" autoplay loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="auto" onerror="this.style.display='none'"></video>
         <div class="card-icon">🧠</div>
         <div class="card-age-badge">9-12岁</div>
@@ -1268,9 +1375,10 @@
   </div>
 
   <!-- 勇敢者游戏 -->
-  <div class="camp-card" data-age-min="9" data-age-max="12" data-themes="通识" data-dates="7.18-7.24" data-group="9-12">
+  <div class="camp-card" data-status="todo" data-age-min="9" data-age-max="12" data-themes="通识" data-dates="7.18-7.24" data-group="9-12">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#E17055,#D63031);">
+        <span class="card-status todo">✗</span>
         <video class="poster-img" src="images/camps/brave.mp4" autoplay loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="auto" onerror="this.style.display='none'"></video>
         <div class="card-icon">⚔️</div>
         <div class="card-age-badge">9-12岁</div>
@@ -1318,9 +1426,10 @@
   </div>
 
   <!-- 招牌通识营·世界重启 -->
-  <div class="camp-card" data-age-min="9" data-age-max="12" data-themes="通识" data-dates="7.11-7.17" data-group="9-12" data-slug="world-restart">
+  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="通识" data-dates="7.11-7.17" data-group="9-12" data-slug="world-restart">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#00B894,#00CEC9);">
+        <span class="card-status done">✓</span>
         <img class="poster-img" src="images/camps/world.jpg" onerror="this.style.display='none'" alt="">
         <div class="card-icon">🌍</div>
         <div class="card-age-badge">9-12岁</div>
@@ -1368,9 +1477,10 @@
   </div>
 
   <!-- 少年大富翁创业营 -->
-  <div class="camp-card" data-age-min="9" data-age-max="12" data-themes="财商" data-dates="7.4-7.10" data-group="9-12">
+  <div class="camp-card" data-status="todo" data-age-min="9" data-age-max="12" data-themes="财商" data-dates="7.4-7.10" data-group="9-12">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#F9CA24,#F0932B);">
+        <span class="card-status todo">✗</span>
         <video class="poster-img" src="images/camps/monopoly.mp4" autoplay loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="auto" onerror="this.style.display='none'"></video>
         <div class="card-icon">💰</div>
         <div class="card-age-badge">9-12岁</div>
@@ -1418,9 +1528,10 @@
   </div>
 
   <!-- 学院制夏令营2.0 -->
-  <div class="camp-card featured" data-age-min="9" data-age-max="12" data-themes="学院制" data-dates="8.8-8.17" data-group="recommend" data-rank="2">
+  <div class="camp-card featured" data-status="todo" data-age-min="9" data-age-max="12" data-themes="学院制" data-dates="8.8-8.17" data-group="recommend" data-rank="2">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#6A3093,#A044FF);">
+        <span class="card-status todo">✗</span>
         <video class="poster-img" src="images/camps/academy.mp4" autoplay loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="auto" onerror="this.style.display='none'"></video>
         <div class="card-icon">🏰</div>
         <div class="card-age-badge">9-12岁</div>
@@ -1467,6 +1578,290 @@
       <div class="qr-label">微信扫码 · 钥匙君客服报名</div>
     </div>
   </div>
+  <!-- 招牌通识 · 重走人类创造之路 -->
+  <div class="camp-card" data-slug="human-history" data-status="done" data-age-min="9" data-age-max="12" data-themes="通识,创造" data-dates="7.4-7.10,7.18-7.24" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#A8E6CF,#7FCDCD);">
+        <span class="card-status done">✓</span>
+        <img class="poster-img" src="articles/_shared/ff0fb08683c17ea4.gif" onerror="this.style.display='none'" alt="">
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">招牌通识 · 重走人类创造之路</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.4-7.10 &nbsp;|&nbsp; 7.18-7.24</div>
+        </div>
+        <div class="card-location">📍 成都·麓客岛</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFF3E0;color:#E65100;">通识</span>
+          <span class="card-tag" style="background:#FFFDE7;color:#F57F17;">创造</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">6580</span><span class="card-price-unit">元</span>
+          <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 硬核成长营 · 命运手斧 -->
+  <div class="camp-card" data-slug="fate-axe" data-status="done" data-age-min="9" data-age-max="12" data-themes="户外,心理" data-dates="7.11-7.17" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#F77F3C,#FFB347);">
+        <span class="card-status done">✓</span>
+        <img class="poster-img" src="articles/_shared/ff0fb08683c17ea4.gif" onerror="this.style.display='none'" alt="">
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">硬核成长营 · 命运手斧</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.11-7.17</div>
+        </div>
+        <div class="card-location">📍 成都·麓客岛</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#E0F7FA;color:#006064;">户外</span>
+          <span class="card-tag" style="background:#FCE4EC;color:#880E4F;">心理</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">6580</span><span class="card-price-unit">元</span>
+          <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 火星生存指南 -->
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="创造,思辨" data-dates="7.18-7.24" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">火星生存指南</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.18-7.24</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFFDE7;color:#F57F17;">创造</span>
+          <span class="card-tag" style="background:#E8EAF6;color:#283593;">思辨</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">6580</span><span class="card-price-unit">元</span>
+          <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 数学战争 -->
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="思辨" data-dates="7.25-7.31" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">数学战争</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.25-7.31</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#E8EAF6;color:#283593;">思辨</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">6580</span><span class="card-price-unit">元</span>
+          <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 水形物语 -->
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="创造" data-dates="7.25-7.31" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">水形物语</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.25-7.31</div>
+        </div>
+        <div class="card-location">📍 成都·麓客岛</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFFDE7;color:#F57F17;">创造</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">6580</span><span class="card-price-unit">元</span>
+          <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 时间玩家 -->
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="思辨" data-dates="8.1-8.7" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">时间玩家</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 8.1-8.7</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#E8EAF6;color:#283593;">思辨</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">6580</span><span class="card-price-unit">元</span>
+          <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 搞笑诺贝尔 -->
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="创造,思辨" data-dates="8.1-8.7" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">搞笑诺贝尔</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 8.1-8.7</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFFDE7;color:#F57F17;">创造</span>
+          <span class="card-tag" style="background:#E8EAF6;color:#283593;">思辨</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">6580</span><span class="card-price-unit">元</span>
+          <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 造船 PBL -->
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="创造" data-dates="8.1-8.7" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">造船 PBL</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 8.1-8.7</div>
+        </div>
+        <div class="card-location">📍 成都·麓客岛</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFFDE7;color:#F57F17;">创造</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">6580</span><span class="card-price-unit">元</span>
+          <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 定向越野 + AI 工具 -->
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="户外,创造" data-dates="8.1-8.7" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">定向越野 + AI 工具</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 8.1-8.7</div>
+        </div>
+        <div class="card-location">📍 成都·麓客岛</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#E0F7FA;color:#006064;">户外</span>
+          <span class="card-tag" style="background:#FFFDE7;color:#F57F17;">创造</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">6580</span><span class="card-price-unit">元</span>
+          <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- ── 12-16岁 ── -->
   <div class="age-group-divider" data-group="12-16">
@@ -1476,9 +1871,10 @@
   </div>
 
   <!-- 招牌学院制6.0 -->
-  <div class="camp-card featured" data-age-min="12" data-age-max="16" data-themes="学院制" data-dates="7.4-7.13" data-group="recommend" data-rank="1">
+  <div class="camp-card featured" data-status="todo" data-age-min="12" data-age-max="16" data-themes="学院制" data-dates="7.4-7.13" data-group="recommend" data-rank="1">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#2C3E50,#4CA1AF);">
+        <span class="card-status todo">✗</span>
         <video class="poster-img" src="images/camps/academy.mp4" autoplay loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="auto" onerror="this.style.display='none'"></video>
         <div class="card-icon">⚗️</div>
         <div class="card-age-badge">12-16岁</div>
@@ -1527,9 +1923,10 @@
   </div>
 
   <!-- 名侦探学院 -->
-  <div class="camp-card" data-age-min="12" data-age-max="16" data-themes="通识" data-dates="8.8-8.14" data-group="12-16">
+  <div class="camp-card" data-status="todo" data-age-min="12" data-age-max="16" data-themes="通识" data-dates="8.8-8.14" data-group="12-16">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#1A1A2E,#16213E);">
+        <span class="card-status todo">✗</span>
         <video class="poster-img" src="images/camps/detective.mp4" autoplay loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="auto" onerror="this.style.display='none'"></video>
         <div class="card-icon">🔍</div>
         <div class="card-age-badge">12-16岁</div>
@@ -1575,21 +1972,20 @@
       <div class="qr-label">微信扫码 · 小钥匙客服报名</div>
     </div>
   </div>
-
-  <!-- 招牌通识营 12-16 -->
-  <div class="camp-card" data-age-min="12" data-age-max="16" data-themes="通识" data-dates="7.25-7.31,8.1-8.7" data-group="12-16">
+  <!-- 招牌跨学科 · 运气秘籍 -->
+  <div class="camp-card" data-slug="luck-recipe" data-status="done" data-age-min="12" data-age-max="16" data-themes="通识,财商" data-dates="7.25-7.31" data-group="12-16">
     <div class="card-main">
-      <div class="card-poster" style="background:linear-gradient(150deg,#0652DD,#1289A7);">
-        <img class="poster-img" src="images/camps/general12.jpg" onerror="this.style.display='none'" alt="">
-        <div class="card-icon">📚</div>
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status done">✓</span>
+        <img class="poster-img" src="articles/_shared/192ac88aac606f73.gif" onerror="this.style.display='none'" alt="">
         <div class="card-age-badge">12-16岁</div>
         <div class="card-duration">7天</div>
       </div>
       <div class="card-body">
-        <div class="card-name">招牌通识营</div>
-        <div class="card-subtitle">跨学科+多元主题深度学习之旅 — 文学·科学·历史·艺术·技术交织串联</div>
+        <div class="card-name">招牌跨学科 · 运气秘籍</div>
+        <div class="card-subtitle"></div>
         <div class="card-dates-wrap">
-          <div class="card-date-row">📅 7.25-7.31 &nbsp;|&nbsp; 8.1-8.7</div>
+          <div class="card-date-row">📅 7.25-7.31</div>
         </div>
         <div class="card-location">📍 成都·标榜</div>
         <div class="card-meta-row">
@@ -1597,8 +1993,8 @@
           <span class="card-meta-pill">👥 30人</span>
         </div>
         <div class="card-tags">
-          <span class="card-tag" style="background:#E3F2FD;color:#0D47A1;">通识</span>
-          <span class="card-tag" style="background:#F3E5F5;color:#6A1B9A;">人文</span>
+          <span class="card-tag" style="background:#FFF3E0;color:#E65100;">通识</span>
+          <span class="card-tag" style="background:#FFF8E1;color:#FF8F00;">财商</span>
         </div>
         <div class="card-price-row">
           <span class="card-price">6580</span><span class="card-price-unit">元</span>
@@ -1606,13 +2002,102 @@
         </div>
       </div>
     </div>
-    <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
-    <div class="card-qr-panel">
-      <img src="images/qr-09.png" alt="报名二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="qr-placeholder" style="display:none"><span>📱</span><span>二维码加载中</span></div>
-      <div class="qr-label">微信扫码 · 小钥匙客服报名</div>
+  </div>
+
+  <!-- 玩笑盲盒营 · 玩耍抗抑 -->
+  <div class="camp-card" data-slug="joy-blindbox" data-status="done" data-age-min="12" data-age-max="16" data-themes="通识,心理" data-dates="8.1-8.7" data-group="12-16">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF6B9D,#FFA8A8);">
+        <span class="card-status done">✓</span>
+        <img class="poster-img" src="articles/_shared/ff0fb08683c17ea4.gif" onerror="this.style.display='none'" alt="">
+        <div class="card-age-badge">12-16岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">玩笑盲盒营 · 玩耍抗抑</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 8.1-8.7</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 30人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFF3E0;color:#E65100;">通识</span>
+          <span class="card-tag" style="background:#FCE4EC;color:#880E4F;">心理</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">6580</span><span class="card-price-unit">元</span>
+          <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- 第一桶金 -->
+  <div class="camp-card" data-status="blank" data-age-min="12" data-age-max="16" data-themes="财商" data-dates="7.25-7.31" data-group="12-16">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">12-16岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">第一桶金</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.25-7.31</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 30人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFF8E1;color:#FF8F00;">财商</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">6580</span><span class="card-price-unit">元</span>
+          <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 饥饿游戏 -->
+  <div class="camp-card" data-status="blank" data-age-min="12" data-age-max="16" data-themes="户外" data-dates="8.1-8.7" data-group="12-16">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">12-16岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">饥饿游戏</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 8.1-8.7</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 30人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#E0F7FA;color:#006064;">户外</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">6580</span><span class="card-price-unit">元</span>
+          <span class="card-price-hint">起 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- ── 14-18岁 ── -->
   <div class="age-group-divider" data-group="14-18">
@@ -1622,9 +2107,10 @@
   </div>
 
   <!-- 职业探索学院制3.0 -->
-  <div class="camp-card featured" data-age-min="14" data-age-max="18" data-themes="学院制,职业探索" data-dates="7.14-7.23" data-group="recommend" data-rank="3">
+  <div class="camp-card featured" data-status="todo" data-age-min="14" data-age-max="18" data-themes="学院制,职业探索" data-dates="7.14-7.23" data-group="recommend" data-rank="3">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#0F3443,#34E89E);">
+        <span class="card-status todo">✗</span>
         <video class="poster-img" src="images/camps/career-anim.mp4" autoplay loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="auto" onerror="this.style.display='none'"></video>
         <div class="card-icon">🧭</div>
         <div class="card-age-badge">14-18岁</div>
@@ -1672,9 +2158,10 @@
   </div>
 
   <!-- 学习方法升级营 -->
-  <div class="camp-card" data-age-min="14" data-age-max="18" data-themes="通识" data-dates="7.23-7.25" data-group="14-18" data-slug="learning-method">
+  <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="通识" data-dates="7.23-7.25" data-group="14-18" data-slug="learning-method">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF6B35,#FFD93D);">
+        <span class="card-status done">✓</span>
         <img class="poster-img" src="images/camps/learning.jpg" onerror="this.style.display='none'" alt="">
         <div class="card-icon">📖</div>
         <div class="card-age-badge">14-18岁</div>
@@ -1722,9 +2209,10 @@
   </div>
 
   <!-- AI游戏设计营 -->
-  <div class="camp-card" data-age-min="14" data-age-max="18" data-themes="创造" data-dates="7.25-7.31" data-group="14-18" data-slug="ai-game">
+  <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="创造" data-dates="7.25-7.31" data-group="14-18" data-slug="ai-game">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#7B2FBE,#00D4FF);">
+        <span class="card-status done">✓</span>
         <video class="poster-img" src="images/camps/ai-game.mp4" autoplay loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="auto" onerror="this.style.display='none'"></video>
         <div class="card-icon">🎮</div>
         <div class="card-age-badge">14-18岁</div>
@@ -1773,9 +2261,10 @@
   </div>
 
   <!-- 龙与地下城跑团营 -->
-  <div class="camp-card" data-age-min="14" data-age-max="18" data-themes="创造" data-dates="8.1-8.7" data-group="14-18" data-slug="dnd">
+  <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="创造" data-dates="8.1-8.7" data-group="14-18" data-slug="dnd">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#4A0E8F,#B01E38);">
+        <span class="card-status done">✓</span>
         <video class="poster-img" src="images/camps/dnd.mp4" autoplay loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="auto" onerror="this.style.display='none'"></video>
         <div class="card-icon">🐉</div>
         <div class="card-age-badge">14-18岁</div>
