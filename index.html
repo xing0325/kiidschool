@@ -574,6 +574,96 @@
     .feature-placeholder p { font-size: 13px; color: #999; line-height: 1.6; }
     .feature-placeholder .ph-hint { font-size: 11px; color: #C0B7A5; margin-top: 4px; }
 
+    /* 特色卡片 */
+    .feature-card {
+      background: #fff; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.07);
+    }
+    .feature-hero {
+      width: 100%; display: block;
+      background: #1A1A2E;
+    }
+    .feature-list { list-style: none; padding: 14px 14px 4px; }
+    .feature-list li {
+      display: flex; gap: 10px;
+      padding: 10px 0; border-bottom: 1px dashed #F0EDE8;
+    }
+    .feature-list li:last-child { border-bottom: none; }
+    .fl-num {
+      flex: 0 0 24px; width: 24px; height: 24px;
+      background: linear-gradient(135deg, #FF6B35, #FF9233);
+      color: #fff; font-size: 12px; font-weight: 800;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1px;
+    }
+    .feature-list li > div { flex: 1; min-width: 0; }
+    .feature-list strong {
+      display: block; font-size: 14px; font-weight: 800;
+      color: #1A1A2E; margin-bottom: 3px;
+    }
+    .feature-list p {
+      font-size: 12.5px; color: #666; line-height: 1.65;
+    }
+    .feature-credo {
+      background: linear-gradient(135deg, #FFF8F2, #FFE8D8);
+      padding: 16px 16px 18px;
+      font-size: 12.5px; line-height: 1.85;
+      color: #5C4030; text-align: center;
+      border-top: 1px solid #FFE0C7;
+    }
+    .feature-credo em {
+      font-style: normal;
+      color: #FF6B35; font-weight: 800; font-size: 13.5px;
+    }
+
+    /* 玩伴 */
+    .playmate-group-title {
+      font-size: 13px; font-weight: 800; color: #FF6B35;
+      margin: 6px 4px 10px; padding-left: 8px;
+      border-left: 3px solid #FF6B35;
+    }
+    .playmate-scroll {
+      display: flex; gap: 10px;
+      overflow-x: auto; overflow-y: hidden;
+      -ms-overflow-style: none; scrollbar-width: none;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 6px;
+      margin: 0 -14px; padding-left: 14px; padding-right: 14px;
+    }
+    .playmate-scroll::-webkit-scrollbar { display: none; }
+    .playmate-card {
+      flex: 0 0 auto;
+      width: 78%; max-width: 290px;
+      background: #fff; border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+      scroll-snap-align: start;
+      display: flex; flex-direction: column;
+    }
+    .playmate-card img {
+      width: 100%; aspect-ratio: 1/1;
+      object-fit: cover;
+      background: #F8F5F0;
+    }
+    .pm-name {
+      padding: 10px 12px 4px;
+      font-size: 15px; font-weight: 800; color: #1A1A2E;
+    }
+    .pm-role {
+      font-size: 10.5px; color: #fff; background: #FF6B35;
+      padding: 2px 7px; border-radius: 10px;
+      font-weight: 700; margin-left: 4px; vertical-align: 2px;
+    }
+    .playmate-card p {
+      padding: 0 12px 12px;
+      font-size: 12px; color: #666; line-height: 1.65;
+    }
+    .playmate-footnote {
+      margin-top: 10px; font-size: 10.5px; color: #C0B7A5;
+      text-align: center; padding: 0 12px; line-height: 1.6;
+    }
+
     /* ── QA ── */
     .qa-section { margin: 16px 12px 24px; }
     .qa-h {
@@ -1474,21 +1564,107 @@
 <!-- 钥匙玩校特色 -->
 <div class="feature-section">
   <h3 class="feature-h">🔑 钥匙玩校特色</h3>
-  <div class="feature-placeholder">
-    <div class="ph-icon-lg">📰</div>
-    <p>内容待补充：参考公众号文案</p>
-    <p class="ph-hint">（你给我公众号链接或截图，我把这一段拼出来）</p>
+  <div class="feature-card">
+    <img class="feature-hero" src="images/features/seven-arts.png" alt="七艺徽章" loading="lazy">
+    <ul class="feature-list">
+      <li><span class="fl-num">1</span><div><strong>游戏式学习</strong><p>原创"技艺碎片"游戏化系统 · "装币"经济体系 · "小卖部"经营项目 · 教育化桌游和户外团队游戏，让孩子在玩中学，在竞技中学会面对失败和挫折。</p></div></li>
+      <li><span class="fl-num">2</span><div><strong>项目式学习</strong><p>已开发 50+ PBL 活动，真实环境中的团队创造，把学科知识付诸实践，让孩子在创造中积累自信、建立自尊。</p></div></li>
+      <li><span class="fl-num">3</span><div><strong>跨学科学习</strong><p>打破文理科壁垒，突破书本知识，在目标导向的项目里综合应用学科知识，练习策划、设计、沟通、合作等"考试不考的必修技能"。</p></div></li>
+      <li><span class="fl-num">4</span><div><strong>创造性思维训练</strong><p>如何把想法变成真的？如何为真实问题提供创造解？如何从消费者成为创造者？这是钥匙玩校每个活动都在鼓励营员思考并行动的驱动问题。</p></div></li>
+      <li><span class="fl-num">5</span><div><strong>玩伴教育激发多元智能</strong><p>营地导师以平等姿态给予营员尊重和信任，参考多元智能理论，覆盖语言、逻辑、运动、声音、空间、博物、人际、自省、存在等各方面潜能。</p></div></li>
+      <li><span class="fl-num">6</span><div><strong>自然环境和人文环境并重</strong><p>营地空气清新、环境幽静；公共空间提供充足的书籍、桌游、工具、读本，多层次启发和激励孩子。</p></div></li>
+      <li><span class="fl-num">7</span><div><strong>自由日 Gap Day</strong><p>原创活动。预告-实施-复盘模式，每个营员可开课、可选课、可自由安排一天时间。累计已开设近 1000 项活动，每期至少 20 门选修。</p></div></li>
+      <li><span class="fl-num">8</span><div><strong>七艺徽章收集系统</strong><p>语言、逻辑、生活、创造、休息、常识、运动——七艺碎片在对应活动中潜伏并评估表现。集齐七种徽章的人，成为钥匙玩校的"荣誉营员"，永远享受荣誉待遇。</p></div></li>
+    </ul>
+    <div class="feature-credo">
+      钥匙玩校，懂教育，会游戏，爱孩子。<br>
+      玩得开心，学得畅快，回味悠长，受益终身。<br>
+      孩子的爱好会被尊重，孩子的天赋会被保护。<br>
+      <em>在创造中寻找自己，在玩耍中爱上学习。</em>
+    </div>
   </div>
 </div>
 
 <!-- 钥匙玩校玩伴 -->
 <div class="feature-section">
   <h3 class="feature-h">🎒 钥匙玩校玩伴</h3>
+  <div class="playmate-group-title">12-18 岁营 · 玩伴介绍 <span class="venue-count">共 13 位</span></div>
+  <div class="playmate-scroll">
+    <div class="playmate-card">
+      <img src="images/playmates/chixiao.png" alt="池晓" loading="lazy">
+      <div class="pm-name">池晓 <span class="pm-role">首席玩伴</span></div>
+      <p>游戏高手·游戏/课程设计师·TEDx 讲者·罗伯特议事规则推广者。十余年青少年教育，"游戏即学习"理念推广者，设计开发上百种教育活动。钥匙玩校 & 好奇学习社区创始人。</p>
+    </div>
+    <div class="playmate-card">
+      <img src="images/playmates/linwenping.png" alt="林文萍" loading="lazy">
+      <div class="pm-name">林文萍 <span class="pm-role">资深玩伴</span></div>
+      <p>好奇学习社区执行社长，法学专业。专注青少年心理健康教育并开发系列课程。"渡过"青少年复原项目前负责人，星级陪伴者，累计支持数百个家庭。</p>
+    </div>
+    <div class="playmate-card">
+      <img src="images/playmates/yangbo.jpg" alt="杨波" loading="lazy">
+      <div class="pm-name">杨波 <span class="pm-role">资深玩伴</span></div>
+      <p>NFL FLAG / NAFL 国家橄榄球教练员、裁判员培训。专业海上厨师，用五年环游世界。开设食物科学实验室、Rice traveling、橄榄球·棒球等运动通识课程。</p>
+    </div>
+    <div class="playmate-card">
+      <img src="images/playmates/dayan.jpg" alt="大眼" loading="lazy">
+      <div class="pm-name">大眼 <span class="pm-role">资深玩伴</span></div>
+      <p>游戏专家，擅长游戏化课程设计与教学，致力让青少年把在游戏中获得的优势转移到生活中。自学成才 B 站万粉 Up 主，视频播放 500 万+。擅长科学、数学。</p>
+    </div>
+    <div class="playmate-card">
+      <img src="images/playmates/gaoshan.jpg" alt="高山" loading="lazy">
+      <div class="pm-name">高山 <span class="pm-role">玩伴</span></div>
+      <p>毕业于中国人民大学，青少年博物馆教育推广者，北京交通广播栏目嘉宾。开设古国文明、中国传统建筑等通识课程。擅长人文艺术、博物馆通识。</p>
+    </div>
+    <div class="playmate-card">
+      <img src="images/playmates/wangtao.jpg" alt="王淘" loading="lazy">
+      <div class="pm-name">王淘 <span class="pm-role">玩伴</span></div>
+      <p>毕业于 UCLA 心理系。北京大学临床心理研究室前研究员；Field Academy 签约作者。有美国心理诊所、公益组织工作经历。关注脑科学、青少年认知与发展心理学。</p>
+    </div>
+    <div class="playmate-card">
+      <img src="images/playmates/wangqi.jpg" alt="王琦" loading="lazy">
+      <div class="pm-name">王琦 <span class="pm-role">玩伴</span></div>
+      <p>毕业于中央戏剧学院。old school，文学世界漫游客，爱玩游戏更爱游戏背后的文化和故事。小众电影专家，古典乐爱好者，痴迷解谜。</p>
+    </div>
+    <div class="playmate-card">
+      <img src="images/playmates/tuzi.png" alt="兔子" loading="lazy">
+      <div class="pm-name">兔子 <span class="pm-role">玩伴</span></div>
+      <p>试图跨界教育创新的"公益狂"，热爱声音和喜剧表演的"戏精"，曾在美丽中国支教项目、美丽小学任教多年。</p>
+    </div>
+    <div class="playmate-card">
+      <img src="images/playmates/wanglu.jpg" alt="王鲁" loading="lazy">
+      <div class="pm-name">王鲁 <span class="pm-role">玩伴</span></div>
+      <p>毕业于浙江大学管理学院创业管理方向。翻译出版《管理创新》《创新者的培养》。美丽中国支教两年，国际学校十年。参与哈佛大学零点计划暑期项目、IB 服务学习工作坊。</p>
+    </div>
+    <div class="playmate-card">
+      <img src="images/playmates/yanwenhao.jpg" alt="颜文豪" loading="lazy">
+      <div class="pm-name">颜文豪 <span class="pm-role">戏剧老师</span></div>
+      <p>毕业于台湾艺术大学。戏剧勤杂工。在戏剧世界做过导演、编剧、演员、舞台监督、音响设计、推景师傅、道具保洁。课程包含教育戏剧、创意戏剧、光影戏剧、即兴戏剧。</p>
+    </div>
+    <div class="playmate-card">
+      <img src="images/playmates/zhangzhiqin.png" alt="张智钦" loading="lazy">
+      <div class="pm-name">张智钦 <span class="pm-role">玩伴</span></div>
+      <p>毕业于西班牙萨拉曼卡大学，十二年专业足球经验，丰富的运动康复知识。Steam 在线时长全球前 1%。架子鼓手，热爱生活和认识新朋友。</p>
+    </div>
+    <div class="playmate-card">
+      <img src="images/playmates/wangwei.png" alt="王薇" loading="lazy">
+      <div class="pm-name">王薇 <span class="pm-role">玩伴</span></div>
+      <p>毕业于重庆交通大学应用统计学专业，在广西乡村支教两年。长期关注自我成长、乡村教育和基础理科教学。白日做梦家，热衷于帮人编织白日梦。</p>
+    </div>
+    <div class="playmate-card">
+      <img src="images/playmates/maipian.jpg" alt="麦片" loading="lazy">
+      <div class="pm-name">麦片 <span class="pm-role">玩伴</span></div>
+      <p>毕业于北京师范大学珠海分校广告学专业。曾就职于顶级国际 4A 公司、公关咨询公司，并在作业帮、樊登读书等头部教育企业负责运营。擅长用传播思维与卡牌工具，带学生探索自我与他人。</p>
+    </div>
+  </div>
+  <div class="venue-hint">← 滑动查看更多玩伴 →</div>
+
+  <div class="playmate-group-title" style="margin-top: 16px;">9-12 岁营 · 玩伴介绍 <span class="venue-count">待补充</span></div>
   <div class="feature-placeholder">
     <div class="ph-icon-lg">👥</div>
-    <p>内容待补充：参考公众号文案</p>
-    <p class="ph-hint">（玩伴是谁、怎么选拔、和孩子的相处方式 — 等你的料）</p>
+    <p>9-12 岁营玩伴信息待你提供</p>
+    <p class="ph-hint">（同样格式：照片 + 名字 + 简介）</p>
   </div>
+  <div class="playmate-footnote">* 具体人员以现场执行为准。届时还有多位特邀玩伴、钥匙玩校志愿者陪伴孩子们。</div>
 </div>
 
 <!-- 常见QA -->
