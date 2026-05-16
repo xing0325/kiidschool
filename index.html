@@ -83,58 +83,45 @@
     /* ── FILTER ── */
     .filter-wrap {
       background: #fff;
-      position: sticky; top: 54px; z-index: 100;
       box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
-    .filter-tabs { display: flex; border-bottom: 1px solid #F0EDE8; }
-    .filter-tab {
-      flex: 1; padding: 11px 4px 9px;
-      font-size: 13px; font-weight: 500; color: #aaa;
+    .filter-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 16px 9px;
+      border-bottom: 1px solid #F0EDE8;
+    }
+    .filter-title { font-size: 14px; font-weight: 800; color: #1A1A2E; letter-spacing: 0.5px; }
+    .filter-toggle {
       background: none; border: none; cursor: pointer;
-      position: relative; transition: color 0.15s;
-      display: flex; align-items: center; justify-content: center; gap: 3px;
+      font-size: 12px; color: #FF6B35; font-weight: 700;
+      display: flex; align-items: center; gap: 3px;
+      padding: 4px 6px;
     }
-    .filter-tab .dot { display: none; width: 5px; height: 5px; background: #FF6B35; border-radius: 50%; }
-    .filter-tab.has-filter .dot { display: inline-block; }
-    .filter-tab.active { color: #FF6B35; font-weight: 700; }
-    .filter-tab.active::after {
-      content: ''; position: absolute; bottom: -1px; left: 15%; right: 15%;
-      height: 2px; background: #FF6B35; border-radius: 2px;
+    .filter-toggle .ft-arrow { font-size: 9px; transition: transform 0.2s; }
+    .filter-wrap.collapsed .filter-toggle .ft-arrow { transform: rotate(180deg); }
+    .filter-wrap.collapsed .filter-toggle .ft-text::after { content: '展开'; }
+    .filter-wrap.collapsed .filter-toggle .ft-text { font-size: 0; }
+    .filter-wrap:not(.collapsed) .filter-toggle .ft-text::after { content: '收起'; }
+    .filter-wrap:not(.collapsed) .filter-toggle .ft-text { font-size: 0; }
+
+    .filter-body {
+      padding: 4px 16px 4px;
+      max-height: 80vh; overflow-y: auto;
+      transition: max-height 0.25s ease, padding 0.25s ease;
     }
-    .filter-panel { display: none; padding: 14px 16px 10px; }
-    .filter-panel.open { display: block; animation: slideDown 0.15s ease; }
-    @keyframes slideDown {
-      from { opacity:0; transform: translateY(-6px); }
-      to { opacity:1; transform: translateY(0); }
+    .filter-wrap.collapsed .filter-body {
+      max-height: 0; padding-top: 0; padding-bottom: 0; overflow: hidden;
     }
 
-    /* Age */
-    .age-quick { display: flex; gap: 7px; margin-bottom: 14px; }
-    .age-q-btn {
-      flex: 1; padding: 7px 2px;
-      border: 1.5px solid #E8E4DE; border-radius: 8px;
-      font-size: 12px; font-weight: 600; color: #888; background: none;
-      cursor: pointer; transition: all 0.15s; text-align: center;
+    .filter-section { padding: 10px 0 6px; border-bottom: 1px dashed #F5F0E8; }
+    .filter-section:last-of-type { border-bottom: none; }
+    .filter-label {
+      font-size: 12px; font-weight: 700; color: #888;
+      margin-bottom: 8px;
+      display: flex; align-items: baseline; gap: 6px;
     }
-    .age-q-btn.active { border-color: #FF6B35; color: #FF6B35; background: #FFF6F3; }
-    .slider-label { font-size: 11px; color: #bbb; margin-bottom: 4px; display: flex; justify-content: space-between; }
-    .slider-label strong { color: #FF6B35; font-size: 13px; font-weight: 800; }
-    .slider-row { position: relative; height: 32px; display: flex; align-items: center; }
-    .slider-bg { position: absolute; left: 0; right: 0; height: 4px; background: #EDE9E3; border-radius: 4px; }
-    .slider-fill-bar { position: absolute; height: 4px; background: linear-gradient(90deg,#FF6B35,#FFD93D); border-radius: 4px; transition: all 0.05s; }
-    input[type=range].age-range {
-      position: absolute; width: 100%; height: 4px; background: transparent;
-      -webkit-appearance: none; appearance: none; outline: none; cursor: pointer;
-    }
-    input[type=range].age-range::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 22px; height: 22px; background: #FF6B35;
-      border-radius: 50%; border: 3px solid #fff;
-      box-shadow: 0 2px 8px rgba(255,107,53,0.45); cursor: pointer;
-    }
-    .age-ticks { display: flex; justify-content: space-between; font-size: 10px; color: #ccc; margin-top: 4px; }
+    .filter-hint { font-size: 10px; color: #C0B7A5; font-weight: 500; }
 
-    /* Theme chips */
     .theme-chips { display: flex; flex-wrap: wrap; gap: 7px; }
     .chip {
       padding: 6px 14px; border-radius: 20px;
@@ -144,26 +131,39 @@
     }
     .chip.active { border-color: #FF6B35; color: #FF6B35; background: #FFF6F3; }
 
-    /* Date chips */
-    .date-chips {
-      display: flex; gap: 7px;
-      overflow-x: auto; padding-bottom: 2px;
-      -ms-overflow-style: none; scrollbar-width: none;
+    .date-range {
+      display: flex; align-items: center; gap: 6px;
     }
-    .date-chips::-webkit-scrollbar { display: none; }
-    .date-chip {
-      flex-shrink: 0; border: 1.5px solid #E8E4DE; border-radius: 10px;
-      padding: 7px 12px; cursor: pointer; transition: all 0.15s;
-      text-align: center; background: #fff;
+    .date-range input[type="date"] {
+      flex: 1; min-width: 0;
+      padding: 8px 10px;
+      border: 1.5px solid #E8E4DE; border-radius: 8px;
+      font-size: 12.5px; color: #555; background: #fff;
+      font-family: inherit;
     }
-    .date-chip.active { border-color: #FF6B35; background: #FFF6F3; }
-    .date-chip .dc-month { font-size: 10px; color: #bbb; line-height: 1; }
-    .date-chip .dc-range { font-size: 12px; font-weight: 700; color: #444; margin-top: 2px; }
-    .date-chip.active .dc-month { color: #FF9233; }
-    .date-chip.active .dc-range { color: #FF6B35; }
+    .date-range input[type="date"]:focus {
+      outline: none; border-color: #FF6B35;
+    }
+    .date-range input[type="date"]:not([value=""]):valid {
+      color: #FF6B35; border-color: #FFD0B0;
+    }
+    .date-sep { font-size: 12px; color: #999; flex-shrink: 0; }
+    .date-clear {
+      width: 28px; height: 28px; padding: 0;
+      background: #F5F3EF; border: none; border-radius: 50%;
+      font-size: 12px; color: #999; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .date-clear:hover { background: #FFEEE3; color: #FF6B35; }
 
-    .clear-row { padding: 8px 16px 10px; display: flex; justify-content: flex-end; border-top: 1px solid #F5F3EF; }
-    .clear-btn { font-size: 12px; color: #bbb; background: none; border: none; cursor: pointer; }
+    .clear-row { padding: 10px 0 4px; display: flex; justify-content: flex-end; }
+    .clear-btn {
+      font-size: 12px; color: #FF6B35; background: #FFF6F3;
+      border: 1px solid #FFD0B0; border-radius: 16px;
+      padding: 5px 14px; cursor: pointer; font-weight: 600;
+    }
+    .clear-btn:hover { background: #FFEEE3; }
 
     /* ── RESULTS BAR ── */
     .results-bar {
@@ -730,69 +730,58 @@
 
 <!-- FILTER -->
 <div class="filter-wrap">
-  <div class="filter-tabs">
-    <button class="filter-tab active" data-panel="age" onclick="togglePanel('age')">年龄 <span class="dot"></span></button>
-    <button class="filter-tab" data-panel="theme" onclick="togglePanel('theme')">主题 <span class="dot"></span></button>
-    <button class="filter-tab" data-panel="loc" onclick="togglePanel('loc')">地点 <span class="dot"></span></button>
-    <button class="filter-tab" data-panel="date" onclick="togglePanel('date')">时间 <span class="dot"></span></button>
+  <div class="filter-header">
+    <span class="filter-title">🔍 筛选</span>
+    <button class="filter-toggle" onclick="toggleFilterCollapse()" aria-label="折叠/展开筛选">
+      <span class="ft-text">收起</span><span class="ft-arrow">▲</span>
+    </button>
   </div>
 
-  <div class="filter-panel open" id="panel-age">
-    <div class="age-quick">
-      <button class="age-q-btn active" data-age="0" onclick="setAgeGroup(this, 0)">全部年龄</button>
-      <button class="age-q-btn" data-age="10" onclick="setAgeGroup(this, 10)">9-12岁</button>
-      <button class="age-q-btn" data-age="13" onclick="setAgeGroup(this, 13)">12-16岁</button>
-      <button class="age-q-btn" data-age="16" onclick="setAgeGroup(this, 16)">14-18岁</button>
-    </div>
-  </div>
-
-  <div class="filter-panel" id="panel-theme">
-    <div class="theme-chips">
-      <span class="chip active" data-theme="all" onclick="toggleTheme(this)">全部主题</span>
-      <span class="chip" data-theme="学院制" onclick="toggleTheme(this)">🏰 学院制</span>
-      <span class="chip" data-theme="通识" onclick="toggleTheme(this)">📖 通识</span>
-      <span class="chip" data-theme="职业探索" onclick="toggleTheme(this)">🧭 职业探索</span>
-      <span class="chip" data-theme="创造" onclick="toggleTheme(this)">✨ 创造</span>
-      <span class="chip" data-theme="财商" onclick="toggleTheme(this)">💰 财商</span>
-    </div>
-  </div>
-
-  <div class="filter-panel" id="panel-loc">
-    <div class="theme-chips">
-      <span class="chip active" data-loc="all" onclick="toggleLoc(this)">全部地点</span>
-      <span class="chip" data-loc="标榜" onclick="toggleLoc(this)">🏫 四川国际标榜职业学院</span>
-      <span class="chip" data-loc="麓客岛" onclick="toggleLoc(this)">🏝 麓客岛</span>
-    </div>
-  </div>
-
-  <div class="filter-panel" id="panel-date">
-    <div class="date-chips">
-      <div class="date-chip active" data-date="all" onclick="toggleDate(this)">
-        <div class="dc-month">全部</div><div class="dc-range">不限时间</div>
-      </div>
-      <div class="date-chip" data-date="7.4-7.10" onclick="toggleDate(this)">
-        <div class="dc-month">7月</div><div class="dc-range">7.4-7.10</div>
-      </div>
-      <div class="date-chip" data-date="7.11-7.17" onclick="toggleDate(this)">
-        <div class="dc-month">7月</div><div class="dc-range">7.11-7.17</div>
-      </div>
-      <div class="date-chip" data-date="7.18-7.24" onclick="toggleDate(this)">
-        <div class="dc-month">7月</div><div class="dc-range">7.18-7.24</div>
-      </div>
-      <div class="date-chip" data-date="7.25-7.31" onclick="toggleDate(this)">
-        <div class="dc-month">7月下</div><div class="dc-range">7.25-7.31</div>
-      </div>
-      <div class="date-chip" data-date="8.1-8.7" onclick="toggleDate(this)">
-        <div class="dc-month">8月</div><div class="dc-range">8.1-8.7</div>
-      </div>
-      <div class="date-chip" data-date="8.8-8.17" onclick="toggleDate(this)">
-        <div class="dc-month">8月</div><div class="dc-range">8.8-8.17</div>
+  <div class="filter-body" id="filter-body">
+    <div class="filter-section">
+      <div class="filter-label">年龄 <span class="filter-hint">可多选</span></div>
+      <div class="theme-chips">
+        <span class="chip active" data-age-group="all" onclick="toggleAge(this)">全部</span>
+        <span class="chip" data-age-group="9-12" onclick="toggleAge(this)">9-12 岁</span>
+        <span class="chip" data-age-group="12-16" onclick="toggleAge(this)">12-16 岁</span>
+        <span class="chip" data-age-group="14-18" onclick="toggleAge(this)">14-18 岁</span>
       </div>
     </div>
-  </div>
 
-  <div class="clear-row">
-    <button class="clear-btn" onclick="clearAllFilters()">清除全部筛选</button>
+    <div class="filter-section">
+      <div class="filter-label">主题 <span class="filter-hint">可多选</span></div>
+      <div class="theme-chips" id="theme-chips-wrap">
+        <span class="chip active" data-theme="all" onclick="toggleTheme(this)">全部</span>
+        <span class="chip" data-theme="学院制" onclick="toggleTheme(this)">🏰 学院制</span>
+        <span class="chip" data-theme="通识" onclick="toggleTheme(this)">📖 通识</span>
+        <span class="chip" data-theme="职业探索" onclick="toggleTheme(this)">🧭 职业探索</span>
+        <span class="chip" data-theme="创造" onclick="toggleTheme(this)">✨ 创造</span>
+        <span class="chip" data-theme="财商" onclick="toggleTheme(this)">💰 财商</span>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">地点 <span class="filter-hint">可多选</span></div>
+      <div class="theme-chips" id="loc-chips-wrap">
+        <span class="chip active" data-loc="all" onclick="toggleLoc(this)">全部</span>
+        <span class="chip" data-loc="标榜" onclick="toggleLoc(this)">🏫 四川国际标榜职业学院</span>
+        <span class="chip" data-loc="麓客岛" onclick="toggleLoc(this)">🏝 麓客岛</span>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">时间 <span class="filter-hint">起止区间</span></div>
+      <div class="date-range">
+        <input type="date" id="date-start" min="2026-07-04" max="2026-08-17" onchange="onDateChange()">
+        <span class="date-sep">至</span>
+        <input type="date" id="date-end" min="2026-07-04" max="2026-08-17" onchange="onDateChange()">
+        <button class="date-clear" onclick="clearDateRange()" aria-label="清除时间">✕</button>
+      </div>
+    </div>
+
+    <div class="clear-row">
+      <button class="clear-btn" onclick="clearAllFilters()">清除全部筛选</button>
+    </div>
   </div>
 </div>
 
@@ -1795,8 +1784,13 @@
 </div>
 
 <script>
-  const state = { age: 0, themes: new Set(), locs: new Set(), dates: new Set() };
-  let activePanel = 'age';
+  const state = {
+    ages: new Set(),            // 字符串集合，例如 "9-12" / "12-16" / "14-18"
+    themes: new Set(),
+    locs: new Set(),
+    dateStart: null,            // Date 对象或 null
+    dateEnd: null,              // Date 对象或 null
+  };
 
   // 推荐卡排序：将 data-group="recommend" 的卡片按 data-rank 升序移到推荐分组下方
   (function reorderRecommend() {
@@ -1820,80 +1814,93 @@
     document.querySelectorAll('.age-group-divider').forEach(d => d.style.display = 'flex');
   });
 
-  function togglePanel(name) {
-    const tabs = document.querySelectorAll('.filter-tab');
-    const panels = document.querySelectorAll('.filter-panel');
-    tabs.forEach(t => t.classList.remove('active'));
-    panels.forEach(p => p.classList.remove('open'));
-    if (activePanel === name) {
-      activePanel = null;
+  // ── 多选筛选辅助：通用「全部 + N 个具体值」逻辑 ──
+  function _toggleChipSet(el, allSelector, dataKey, set) {
+    const v = el.dataset[dataKey];
+    if (v === 'all') {
+      document.querySelectorAll(allSelector).forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      set.clear();
     } else {
-      activePanel = name;
-      document.querySelector(`[data-panel="${name}"]`).classList.add('active');
-      document.getElementById(`panel-${name}`).classList.add('open');
+      document.querySelector(`${allSelector}[data-${dataKey.replace(/([A-Z])/g,'-$1').toLowerCase()}="all"]`)?.classList.remove('active');
+      el.classList.toggle('active');
+      el.classList.contains('active') ? set.add(v) : set.delete(v);
+      if (set.size === 0) {
+        const allChip = document.querySelector(`${allSelector}[data-${dataKey.replace(/([A-Z])/g,'-$1').toLowerCase()}="all"]`);
+        if (allChip) allChip.classList.add('active');
+      }
     }
   }
 
-  function setAgeGroup(btn, val) {
-    document.querySelectorAll('.age-q-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    state.age = val;
-    applyFilters(); updateFilterDots();
+  function toggleAge(el) {
+    _toggleChipSet(el, '.filter-section [data-age-group]', 'ageGroup', state.ages);
+    applyFilters();
   }
-
   function toggleTheme(el) {
-    const t = el.dataset.theme;
-    if (t === 'all') {
-      document.querySelectorAll('#panel-theme .chip').forEach(c => c.classList.remove('active'));
-      el.classList.add('active'); state.themes.clear();
-    } else {
-      document.querySelector('#panel-theme .chip[data-theme="all"]').classList.remove('active');
-      el.classList.toggle('active');
-      el.classList.contains('active') ? state.themes.add(t) : state.themes.delete(t);
-      if (state.themes.size === 0) document.querySelector('#panel-theme .chip[data-theme="all"]').classList.add('active');
-    }
-    applyFilters(); updateFilterDots();
+    _toggleChipSet(el, '#theme-chips-wrap [data-theme]', 'theme', state.themes);
+    applyFilters();
   }
-
   function toggleLoc(el) {
-    const l = el.dataset.loc;
-    if (l === 'all') {
-      document.querySelectorAll('#panel-loc .chip').forEach(c => c.classList.remove('active'));
-      el.classList.add('active'); state.locs.clear();
-    } else {
-      document.querySelector('#panel-loc .chip[data-loc="all"]').classList.remove('active');
-      el.classList.toggle('active');
-      el.classList.contains('active') ? state.locs.add(l) : state.locs.delete(l);
-      if (state.locs.size === 0) document.querySelector('#panel-loc .chip[data-loc="all"]').classList.add('active');
-    }
-    applyFilters(); updateFilterDots();
+    _toggleChipSet(el, '#loc-chips-wrap [data-loc]', 'loc', state.locs);
+    applyFilters();
   }
 
-  function toggleDate(el) {
-    const d = el.dataset.date;
-    if (d === 'all') {
-      document.querySelectorAll('.date-chip').forEach(c => c.classList.remove('active'));
-      el.classList.add('active'); state.dates.clear();
-    } else {
-      document.querySelector('.date-chip[data-date="all"]').classList.remove('active');
-      el.classList.toggle('active');
-      el.classList.contains('active') ? state.dates.add(d) : state.dates.delete(d);
-      if (state.dates.size === 0) document.querySelector('.date-chip[data-date="all"]').classList.add('active');
+  // ── 时间区间 ──
+  function onDateChange() {
+    const s = document.getElementById('date-start').value;  // "YYYY-MM-DD" 或 ""
+    const e = document.getElementById('date-end').value;
+    state.dateStart = s ? new Date(s + 'T00:00:00') : null;
+    state.dateEnd   = e ? new Date(e + 'T23:59:59') : null;
+    // 顺手保护：起 > 止 时对调
+    if (state.dateStart && state.dateEnd && state.dateStart > state.dateEnd) {
+      [state.dateStart, state.dateEnd] = [state.dateEnd, state.dateStart];
+      document.getElementById('date-start').value = state.dateStart.toISOString().slice(0,10);
+      document.getElementById('date-end').value   = state.dateEnd.toISOString().slice(0,10);
     }
-    applyFilters(); updateFilterDots();
+    applyFilters();
+  }
+  function clearDateRange() {
+    document.getElementById('date-start').value = '';
+    document.getElementById('date-end').value = '';
+    state.dateStart = null; state.dateEnd = null;
+    applyFilters();
+  }
+
+  // 折叠/展开整个筛选区
+  function toggleFilterCollapse() {
+    document.querySelector('.filter-wrap').classList.toggle('collapsed');
   }
 
   function clearAllFilters() {
-    state.age = 0; state.themes.clear(); state.locs.clear(); state.dates.clear();
-    document.querySelectorAll('.age-q-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.age-q-btn[data-age="0"]').classList.add('active');
-    document.querySelectorAll('#panel-theme .chip').forEach(c => c.classList.remove('active'));
-    document.querySelector('#panel-theme .chip[data-theme="all"]').classList.add('active');
-    document.querySelectorAll('#panel-loc .chip').forEach(c => c.classList.remove('active'));
-    document.querySelector('#panel-loc .chip[data-loc="all"]').classList.add('active');
-    document.querySelectorAll('.date-chip').forEach(c => c.classList.remove('active'));
-    document.querySelector('.date-chip[data-date="all"]').classList.add('active');
-    applyFilters(); updateFilterDots();
+    state.ages.clear(); state.themes.clear(); state.locs.clear();
+    state.dateStart = null; state.dateEnd = null;
+    document.querySelectorAll('.filter-section .chip').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.filter-section .chip[data-age-group="all"], .filter-section .chip[data-theme="all"], .filter-section .chip[data-loc="all"]').forEach(c => c.classList.add('active'));
+    document.getElementById('date-start').value = '';
+    document.getElementById('date-end').value = '';
+    applyFilters();
+  }
+
+  // ── 日期解析 ──
+  // 把 "7.4" 这种月日字符串转 Date（默认 2026 年）
+  function parseShortDate(s, year = 2026) {
+    const [m, d] = s.split('.').map(n => parseInt(n));
+    return new Date(year, m - 1, d);
+  }
+  // 把 "7.4-7.10,7.11-7.17" 这种数据解析成 [{start, end}, ...]
+  function parseCardDates(s) {
+    return s.split(',').map(range => {
+      const [a, b] = range.split('-');
+      return { start: parseShortDate(a), end: parseShortDate(b) };
+    });
+  }
+  // 区间重叠判断
+  function dateRangeOverlap(periods, filterStart, filterEnd) {
+    return periods.some(p => {
+      const sOk = !filterEnd   || p.start <= filterEnd;
+      const eOk = !filterStart || p.end   >= filterStart;
+      return sOk && eOk;
+    });
   }
 
   function applyFilters() {
@@ -1905,14 +1912,15 @@
     cards.forEach(card => {
       const ageMin = parseInt(card.dataset.ageMin);
       const ageMax = parseInt(card.dataset.ageMax);
+      const ageGroupKey = `${ageMin}-${ageMax}`;
       const cardThemes = card.dataset.themes.split(',');
-      const cardDates = card.dataset.dates.split(',');
+      const cardDatePeriods = parseCardDates(card.dataset.dates);
       const locText = (card.querySelector('.card-location')?.textContent) || '';
 
-      const ageOk = state.age === 0 || (state.age >= ageMin && state.age <= ageMax);
-      const themeOk = state.themes.size === 0 || [...state.themes].some(t => cardThemes.includes(t));
-      const locOk = state.locs.size === 0 || [...state.locs].some(l => locText.includes(l));
-      const dateOk = state.dates.size === 0 || [...state.dates].some(d => cardDates.includes(d));
+      const ageOk    = state.ages.size === 0    || state.ages.has(ageGroupKey);
+      const themeOk  = state.themes.size === 0  || [...state.themes].some(t => cardThemes.includes(t));
+      const locOk    = state.locs.size === 0    || [...state.locs].some(l => locText.includes(l));
+      const dateOk   = (!state.dateStart && !state.dateEnd) || dateRangeOverlap(cardDatePeriods, state.dateStart, state.dateEnd);
 
       if (ageOk && themeOk && locOk && dateOk) {
         card.classList.remove('hidden');
@@ -1930,13 +1938,6 @@
 
     document.getElementById('result-count').textContent = count;
     document.getElementById('no-results').classList.toggle('show', count === 0);
-  }
-
-  function updateFilterDots() {
-    document.querySelector('[data-panel="age"]').classList.toggle('has-filter', state.age > 0);
-    document.querySelector('[data-panel="theme"]').classList.toggle('has-filter', state.themes.size > 0);
-    document.querySelector('[data-panel="loc"]').classList.toggle('has-filter', state.locs.size > 0);
-    document.querySelector('[data-panel="date"]').classList.toggle('has-filter', state.dates.size > 0);
   }
 
   function toggleQR(btn) {
