@@ -3332,16 +3332,91 @@
   };
 
   // ── 年龄 Tabs（小红书首页风） ──
-  function selectAgeTab(key) {
+  // === 4 panel 横滑 ===
+  const PANEL_KEYS = ['all', '9-12', '12-16', '14-18'];
+  let _panelIndex = 0;
+  const _panelScroll = [0, 0, 0, 0];
+
+  function setPanel(idx) {
+    if (idx < 0 || idx >= PANEL_KEYS.length) return;
+    // 保存当前 panel 的 scroll
+    _panelScroll[_panelIndex] = window.scrollY;
+    _panelIndex = idx;
+    const track = document.getElementById('panel-track');
+    if (track) track.style.transform = `translateX(-${idx * 25}%)`;
+    // 顶部年龄 tab 高亮同步
     document.querySelectorAll('.age-nav-tab').forEach(t => t.classList.remove('active'));
-    document.querySelector(`.age-nav-tab[data-age="${key}"]`)?.classList.add('active');
-    state.ages.clear();
-    if (key !== 'all') state.ages.add(key);
-    applyFilters();
-    updateFilterBadge();
-    // 周次 chip 数量按当前年龄过滤重算
-    if (typeof buildWeekTabs === 'function') buildWeekTabs();
+    document.querySelector(`.age-nav-tab[data-age="${PANEL_KEYS[idx]}"]`)?.classList.add('active');
+    // 恢复 scroll（同步；RAF 在 panel-track transition 期间会被吞）
+    window.scrollTo(0, _panelScroll[idx] || 0);
+    // 通知（Task 9 IO 用）
+    window.dispatchEvent(new CustomEvent('panelchange', { detail: { idx, key: PANEL_KEYS[idx] } }));
   }
+
+  function selectAgeTab(key) {
+    const i = PANEL_KEYS.indexOf(key);
+    if (i >= 0) setPanel(i);
+  }
+
+  // 横滑手势
+  (function attachSwipe() {
+    const swiper = document.getElementById('panel-swiper');
+    const track  = document.getElementById('panel-track');
+    if (!swiper || !track) return;
+    let startX = 0, startY = 0, startT = 0;
+    let dx = 0, dy = 0;
+    let locked = null;
+    let dragging = false;
+
+    swiper.addEventListener('touchstart', (e) => {
+      if (document.body.classList.contains('detail-open')) return;
+      if (!document.body.classList.contains('view-home')) return;
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      startX = t.clientX; startY = t.clientY; startT = Date.now();
+      dx = dy = 0; locked = null; dragging = true;
+      track.classList.add('dragging');
+    }, { passive: true });
+
+    swiper.addEventListener('touchmove', (e) => {
+      if (!dragging) return;
+      const t = e.touches[0];
+      dx = t.clientX - startX;
+      dy = t.clientY - startY;
+      if (!locked) {
+        if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+          locked = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+        }
+      }
+      if (locked === 'h') {
+        if (e.cancelable) e.preventDefault();
+        const w = swiper.clientWidth || 1;
+        let pct = -(_panelIndex * 25) + (dx / w) * 25;
+        // 边界阻尼
+        if (_panelIndex === 0 && dx > 0) pct = -(_panelIndex * 25) + (dx / w) * 10;
+        if (_panelIndex === PANEL_KEYS.length - 1 && dx < 0) pct = -(_panelIndex * 25) + (dx / w) * 10;
+        track.style.transform = `translateX(${pct}%)`;
+      }
+    }, { passive: false });
+
+    swiper.addEventListener('touchend', () => {
+      if (!dragging) return;
+      dragging = false;
+      track.classList.remove('dragging');
+      if (locked !== 'h') {
+        track.style.transform = `translateX(-${_panelIndex * 25}%)`;
+        return;
+      }
+      const w = swiper.clientWidth || 1;
+      const dt = Math.max(1, Date.now() - startT);
+      const vx = dx / dt;
+      const threshold = w * 0.30;
+      let next = _panelIndex;
+      if (dx < -threshold || vx < -0.5) next = Math.min(_panelIndex + 1, PANEL_KEYS.length - 1);
+      else if (dx > threshold || vx > 0.5) next = Math.max(_panelIndex - 1, 0);
+      setPanel(next);
+    });
+  })();
 
   // ── 筛选抽屉 ──
   function openFilterSheet() {
