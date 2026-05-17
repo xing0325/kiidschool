@@ -2916,12 +2916,10 @@
   <div class="detail-rail-items" id="detail-rail-items"></div>
 </aside>
 
-<!-- FAB 浮动咨询按钮 -->
-<!-- 底栏：4 项 Tab -->
+<!-- 底栏：3 tab + 1 sheet trigger -->
 <div class="bottom-bar">
-  <button class="bottom-bar-btn" onclick="openFilterSheet()">
-    <span class="bb-icon">🔍</span><span class="bb-label">筛选</span>
-    <span class="filter-count-badge" id="filter-count-badge">0</span>
+  <button class="bottom-bar-btn" data-view-tab="home" onclick="toggleView('home')">
+    <span class="bb-icon">🏠</span><span class="bb-label">首页</span>
   </button>
   <button class="bottom-bar-btn" data-view-tab="about" onclick="toggleView('about')">
     <span class="bb-icon">🔑</span><span class="bb-label">了解我们</span>
@@ -3270,14 +3268,24 @@
     document.body.style.overflow = '';
     updateFilterBadge();
   }
-  // 视图切换：about / faq / null(默认营期)
+  // 视图切换：home / about / faq （Task 2 改为一级页面后会重写）
   function toggleView(name) {
     const about = document.getElementById('about-sheet');
     const faq = document.getElementById('faq-sheet');
+
+    if (name === 'home') {
+      about?.classList.remove('open');
+      faq?.classList.remove('open');
+      document.body.style.overflow = '';
+      document.querySelectorAll('.bottom-bar-btn').forEach(b => b.classList.remove('tab-active'));
+      document.querySelector('.bottom-bar-btn[data-view-tab="home"]')?.classList.add('tab-active');
+      return;
+    }
+
     const aboutOpen = about.classList.contains('open');
     const faqOpen = faq.classList.contains('open');
 
-    // 互斥 + 二次点击同名 tab → 返回营期
+    // 互斥 + 二次点击同名 tab → 返回首页
     if (name === 'about') {
       faq.classList.remove('open');
       if (aboutOpen) {
@@ -3299,6 +3307,9 @@
     document.querySelectorAll('.bottom-bar-btn').forEach(b => b.classList.remove('tab-active'));
     if (activeName) {
       document.querySelector(`[data-view-tab="${activeName}"]`)?.classList.add('tab-active');
+    } else {
+      // 没开任何 view = 首页
+      document.querySelector('.bottom-bar-btn[data-view-tab="home"]')?.classList.add('tab-active');
     }
     // body 滚动锁
     document.body.style.overflow = activeName ? 'hidden' : '';
@@ -3428,6 +3439,8 @@
     document.querySelectorAll('.age-group-divider').forEach(d => d.style.display = 'flex');
     // 构建周次 chips
     if (typeof buildWeekTabs === 'function') buildWeekTabs();
+    // 默认高亮「首页」tab
+    document.querySelector('.bottom-bar-btn[data-view-tab="home"]')?.classList.add('tab-active');
   });
 
   // ── 多选筛选辅助：通用「全部 + N 个具体值」逻辑 ──
