@@ -3491,8 +3491,60 @@
     });
   })();
 
+  // === 卡片分发到 4 panel（克隆 + 卸 video src 防多倍加载） ===
+  function distributeCardsToPanels() {
+    const allList = document.getElementById('camps-list');
+    if (!allList) return;
+    const cards = Array.from(allList.querySelectorAll(':scope > .camp-card'));
+    const targets = {
+      '9-12':  document.querySelector('[data-panel-list="9-12"]'),
+      '12-16': document.querySelector('[data-panel-list="12-16"]'),
+      '14-18': document.querySelector('[data-panel-list="14-18"]'),
+    };
+    // 给原卡也打 panelKey=all，便于 openDetail 区分
+    cards.forEach(c => { if (!c.dataset.panelKey) c.dataset.panelKey = 'all'; });
+
+    cards.forEach(card => {
+      const group = card.dataset.group || '';
+      const min = parseInt(card.dataset.ageMin || '0', 10);
+      const max = parseInt(card.dataset.ageMax || '0', 10);
+      Object.entries(targets).forEach(([key, list]) => {
+        if (!list) return;
+        // 主匹配：data-group 直接对得上
+        let match = (group === key);
+        // 兜底：recommend 卡按年龄重叠回退
+        if (!match && group === 'recommend') {
+          const [k1, k2] = key.split('-').map(Number);
+          match = (max >= k1 && min <= k2);
+        }
+        if (match) {
+          const clone = card.cloneNode(true);
+          clone.dataset.cloned = '1';
+          clone.dataset.panelKey = key;
+          // 卸掉 clone 内 video 的 src，防同图多倍加载（Task 9 IO 会按需挂回）
+          clone.querySelectorAll('video').forEach(v => {
+            v.removeAttribute('autoplay');
+            if (v.src && !v.dataset.src) {
+              v.dataset.src = v.src;
+              v.removeAttribute('src');
+              v.setAttribute('preload', 'none');
+            } else if (v.getAttribute('src')) {
+              // 兜底
+              v.dataset.src = v.getAttribute('src');
+              v.removeAttribute('src');
+              v.setAttribute('preload', 'none');
+            }
+          });
+          list.appendChild(clone);
+        }
+      });
+    });
+  }
+
   // 显式跑一次 applyFilters，确保任何浏览器初始都全部可见
   window.addEventListener('DOMContentLoaded', () => {
+    // 先分发，再过滤——保证克隆卡也在 applyFilters 扫描范围内
+    distributeCardsToPanels();
     if (typeof applyFilters === 'function') applyFilters();
     // 兜底：强制让所有 camp-card 取消 hidden（保险栓）
     document.querySelectorAll('.camp-card').forEach(c => c.classList.remove('hidden'));
