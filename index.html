@@ -1176,6 +1176,30 @@
       color: #FF6B35;
       border-left-color: #FF6B35;
     }
+    .toc-list a.toc-sub {
+      padding-left: 34px;
+      font-size: 12px;
+      color: #888;
+      font-weight: 400;
+    }
+    .toc-list a.toc-sub::before {
+      content: '·';
+      margin-right: 6px;
+      color: #C0B7A5;
+    }
+    .toc-list a.toc-sub.active {
+      color: #FF6B35;
+      font-weight: 600;
+    }
+    /* 文章里的子级锚点样式（区别于主小节） */
+    .wechat-article .toc-anchor.toc-anchor-sub {
+      font-size: 14.5px !important;
+      color: #1A1A2E !important;
+      border-left: 2px solid #FFD0B0 !important;
+      padding-left: 8px;
+      margin-top: 14px !important;
+      font-weight: 700 !important;
+    }
 
     /* 详情元信息（顶 bar 右侧） */
     .detail-meta {
@@ -3068,45 +3092,78 @@
   // 详情打开/关闭后立即重算
   window.addEventListener('load', updateGlobalProgress);
 
-  // ── TOC 构建（按已知小节关键字匹配） ──
+  // ── TOC 构建（2 级：主小节关键字 + 数字编号子条目） ──
   const TOC_MARKERS = [
     '营会简介', '营会安排', '营期安排', '课程简介', '带领人', '活动说明',
     '钥匙玩校特色', '每日规律活动', '报名信息', '营会时间', '营会费用', '夏令营时间',
     '营地环境', '钥匙玩校玩伴', '钥匙玩校玩伴们',
-    '营员和家长反馈', '营员反馈', '家长反馈', '关于我们'
+    '营员和家长反馈', '营员反馈', '家长反馈', '关于我们',
+    '退费规则', '报名流程',
   ];
+  // 数字编号：1. / 1、/ DAY 1 / 第一阶段 / 第一天 / -01- 等
+  const NUMBERED_REGEX = /^(?:(\d{1,2})\s*[.、:。)]|DAY\s*([\d\-]+)|-\s*0?(\d{1,2})\s*-|第\s*([一二三四五六七八九十]+)\s*(?:阶段|天|部|章|期))\s*[:：、]?\s*(.+)?$/i;
   let _tocAnchors = [];
 
   function buildTOC(articleEl) {
     if (!articleEl) return;
     _tocAnchors = [];
-    const allParas = articleEl.querySelectorAll('p, section, h2, h3, h4');
-    const seen = new Set();
+    const allParas = articleEl.querySelectorAll('p, section, h2, h3, h4, h5');
+    const seenMarkers = new Set();
+    const seenSubs = new Set();
+    let lastMainSeen = false;
+
     allParas.forEach(p => {
-      const text = p.textContent.replace(/\s+/g, '').trim();
+      const text = p.textContent.replace(/\s+/g, ' ').trim();
+      if (!text || text.length > 50) return;
+
+      // 1) 主小节匹配
+      let matched = false;
       for (const marker of TOC_MARKERS) {
-        // 段落短且包含 marker（或精确等于）
         if (text === marker || (text.length <= 20 && text.includes(marker))) {
-          if (!seen.has(marker)) {
-            seen.add(marker);
+          if (!seenMarkers.has(marker)) {
+            seenMarkers.add(marker);
             const id = 'toc-' + marker.replace(/[^\w一-龥]/g, '');
             p.id = id;
             p.classList.add('toc-anchor');
-            _tocAnchors.push({ id, text: marker, el: p });
+            _tocAnchors.push({ id, text: marker, el: p, level: 1 });
+            lastMainSeen = true;
           }
+          matched = true;
           break;
         }
       }
+      if (matched) return;
+
+      // 2) 数字编号子条目（仅在某个主小节之后）
+      if (!lastMainSeen) return;
+      const m = text.match(NUMBERED_REGEX);
+      if (!m) return;
+      const num = m[1] || m[2] || m[3] || m[4] || '';
+      const subTitle = (m[5] || '').trim().slice(0, 18);
+      if (!subTitle || subTitle.length < 2) return;
+      // 过滤：避免误把"1、2026年..."、"4、开营前..."等长文本当编号
+      if (subTitle.length > 16 && /[，。；]/.test(subTitle)) return;
+      const subKey = `${num}-${subTitle}`;
+      if (seenSubs.has(subKey)) return;
+      seenSubs.add(subKey);
+
+      const id = 'toc-sub-' + (num || 'x') + '-' + subTitle.replace(/[^\w一-龥]/g, '').slice(0, 8);
+      p.id = id;
+      p.classList.add('toc-anchor', 'toc-anchor-sub');
+      const displayText = m[2] ? `Day ${num} · ${subTitle}` : `${num}. ${subTitle}`;
+      _tocAnchors.push({ id, text: displayText, el: p, level: 2 });
     });
 
     const tocList = document.getElementById('toc-list');
     tocList.innerHTML = '';
     _tocAnchors.forEach(a => {
       const li = document.createElement('li');
+      li.className = a.level === 2 ? 'toc-li-sub' : 'toc-li-main';
       const link = document.createElement('a');
       link.href = '#' + a.id;
       link.textContent = a.text;
       link.dataset.tocId = a.id;
+      if (a.level === 2) link.classList.add('toc-sub');
       link.onclick = (e) => {
         e.preventDefault();
         const overlay = document.getElementById('detail-overlay');
@@ -3120,7 +3177,6 @@
       tocList.appendChild(li);
     });
 
-    // 如果有目录，显示按钮
     if (_tocAnchors.length > 0) {
       document.getElementById('toc-fab').style.display = 'flex';
     }
