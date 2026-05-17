@@ -319,6 +319,85 @@
     .bottom-bar-btn.tab-active .bb-icon {
       transform: scale(1.1);
     }
+
+    /* 咨询客服 弹窗 */
+    .contact-modal {
+      position: fixed; inset: 0;
+      z-index: 1002;
+      display: none;
+    }
+    .contact-modal.open { display: block; }
+    .contact-modal-bg {
+      position: absolute; inset: 0;
+      background: rgba(26,26,46,0.55);
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.2s ease;
+    }
+    .contact-modal-content {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 88%; max-width: 380px;
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px 16px 16px;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+      animation: popIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    .contact-modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 4px;
+    }
+    .contact-modal-title {
+      font-size: 16px; font-weight: 800; color: #1A1A2E;
+    }
+    .contact-modal-close {
+      width: 28px; height: 28px; padding: 0;
+      background: #F5F3EF; border: none; border-radius: 50%;
+      font-size: 16px; color: #888; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .contact-modal-subtitle {
+      font-size: 11.5px; color: #888;
+      margin-bottom: 12px;
+    }
+    .contact-qr-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .contact-qr-item {
+      background: linear-gradient(150deg, #FFF8F2, #FFEEE0);
+      border: 1px solid #FFD0B0;
+      border-radius: 12px;
+      padding: 10px 8px 12px;
+      text-align: center;
+    }
+    .contact-qr-item img {
+      width: 100%; aspect-ratio: 1;
+      object-fit: contain;
+      background: #fff;
+      border-radius: 6px;
+      display: block;
+    }
+    .contact-qr-label {
+      font-size: 13px; font-weight: 800;
+      color: #FF6B35; margin-top: 8px;
+    }
+    .contact-qr-hint {
+      font-size: 10.5px; color: #888; margin-top: 2px;
+    }
+    .contact-modal-tip {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 11.5px; color: #777;
+      background: #F7F5F1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      line-height: 1.5;
+    }
     .filter-sheet-cancel {
       background: #F5F3EF; color: #555;
     }
@@ -2790,6 +2869,31 @@
   <button class="lightbox-close" aria-label="关闭">×</button>
 </div>
 
+<!-- 咨询客服 弹窗 -->
+<div class="contact-modal" id="contact-modal">
+  <div class="contact-modal-bg" onclick="closeContactModal()"></div>
+  <div class="contact-modal-content">
+    <div class="contact-modal-header">
+      <span class="contact-modal-title">💬 扫码咨询</span>
+      <button class="contact-modal-close" onclick="closeContactModal()" aria-label="关闭">×</button>
+    </div>
+    <div class="contact-modal-subtitle">按孩子年龄选择对应客服</div>
+    <div class="contact-qr-grid">
+      <div class="contact-qr-item">
+        <img src="images/qr/cs-9-12.jpg" alt="9-12 岁客服" loading="lazy">
+        <div class="contact-qr-label">9-12 岁</div>
+        <div class="contact-qr-hint">钥匙君</div>
+      </div>
+      <div class="contact-qr-item">
+        <img src="images/qr/cs-12-18.jpg" alt="12-18 岁客服" loading="lazy">
+        <div class="contact-qr-label">12-18 岁</div>
+        <div class="contact-qr-hint">小钥匙</div>
+      </div>
+    </div>
+    <div class="contact-modal-tip">📲 长按二维码 · 添加微信好友 · 1 对 1 答疑</div>
+  </div>
+</div>
+
 <!-- Detail 覆盖层（点击卡片后滑入） -->
 <div class="detail-overlay" id="detail-overlay">
   <div class="detail-bar">
@@ -3212,13 +3316,14 @@
   function openFaqSheet() { toggleView('faq'); }
   function closeFaqSheet() { document.getElementById('faq-sheet').classList.remove('open'); document.body.style.overflow = ''; document.querySelectorAll('.bottom-bar-btn').forEach(b => b.classList.remove('tab-active')); }
 
-  // 咨询：若当前在 about/faq 视图则先返回营期，再滚到 footer-cta
+  // 咨询：直接弹两个客服二维码（不切视图、不滚页面）
   function goToContact() {
-    closeAboutSheet();
-    closeFaqSheet();
-    requestAnimationFrame(() => {
-      document.querySelector('.footer-cta')?.scrollIntoView({ behavior: 'smooth' });
-    });
+    document.getElementById('contact-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeContactModal() {
+    document.getElementById('contact-modal').classList.remove('open');
+    document.body.style.overflow = '';
   }
   function updateFilterBadge() {
     const n = state.themes.size + state.locs.size + (state.selectedDateRange ? 1 : 0);
