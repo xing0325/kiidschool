@@ -140,15 +140,50 @@
     .clear-btn:hover { background: #FFEEE3; }
 
     /* ── 年龄 Tabs（小红书首页风，sticky 到 header 下方） ── */
-    .age-nav {
+    .home-top-bar {
       position: sticky;
       top: 54px;
       z-index: 99;
       background: #fff;
       display: flex;
+      align-items: stretch;
       border-bottom: 1px solid #F0EDE8;
       box-shadow: 0 1px 0 rgba(0,0,0,0.04);
     }
+    .age-nav {
+      flex: 1;
+      display: flex;
+      min-width: 0;
+    }
+    .filter-fab {
+      flex: 0 0 44px;
+      width: 44px;
+      border: none;
+      border-left: 1px solid #F0EDE8;
+      background: #fff;
+      color: #1A1A2E;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      position: relative;
+    }
+    .filter-fab:active { background: #F5F3EF; }
+    .filter-fab svg { display: block; }
+    .filter-fab .filter-count-badge {
+      position: absolute;
+      top: 8px; right: 6px;
+      min-width: 16px; height: 16px;
+      padding: 0 4px;
+      border-radius: 8px;
+      background: #FF6B35;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      display: none;
+      align-items: center; justify-content: center;
+      line-height: 1;
+    }
+    .filter-fab .filter-count-badge.show { display: flex; }
     .age-nav-tab {
       flex: 1;
       padding: 13px 4px 11px;
@@ -1671,13 +1706,21 @@
   </div>
 </section>
 
-<!-- 年龄 Tabs（小红书首页风） -->
-<nav class="age-nav" id="age-nav">
-  <button class="age-nav-tab active" data-age="all" onclick="selectAgeTab('all')">全部</button>
-  <button class="age-nav-tab" data-age="9-12" onclick="selectAgeTab('9-12')">9-12 岁</button>
-  <button class="age-nav-tab" data-age="12-16" onclick="selectAgeTab('12-16')">12-16 岁</button>
-  <button class="age-nav-tab" data-age="14-18" onclick="selectAgeTab('14-18')">14-18 岁</button>
-</nav>
+<!-- 顶部条：年龄 Tabs（小红书首页风） + 右侧筛选漏斗 -->
+<div class="home-top-bar">
+  <nav class="age-nav" id="age-nav">
+    <button class="age-nav-tab active" data-age="all" onclick="selectAgeTab('all')">全部</button>
+    <button class="age-nav-tab" data-age="9-12" onclick="selectAgeTab('9-12')">9-12 岁</button>
+    <button class="age-nav-tab" data-age="12-16" onclick="selectAgeTab('12-16')">12-16 岁</button>
+    <button class="age-nav-tab" data-age="14-18" onclick="selectAgeTab('14-18')">14-18 岁</button>
+  </nav>
+  <button class="filter-fab" aria-label="筛选" onclick="openFilterSheet()">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 5h18M6 12h12M10 19h4"/>
+    </svg>
+    <span class="filter-count-badge" id="filter-count-badge">0</span>
+  </button>
+</div>
 
 <!-- RESULTS -->
 <div class="results-bar">
