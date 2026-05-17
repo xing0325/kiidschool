@@ -165,6 +165,61 @@
     }
     .clear-btn:hover { background: #FFEEE3; }
 
+    /* ── 周次 Tabs（顶部横滑） ── */
+    .week-tabs {
+      display: flex;
+      overflow-x: auto;
+      gap: 8px;
+      padding: 10px 12px 9px;
+      background: #fff;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      border-bottom: 1px solid #F0EDE8;
+    }
+    .week-tabs::-webkit-scrollbar { display: none; }
+    .week-chip {
+      flex-shrink: 0;
+      padding: 7px 12px;
+      border: 1.5px solid #E5DCC8;
+      border-radius: 16px;
+      font-size: 12px;
+      color: #666;
+      cursor: pointer;
+      background: #fff;
+      display: flex; flex-direction: column;
+      align-items: center;
+      line-height: 1.15;
+      min-width: 48px;
+      text-align: center;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .week-chip strong {
+      font-weight: 800; font-size: 12.5px;
+    }
+    .week-chip small {
+      font-size: 9.5px; color: #BBB; font-weight: 500;
+      margin-top: 1px;
+    }
+    .week-chip .count {
+      background: #F7F5F1; color: #999;
+      font-size: 9px; font-weight: 700;
+      padding: 1px 5px; border-radius: 8px;
+      margin-top: 3px;
+    }
+    .week-chip.active {
+      background: #FF6B35;
+      border-color: #FF6B35;
+      color: #fff;
+    }
+    .week-chip.active small { color: rgba(255,255,255,0.85); }
+    .week-chip.active .count {
+      background: rgba(255,255,255,0.25); color: #fff;
+    }
+    .week-chip.disabled {
+      opacity: 0.4; cursor: not-allowed;
+    }
+
     /* ── RESULTS BAR ── */
     .results-bar {
       padding: 12px 16px 8px; font-size: 12px; color: #aaa;
@@ -1417,6 +1472,9 @@
     </div>
   </div>
 </div>
+
+<!-- 周次 Tabs -->
+<div class="week-tabs" id="week-tabs"></div>
 
 <!-- RESULTS -->
 <div class="results-bar">
@@ -2886,6 +2944,73 @@
     dateEnd: null,              // Date 对象或 null
   };
 
+  // ── 周次 Tabs ──
+  const WEEK_SLOTS = [
+    { key: '7.4-7.10',  label: '7.4',  sub: '-7.10', start: '2026-07-04', end: '2026-07-10' },
+    { key: '7.11-7.17', label: '7.11', sub: '-7.17', start: '2026-07-11', end: '2026-07-17' },
+    { key: '7.18-7.24', label: '7.18', sub: '-7.24', start: '2026-07-18', end: '2026-07-24' },
+    { key: '7.25-7.31', label: '7.25', sub: '-7.31', start: '2026-07-25', end: '2026-07-31' },
+    { key: '8.1-8.7',   label: '8.1',  sub: '-8.7',  start: '2026-08-01', end: '2026-08-07' },
+    { key: '8.8-8.17',  label: '8.8',  sub: '-8.17', start: '2026-08-08', end: '2026-08-17' },
+  ];
+
+  function _countCampsInWeek(slot) {
+    if (!slot) return document.querySelectorAll('.camps-list .camp-card').length;
+    const filterStart = new Date(slot.start + 'T00:00:00');
+    const filterEnd = new Date(slot.end + 'T23:59:59');
+    let n = 0;
+    document.querySelectorAll('.camps-list .camp-card').forEach(card => {
+      const periods = parseCardDates(card.dataset.dates || '');
+      if (periods.some(p => p.start <= filterEnd && p.end >= filterStart)) n++;
+    });
+    return n;
+  }
+
+  function buildWeekTabs() {
+    const tabs = document.getElementById('week-tabs');
+    if (!tabs) return;
+    tabs.innerHTML = '';
+
+    // 全部
+    const all = document.createElement('div');
+    all.className = 'week-chip active';
+    all.dataset.week = 'all';
+    all.innerHTML = `<strong>全部</strong><small>所有营期</small><div class="count">${_countCampsInWeek(null)}</div>`;
+    all.onclick = () => selectWeek(null);
+    tabs.appendChild(all);
+
+    WEEK_SLOTS.forEach(w => {
+      const chip = document.createElement('div');
+      chip.className = 'week-chip';
+      chip.dataset.week = w.key;
+      chip.innerHTML = `<strong>${w.label}</strong><small>${w.sub}</small><div class="count">${_countCampsInWeek(w)}</div>`;
+      chip.onclick = () => selectWeek(w.key);
+      tabs.appendChild(chip);
+    });
+  }
+
+  function selectWeek(key) {
+    document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('active'));
+    document.querySelector(`.week-chip[data-week="${key || 'all'}"]`)?.classList.add('active');
+    if (key) {
+      const w = WEEK_SLOTS.find(s => s.key === key);
+      state.dateStart = new Date(w.start + 'T00:00:00');
+      state.dateEnd = new Date(w.end + 'T23:59:59');
+      const startEl = document.getElementById('date-start');
+      const endEl = document.getElementById('date-end');
+      if (startEl) startEl.value = w.start;
+      if (endEl) endEl.value = w.end;
+    } else {
+      state.dateStart = null;
+      state.dateEnd = null;
+      const startEl = document.getElementById('date-start');
+      const endEl = document.getElementById('date-end');
+      if (startEl) startEl.value = '';
+      if (endEl) endEl.value = '';
+    }
+    applyFilters();
+  }
+
   // 多期角标：dates 字段含逗号即代表 N 期，自动加左下角章
   (function addWeeksBadges() {
     document.querySelectorAll('.camp-card').forEach(card => {
@@ -2922,6 +3047,8 @@
     // 兜底：强制让所有 camp-card 取消 hidden（保险栓）
     document.querySelectorAll('.camp-card').forEach(c => c.classList.remove('hidden'));
     document.querySelectorAll('.age-group-divider').forEach(d => d.style.display = 'flex');
+    // 构建周次 chips
+    if (typeof buildWeekTabs === 'function') buildWeekTabs();
   });
 
   // ── 多选筛选辅助：通用「全部 + N 个具体值」逻辑 ──
@@ -2961,13 +3088,26 @@
     const e = document.getElementById('date-end').value;
     state.dateStart = s ? new Date(s + 'T00:00:00') : null;
     state.dateEnd   = e ? new Date(e + 'T23:59:59') : null;
-    // 顺手保护：起 > 止 时对调
     if (state.dateStart && state.dateEnd && state.dateStart > state.dateEnd) {
       [state.dateStart, state.dateEnd] = [state.dateEnd, state.dateStart];
       document.getElementById('date-start').value = state.dateStart.toISOString().slice(0,10);
       document.getElementById('date-end').value   = state.dateEnd.toISOString().slice(0,10);
     }
+    _syncWeekChip();
     applyFilters();
+  }
+  // 手动改日期范围时，看是否正好等于某个周次 slot；是就高亮 chip
+  function _syncWeekChip() {
+    document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('active'));
+    if (!state.dateStart && !state.dateEnd) {
+      document.querySelector('.week-chip[data-week="all"]')?.classList.add('active');
+      return;
+    }
+    const sIso = state.dateStart?.toISOString().slice(0,10);
+    const eIso = state.dateEnd?.toISOString().slice(0,10);
+    const slot = WEEK_SLOTS.find(w => w.start === sIso && w.end === eIso);
+    if (slot) document.querySelector(`.week-chip[data-week="${slot.key}"]`)?.classList.add('active');
+    // 不匹配任何 slot 时，all 也不高亮（chip 视觉中性）
   }
   function clearDateRange() {
     document.getElementById('date-start').value = '';
@@ -2988,6 +3128,9 @@
     document.querySelectorAll('.filter-section .chip[data-age-group="all"], .filter-section .chip[data-theme="all"], .filter-section .chip[data-loc="all"]').forEach(c => c.classList.add('active'));
     document.getElementById('date-start').value = '';
     document.getElementById('date-end').value = '';
+    // 重置周次 chip 到"全部"
+    document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('active'));
+    document.querySelector('.week-chip[data-week="all"]')?.classList.add('active');
     applyFilters();
   }
 
