@@ -288,24 +288,31 @@
       cursor: pointer;
     }
 
-    /* full-page-sheet：占据主区域（header下 - 底栏上）而非底部弹窗 */
-    .filter-sheet.full-page-sheet .filter-sheet-bg {
+    /* ── 一级页面 view（与首页 home-view 互斥）── */
+    .view-page {
       background: #F7F5F1;
-      backdrop-filter: none;
-      bottom: 72px;
+      min-height: calc(100vh - 72px);
+      padding-bottom: 100px; /* 给底栏留位 */
+      animation: fadeUp 0.18s ease;
     }
-    .filter-sheet.full-page-sheet .filter-sheet-content {
-      position: fixed;
-      top: 56px; left: 0; right: 0; bottom: 72px;
-      max-width: 480px;
-      margin: 0 auto;
-      border-radius: 0;
-      max-height: none;
-      padding: 14px 16px 20px;
-      animation: fadeUp 0.22s ease;
-      box-shadow: none;
+    .view-page[hidden] { display: none; }
+    .view-page-head {
+      position: sticky; top: 0; z-index: 50;
+      background: #fff;
+      padding: 12px 16px;
+      border-bottom: 1px solid #F0EDE8;
     }
-    .filter-sheet.full-page-sheet .filter-sheet-handle { display: none; }
+    .view-page-title {
+      font-size: 17px; font-weight: 800; color: #1A1A2E;
+    }
+    .view-page-body {
+      padding: 14px 16px 0;
+    }
+    /* body class 互斥控制 */
+    body.view-about .home-view,
+    body.view-faq .home-view { display: none; }
+    body.view-home #view-about,
+    body.view-home #view-faq { display: none; }
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
@@ -1628,10 +1635,12 @@
     }
   </style>
 </head>
-<body>
+<body class="view-home">
 
 <!-- 全局阅读进度条（始终贴屏幕最顶端） -->
 <div class="global-progress"><div class="global-progress-fill" id="global-progress-fill"></div></div>
+
+<div class="home-view"><!-- /.home-view 闭合在 contact-modal 之前 -->
 
 <!-- HEADER -->
 <header class="header">
@@ -2869,6 +2878,26 @@
   <button class="lightbox-close" aria-label="关闭">×</button>
 </div>
 
+<!-- FOOTER CTA -->
+<div class="footer-cta">
+  <h3>🌟 正在报名中</h3>
+  <p>
+    <em>3人团购 / 老营员特惠 / 荣誉营员价</em> 均可咨询<br>
+    先报名锁定席位，后确认营期主题<br>
+    9-12岁联系钥匙君 · 12-18岁联系小钥匙
+  </p>
+  <div class="cta-buttons">
+    <button class="cta-btn-primary">📲 立即咨询报名</button>
+    <button class="cta-btn-secondary">关注公众号 · 获取最新营期</button>
+  </div>
+  <div class="footer-note">
+    学费到账视为报名成功，先到先得，恕不预留席位<br>
+    营期因不可抗力取消将全额退款
+  </div>
+</div>
+
+</div><!-- /.home-view -->
+
 <!-- 咨询客服 弹窗 -->
 <div class="contact-modal" id="contact-modal">
   <div class="contact-modal-bg" onclick="closeContactModal()"></div>
@@ -2974,15 +3003,12 @@
     </div>
   </div>
 </div>
-<!-- 关于我们 抽屉 -->
-<div class="filter-sheet full-page-sheet" id="about-sheet">
-  <div class="filter-sheet-bg" onclick="closeAboutSheet()"></div>
-  <div class="filter-sheet-content">
-    <div class="filter-sheet-handle"></div>
-    <div class="filter-sheet-head">
-      <span class="filter-sheet-title">🔑 了解钥匙玩校</span>
-      <button class="filter-sheet-clear" onclick="closeAboutSheet()">关闭</button>
-    </div>
+<!-- 「了解我们」一级页面 -->
+<section class="view-page" id="view-about" hidden>
+  <div class="view-page-head">
+    <span class="view-page-title">🔑 了解钥匙玩校</span>
+  </div>
+  <div class="view-page-body">
 
 <!-- 钥匙玩校特色 -->
 <div class="feature-section">
@@ -3132,18 +3158,15 @@
     <p>成立于2015年 · 成都 · 专业营地教育品牌<br>游戏即学习 · 40+原创营期 · 500+游戏项目</p>
   </div>
 </div>
-  </div>
-</div>
+  </div><!-- /.view-page-body -->
+</section><!-- /#view-about -->
 
-<!-- 常见问答 抽屉 -->
-<div class="filter-sheet full-page-sheet" id="faq-sheet">
-  <div class="filter-sheet-bg" onclick="closeFaqSheet()"></div>
-  <div class="filter-sheet-content">
-    <div class="filter-sheet-handle"></div>
-    <div class="filter-sheet-head">
-      <span class="filter-sheet-title">❓ 常见问答</span>
-      <button class="filter-sheet-clear" onclick="closeFaqSheet()">关闭</button>
-    </div>
+<!-- 「常见问答」一级页面 -->
+<section class="view-page" id="view-faq" hidden>
+  <div class="view-page-head">
+    <span class="view-page-title">❓ 常见问答</span>
+  </div>
+  <div class="view-page-body">
 
 <!-- 常见QA -->
 <div class="qa-section">
@@ -3216,27 +3239,9 @@
       <div style="font-size: 13px; font-weight: 800; color: #1A1A2E;">AI 智能助手</div>
       <div style="font-size: 11.5px; color: #888; margin-top: 4px;">即将开放，对话式回答家长所有疑问</div>
     </div>
-  </div>
-</div>
+  </div><!-- /.view-page-body -->
+</section><!-- /#view-faq -->
 
-
-<!-- FOOTER CTA -->
-<div class="footer-cta">
-  <h3>🌟 正在报名中</h3>
-  <p>
-    <em>3人团购 / 老营员特惠 / 荣誉营员价</em> 均可咨询<br>
-    先报名锁定席位，后确认营期主题<br>
-    9-12岁联系钥匙君 · 12-18岁联系小钥匙
-  </p>
-  <div class="cta-buttons">
-    <button class="cta-btn-primary">📲 立即咨询报名</button>
-    <button class="cta-btn-secondary">关注公众号 · 获取最新营期</button>
-  </div>
-  <div class="footer-note">
-    学费到账视为报名成功，先到先得，恕不预留席位<br>
-    营期因不可抗力取消将全额退款
-  </div>
-</div>
 
 <script>
   const state = {
@@ -3268,64 +3273,39 @@
     document.body.style.overflow = '';
     updateFilterBadge();
   }
-  // 视图切换：home / about / faq （Task 2 改为一级页面后会重写）
+  // 视图切换：home / about / faq —— 一级页面互斥（不再是底部弹起 sheet）
+  const _viewScroll = { home: 0, about: 0, faq: 0 };
+  let _currentView = 'home';
   function toggleView(name) {
-    const about = document.getElementById('about-sheet');
-    const faq = document.getElementById('faq-sheet');
+    const valid = ['home', 'about', 'faq'];
+    if (!valid.includes(name)) return;
 
-    if (name === 'home') {
-      about?.classList.remove('open');
-      faq?.classList.remove('open');
-      document.body.style.overflow = '';
-      document.querySelectorAll('.bottom-bar-btn').forEach(b => b.classList.remove('tab-active'));
-      document.querySelector('.bottom-bar-btn[data-view-tab="home"]')?.classList.add('tab-active');
-      return;
-    }
+    // 保存当前 view 的滚动位置
+    _viewScroll[_currentView] = window.scrollY;
+    _currentView = name;
 
-    const aboutOpen = about.classList.contains('open');
-    const faqOpen = faq.classList.contains('open');
+    document.body.classList.remove('view-home', 'view-about', 'view-faq');
+    document.body.classList.add('view-' + name);
 
-    // 互斥 + 二次点击同名 tab → 返回首页
-    if (name === 'about') {
-      faq.classList.remove('open');
-      if (aboutOpen) {
-        about.classList.remove('open');
-      } else {
-        about.classList.add('open');
-      }
-    } else if (name === 'faq') {
-      about.classList.remove('open');
-      if (faqOpen) {
-        faq.classList.remove('open');
-      } else {
-        faq.classList.add('open');
-      }
-    }
-    // 更新底栏激活态
-    const activeName = about.classList.contains('open') ? 'about' :
-                       faq.classList.contains('open') ? 'faq' : null;
+    const about = document.getElementById('view-about');
+    const faq   = document.getElementById('view-faq');
+    if (about) about.hidden = (name !== 'about');
+    if (faq)   faq.hidden   = (name !== 'faq');
+
+    // 底栏激活态
     document.querySelectorAll('.bottom-bar-btn').forEach(b => b.classList.remove('tab-active'));
-    if (activeName) {
-      document.querySelector(`[data-view-tab="${activeName}"]`)?.classList.add('tab-active');
-    } else {
-      // 没开任何 view = 首页
-      document.querySelector('.bottom-bar-btn[data-view-tab="home"]')?.classList.add('tab-active');
-    }
-    // body 滚动锁
-    document.body.style.overflow = activeName ? 'hidden' : '';
-    // 视图切换后回顶
-    if (activeName) {
-      const content = document.querySelector(`#${activeName}-sheet .filter-sheet-content`);
-      if (content) content.scrollTop = 0;
-    } else {
-      window.scrollTo(0, 0);
-    }
+    document.querySelector(`.bottom-bar-btn[data-view-tab="${name}"]`)?.classList.add('tab-active');
+
+    document.body.style.overflow = '';
+
+    // 恢复目标 view 的 scroll
+    requestAnimationFrame(() => window.scrollTo(0, _viewScroll[name] || 0));
   }
-  // 老 open/close 函数保留兼容（如外部还有引用）
+  // 兼容老 open/close 名字
   function openAboutSheet() { toggleView('about'); }
-  function closeAboutSheet() { document.getElementById('about-sheet').classList.remove('open'); document.body.style.overflow = ''; document.querySelectorAll('.bottom-bar-btn').forEach(b => b.classList.remove('tab-active')); }
+  function closeAboutSheet() { toggleView('home'); }
   function openFaqSheet() { toggleView('faq'); }
-  function closeFaqSheet() { document.getElementById('faq-sheet').classList.remove('open'); document.body.style.overflow = ''; document.querySelectorAll('.bottom-bar-btn').forEach(b => b.classList.remove('tab-active')); }
+  function closeFaqSheet() { toggleView('home'); }
 
   // 咨询：直接弹两个客服二维码（不切视图、不滚页面）
   function goToContact() {
@@ -3439,8 +3419,8 @@
     document.querySelectorAll('.age-group-divider').forEach(d => d.style.display = 'flex');
     // 构建周次 chips
     if (typeof buildWeekTabs === 'function') buildWeekTabs();
-    // 默认高亮「首页」tab
-    document.querySelector('.bottom-bar-btn[data-view-tab="home"]')?.classList.add('tab-active');
+    // 默认进入首页 view（设 body class + 高亮 tab）
+    if (typeof toggleView === 'function') toggleView('home');
   });
 
   // ── 多选筛选辅助：通用「全部 + N 个具体值」逻辑 ──
