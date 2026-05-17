@@ -785,6 +785,25 @@
       font-size: 9px; padding: 2px 7px 2px 9px; top: 6px;
     }
 
+    /* === 多期角标 (卡片左下) === */
+    .card-weeks-badge {
+      position: absolute;
+      bottom: 6px; left: 6px;
+      background: linear-gradient(135deg, #FF6B35, #FF9233);
+      color: #fff;
+      font-size: 10px; font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 10px;
+      z-index: 3;
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 6px rgba(255,107,53,0.4);
+    }
+    .detail-overlay .card-weeks-badge {
+      bottom: 10px; left: 10px;
+      font-size: 12px;
+      padding: 4px 11px;
+    }
+
     /* === 卡片状态标记 (右上角) === */
     .card-status {
       position: absolute;
@@ -2673,6 +2692,22 @@
     dateStart: null,            // Date 对象或 null
     dateEnd: null,              // Date 对象或 null
   };
+
+  // 多期角标：dates 字段含逗号即代表 N 期，自动加左下角章
+  (function addWeeksBadges() {
+    document.querySelectorAll('.camp-card').forEach(card => {
+      const dates = (card.dataset.dates || '').split(',').filter(d => d.trim());
+      if (dates.length > 1) {
+        const poster = card.querySelector('.card-poster');
+        if (poster && !poster.querySelector('.card-weeks-badge')) {
+          const badge = document.createElement('div');
+          badge.className = 'card-weeks-badge';
+          badge.textContent = dates.length + ' 期';
+          poster.appendChild(badge);
+        }
+      }
+    });
+  })();
 
   // 推荐卡排序：将 data-group="recommend" 的卡片按 data-rank 升序移到推荐分组下方
   (function reorderRecommend() {
