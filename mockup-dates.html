@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>按营期浏览 · 3 方案对比</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif;
+  background: #F7F5F1;
+  color: #1A1A2E;
+  max-width: 480px;
+  margin: 0 auto;
+  font-size: 14px;
+}
+.tabs {
+  position: sticky; top: 0; z-index: 100;
+  background: #fff;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.tab {
+  padding: 14px 6px;
+  text-align: center;
+  font-size: 13px; font-weight: 700;
+  color: #888; cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+.tab.active { color: #FF6B35; border-bottom-color: #FF6B35; }
+.tab small { display: block; font-size: 10px; color: #BBB; font-weight: 500; margin-top: 2px; }
+.tab.active small { color: #FF9233; }
+.intro {
+  padding: 16px; background: #fff;
+  border-bottom: 1px solid #F0EDE8;
+}
+.intro h1 { font-size: 16px; margin-bottom: 6px; }
+.intro p { font-size: 12px; color: #888; line-height: 1.6; }
+.scenario { display: none; padding: 14px 12px; }
+.scenario.active { display: block; }
+
+/* ================ 通用卡片样式（瘦版） ================ */
+.card {
+  background: #fff; border-radius: 12px; overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+}
+.card-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+}
+.card-pic {
+  height: 90px;
+  background: linear-gradient(135deg, #FFE8D8, #FFB37A);
+  display: flex; align-items: center; justify-content: center;
+  color: #B8540D; font-size: 11px;
+  position: relative;
+}
+.card-pic .age {
+  position: absolute; top: 5px; left: 5px;
+  background: rgba(0,0,0,0.5); color: #fff;
+  font-size: 9px; padding: 2px 6px; border-radius: 8px;
+}
+.card-name { padding: 8px 10px 2px; font-size: 13px; font-weight: 800; }
+.card-meta { padding: 0 10px 4px; font-size: 10.5px; color: #999; }
+.card-price { padding: 4px 10px 10px; }
+.card-price strong { color: #FF6B35; font-size: 15px; font-weight: 900; }
+.card-price del { color: #C0B7A5; font-size: 10.5px; margin-left: 4px; }
+
+/* ================ 🅐 周次 Tabs ================ */
+.week-tabs {
+  display: flex; overflow-x: auto;
+  gap: 8px; padding: 12px 12px 6px;
+  scrollbar-width: none;
+  background: #fff;
+  border-bottom: 1px solid #F0EDE8;
+}
+.week-tabs::-webkit-scrollbar { display: none; }
+.week-chip {
+  flex-shrink: 0; padding: 8px 14px;
+  border: 1.5px solid #E5DCC8; border-radius: 18px;
+  font-size: 12px; color: #666;
+  cursor: pointer; transition: all 0.15s;
+  background: #fff;
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 56px; line-height: 1.2;
+}
+.week-chip strong { font-weight: 800; font-size: 12.5px; }
+.week-chip small { font-size: 10px; color: #BBB; margin-top: 2px; }
+.week-chip.active { border-color: #FF6B35; background: #FF6B35; color: #fff; }
+.week-chip.active small { color: rgba(255,255,255,0.85); }
+.week-chip .count {
+  background: #F7F5F1; color: #888; font-size: 9.5px;
+  padding: 1px 5px; border-radius: 8px; margin-top: 2px;
+}
+.week-chip.active .count { background: rgba(255,255,255,0.25); color: #fff; }
+
+/* ================ 🅑 日历热力图 ================ */
+.heatmap {
+  background: #fff; padding: 12px;
+  border-bottom: 1px solid #F0EDE8;
+}
+.heatmap-title {
+  font-size: 12px; font-weight: 800; color: #888;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.heatmap-grid {
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+.heat-cell {
+  background: #F7F5F1; border-radius: 8px;
+  padding: 8px 4px;
+  text-align: center;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all 0.15s;
+}
+.heat-cell .week { font-size: 11.5px; font-weight: 800; color: #444; }
+.heat-cell .dates { font-size: 9px; color: #999; margin-top: 2px; }
+.heat-cell .count {
+  margin-top: 4px; font-size: 10.5px; font-weight: 700;
+}
+.heat-cell.level-0 .count { color: #B0A795; }
+.heat-cell.level-1 .count { color: #FF9233; }
+.heat-cell.level-2 .count { color: #FF6B35; }
+.heat-cell.level-3 .count { color: #fff; }
+.heat-cell.level-3 { background: #FF6B35; }
+.heat-cell.level-3 .week, .heat-cell.level-3 .dates { color: rgba(255,255,255,0.92); }
+.heat-cell.active { border-color: #FF6B35; transform: translateY(-2px); }
+.heat-legend {
+  display: flex; gap: 12px; margin-top: 10px;
+  font-size: 10px; color: #999;
+  align-items: center;
+}
+.heat-legend-dot {
+  width: 10px; height: 10px; border-radius: 3px;
+  display: inline-block; margin-right: 4px;
+}
+
+/* ================ 🅒 卡内周次芯片 ================ */
+.theme-card {
+  background: #fff; border-radius: 14px; overflow: hidden;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.07);
+  margin-bottom: 12px;
+}
+.theme-card-pic {
+  aspect-ratio: 16/7;
+  background: linear-gradient(135deg, #FF9F43, #FECA57);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; font-weight: 800;
+}
+.theme-card-body { padding: 12px 14px 14px; }
+.theme-card-name { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+.theme-card-sub { font-size: 11.5px; color: #999; margin-bottom: 8px; }
+.week-pills {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin: 10px 0 8px;
+  padding-top: 10px;
+  border-top: 1px dashed #F0EDE8;
+}
+.week-pill {
+  padding: 5px 10px;
+  background: #F7F5F1;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  font-size: 11px; color: #666;
+  cursor: pointer; display: flex; align-items: center; gap: 4px;
+}
+.week-pill.active { background: #FF6B35; color: #fff; }
+.week-pill.full { color: #C0B7A5; text-decoration: line-through; cursor: not-allowed; }
+.week-pill-dot { width: 5px; height: 5px; border-radius: 50%; background: #6DCB6E; }
+.week-pill.full .week-pill-dot { background: #DDD; }
+.theme-card-price {
+  display: flex; align-items: baseline; gap: 6px;
+  margin-top: 8px;
+}
+.theme-card-price strong {
+  font-size: 18px; color: #FF6B35; font-weight: 900;
+}
+.theme-card-price del { color: #C0B7A5; font-size: 11.5px; }
+.theme-card-price .save {
+  background: #FF6B35; color: #fff; font-size: 10px;
+  padding: 1px 6px; border-radius: 3px; font-weight: 700;
+}
+.theme-card-meta {
+  display: flex; gap: 8px; margin-top: 4px;
+  font-size: 10.5px; color: #888;
+}
+.theme-card-cta {
+  margin-top: 10px;
+  background: #FFF6F3; color: #FF6B35;
+  border: 1px solid #FFD0B0;
+  padding: 8px 12px; border-radius: 8px;
+  text-align: center; font-size: 12px; font-weight: 700;
+  cursor: pointer;
+}
+
+/* 🅐 / 🅑 下面的卡列表 */
+.card-group {
+  margin-top: 12px;
+}
+.card-group-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 800; color: #FF6B35;
+  margin: 14px 4px 8px;
+}
+.card-group-title .line {
+  flex: 1; height: 1px; background: #FFD0B0;
+}
+
+.note {
+  background: #FFF8F2; border: 1px dashed #FFD0B0;
+  border-radius: 10px; padding: 10px 12px;
+  font-size: 11.5px; color: #8B5024; line-height: 1.6;
+  margin: 0 12px 12px;
+}
+</style>
+</head>
+<body>
+
+<div class="tabs">
+  <div class="tab active" onclick="pick('a')">🅐 周次 Tabs<small>顶部横滑</small></div>
+  <div class="tab" onclick="pick('b')">🅑 日历热力图<small>看哪周营多</small></div>
+  <div class="tab" onclick="pick('c')">🅒 卡内周次芯片<small>1 卡多周</small></div>
+</div>
+
+<div class="intro">
+  <h1>📅 按"营期"浏览的 3 个候选方案</h1>
+  <p>价格表 31 个营期实例 / 25 个独立主题。<strong>不展开成 31 张卡</strong>，看哪种切片方式最顺手。</p>
+</div>
+
+<!-- ================ 🅐 Week Tabs ================ -->
+<div class="scenario active" id="sc-a">
+  <div class="note">
+    💡 <strong>方案 A：顶部 6 个周次芯片</strong>，点哪周就只显示那周开营的卡片。同名营期在不同周会各自出现，但你一次只看一周，不会觉得冗余。
+  </div>
+
+  <div class="week-tabs">
+    <div class="week-chip"><strong>全部</strong><div class="count">31 期</div></div>
+    <div class="week-chip"><strong>7.4</strong><small>-7.10</small><div class="count">5</div></div>
+    <div class="week-chip"><strong>7.11</strong><small>-7.17</small><div class="count">5</div></div>
+    <div class="week-chip active"><strong>7.18</strong><small>-7.24</small><div class="count">4</div></div>
+    <div class="week-chip"><strong>7.25</strong><small>-7.31</small><div class="count">7</div></div>
+    <div class="week-chip"><strong>8.1</strong><small>-8.7</small><div class="count">7</div></div>
+    <div class="week-chip"><strong>8.8</strong><small>-8.17</small><div class="count">3</div></div>
+  </div>
+
+  <div class="card-group-title">
+    <div class="line"></div><span>7.18-7.24 共 4 期</span><div class="line"></div>
+  </div>
+
+  <div class="card-row">
+    <div class="card">
+      <div class="card-pic"><span class="age">9-12 岁</span>头脑特工队</div>
+      <div class="card-name">头脑特工队</div>
+      <div class="card-meta">📍 标榜 · 7天</div>
+      <div class="card-price"><strong>5980</strong><del>¥6580</del></div>
+    </div>
+    <div class="card">
+      <div class="card-pic"><span class="age">9-12 岁</span>火星生存指南</div>
+      <div class="card-name">火星生存指南</div>
+      <div class="card-meta">📍 标榜 · 7天</div>
+      <div class="card-price"><strong>5980</strong><del>¥6580</del></div>
+    </div>
+    <div class="card">
+      <div class="card-pic"><span class="age">9-12 岁</span>勇敢者游戏</div>
+      <div class="card-name">勇敢者游戏</div>
+      <div class="card-meta">📍 麓客岛 · 7天</div>
+      <div class="card-price"><strong>5980</strong><del>¥6580</del></div>
+    </div>
+    <div class="card">
+      <div class="card-pic"><span class="age">9-12 岁</span>重走人类</div>
+      <div class="card-name">重走人类创造之路</div>
+      <div class="card-meta">📍 麓客岛 · 7天</div>
+      <div class="card-price"><strong>5980</strong><del>¥6580</del></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================ 🅑 Heatmap ================ -->
+<div class="scenario" id="sc-b">
+  <div class="note">
+    💡 <strong>方案 B：日历热力图</strong>，一眼看出哪周营期密集。背景越橘色越多营。点击某格 → 只显示那周。比 Tabs 更直观一周间的"分布感"。
+  </div>
+
+  <div class="heatmap">
+    <div class="heatmap-title">📊 6 周开营密度</div>
+    <div class="heatmap-grid">
+      <div class="heat-cell level-1">
+        <div class="week">第 1 周</div>
+        <div class="dates">7.4-7.10</div>
+        <div class="count">5 期</div>
+      </div>
+      <div class="heat-cell level-1">
+        <div class="week">第 2 周</div>
+        <div class="dates">7.11-7.17</div>
+        <div class="count">5 期</div>
+      </div>
+      <div class="heat-cell level-0">
+        <div class="week">第 3 周</div>
+        <div class="dates">7.18-7.24</div>
+        <div class="count">4 期</div>
+      </div>
+      <div class="heat-cell level-3 active">
+        <div class="week">第 4 周</div>
+        <div class="dates">7.25-7.31</div>
+        <div class="count">7 期</div>
+      </div>
+      <div class="heat-cell level-3">
+        <div class="week">第 5 周</div>
+        <div class="dates">8.1-8.7</div>
+        <div class="count">7 期</div>
+      </div>
+      <div class="heat-cell level-0">
+        <div class="week">第 6 周</div>
+        <div class="dates">8.8-8.17</div>
+        <div class="count">3 期</div>
+      </div>
+    </div>
+    <div class="heat-legend">
+      <span><span class="heat-legend-dot" style="background:#F7F5F1"></span> ≤4 期</span>
+      <span><span class="heat-legend-dot" style="background:#FFD0B0"></span> 5-6 期</span>
+      <span><span class="heat-legend-dot" style="background:#FF6B35"></span> ≥7 期</span>
+    </div>
+  </div>
+
+  <div class="card-group-title">
+    <div class="line"></div><span>第 4 周 · 7.25-7.31</span><div class="line"></div>
+  </div>
+
+  <div class="card-row" style="margin: 0 0 12px;">
+    <div class="card">
+      <div class="card-pic"><span class="age">14-18</span>AI 游戏</div>
+      <div class="card-name">AI 游戏设计营</div>
+      <div class="card-meta">📍 标榜 · 7天</div>
+      <div class="card-price"><strong>10800</strong><del>¥12800</del></div>
+    </div>
+    <div class="card">
+      <div class="card-pic"><span class="age">12-16</span>运气秘籍</div>
+      <div class="card-name">运气秘籍</div>
+      <div class="card-meta">📍 标榜 · 7天</div>
+      <div class="card-price"><strong>5980</strong><del>¥6580</del></div>
+    </div>
+    <div class="card">
+      <div class="card-pic"><span class="age">12-16</span>第一桶金</div>
+      <div class="card-name">第一桶金</div>
+      <div class="card-meta">📍 标榜 · 7天</div>
+      <div class="card-price"><strong>5980</strong><del>¥6580</del></div>
+    </div>
+    <div class="card">
+      <div class="card-pic"><span class="age">9-12</span>水形物语</div>
+      <div class="card-name">水形物语</div>
+      <div class="card-meta">📍 麓客岛 · 7天</div>
+      <div class="card-price"><strong>5980</strong><del>¥6580</del></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================ 🅒 卡内周次芯片 ================ -->
+<div class="scenario" id="sc-c">
+  <div class="note">
+    💡 <strong>方案 C：保持 25 张主题卡，卡里塞周次芯片</strong>。一张卡上把"头脑特工队 7.4-7.10 / 7.11-7.17 / 7.18-7.24 / 7.25-7.31"4 周横排列出，点哪周哪周变橘，价格/QR 跟着变。
+  </div>
+
+  <div class="theme-card">
+    <div class="theme-card-pic">头脑特工队 9-12 岁</div>
+    <div class="theme-card-body">
+      <div class="theme-card-name">头脑特工队</div>
+      <div class="theme-card-sub">探索情绪力量，萌发行动能力</div>
+
+      <div class="week-pills">
+        <div class="week-pill"><span class="week-pill-dot"></span>7.4-7.10</div>
+        <div class="week-pill active"><span class="week-pill-dot"></span>7.11-7.17</div>
+        <div class="week-pill"><span class="week-pill-dot"></span>7.18-7.24</div>
+        <div class="week-pill full"><span class="week-pill-dot"></span>7.25-7.31</div>
+      </div>
+
+      <div class="theme-card-price">
+        <strong>5980</strong>
+        <del>¥6580</del>
+        <span class="save">省 600</span>
+      </div>
+      <div class="theme-card-meta">📍 标榜 · 25 人 · 住宿必须</div>
+      <button class="theme-card-cta">扫码报这周</button>
+    </div>
+  </div>
+
+  <div class="theme-card">
+    <div class="theme-card-pic" style="background:linear-gradient(135deg,#A8E6CF,#7FCDCD);">六艺通识营</div>
+    <div class="theme-card-body">
+      <div class="theme-card-name">六艺通识营</div>
+      <div class="theme-card-sub">在游戏和创造中锤炼通用技能</div>
+      <div class="week-pills">
+        <div class="week-pill active"><span class="week-pill-dot"></span>7.4-7.10</div>
+        <div class="week-pill"><span class="week-pill-dot"></span>7.11-7.17</div>
+      </div>
+      <div class="theme-card-price"><strong>5980</strong><del>¥6580</del><span class="save">省 600</span></div>
+      <div class="theme-card-meta">📍 标榜 · 25 人 · 住宿必须</div>
+      <button class="theme-card-cta">扫码报这周</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function pick(k) {
+  document.querySelectorAll('.scenario').forEach(s => s.classList.remove('active'));
+  document.getElementById('sc-' + k).classList.add('active');
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', 'abc'[i] === k);
+  });
+}
+</script>
+</body>
+</html>
