@@ -196,24 +196,27 @@
     body.detail-open .bottom-bar { display: none; }
     .bottom-bar-btn {
       flex: 1;
-      padding: 12px 8px;
-      border: 1.5px solid #E8E4DE;
-      background: #fff;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 800;
-      color: #555;
+      padding: 6px 2px;
+      border: none;
+      background: none;
+      color: #888;
       cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 2px;
       position: relative;
+      border-radius: 8px;
+      transition: all 0.15s;
     }
+    .bottom-bar-btn:active { background: #F5F3EF; }
+    .bottom-bar-btn .bb-icon { font-size: 18px; line-height: 1.2; }
+    .bottom-bar-btn .bb-label { font-size: 11px; font-weight: 700; letter-spacing: 0.3px; }
     .bottom-bar-btn.cta {
-      flex: 2;
       background: linear-gradient(135deg, #FF6B35, #FF9233);
       color: #fff;
-      border: none;
-      box-shadow: 0 4px 14px rgba(255,107,53,0.4);
+      box-shadow: 0 4px 14px rgba(255,107,53,0.35);
+      margin: -4px 0;
     }
+    .bottom-bar-btn.cta:active { background: linear-gradient(135deg, #E85A29, #FF7E18); }
     .filter-count-badge {
       position: absolute;
       top: -4px; right: -4px;
@@ -2778,13 +2781,20 @@
 </aside>
 
 <!-- FAB 浮动咨询按钮 -->
-<!-- 底栏：筛选 + 咨询报名 -->
+<!-- 底栏：4 项 Tab -->
 <div class="bottom-bar">
   <button class="bottom-bar-btn" onclick="openFilterSheet()">
-    🔍 筛选 <span class="filter-count-badge" id="filter-count-badge">0</span>
+    <span class="bb-icon">🔍</span><span class="bb-label">筛选</span>
+    <span class="filter-count-badge" id="filter-count-badge">0</span>
+  </button>
+  <button class="bottom-bar-btn" onclick="openAboutSheet()">
+    <span class="bb-icon">🔑</span><span class="bb-label">了解我们</span>
+  </button>
+  <button class="bottom-bar-btn" onclick="openFaqSheet()">
+    <span class="bb-icon">❓</span><span class="bb-label">常见问答</span>
   </button>
   <button class="bottom-bar-btn cta" onclick="document.querySelector('.footer-cta')?.scrollIntoView({behavior:'smooth'});">
-    💬 咨询报名
+    <span class="bb-icon">💬</span><span class="bb-label">咨询报名</span>
   </button>
 </div>
 
@@ -2830,6 +2840,15 @@
     </div>
   </div>
 </div>
+<!-- 关于我们 抽屉 -->
+<div class="filter-sheet" id="about-sheet">
+  <div class="filter-sheet-bg" onclick="closeAboutSheet()"></div>
+  <div class="filter-sheet-content">
+    <div class="filter-sheet-handle"></div>
+    <div class="filter-sheet-head">
+      <span class="filter-sheet-title">🔑 了解钥匙玩校</span>
+      <button class="filter-sheet-clear" onclick="closeAboutSheet()">关闭</button>
+    </div>
 
 <!-- 钥匙玩校特色 -->
 <div class="feature-section">
@@ -2971,6 +2990,27 @@
   <div class="playmate-footnote">* 具体人员以现场执行为准。届时还有多位特邀玩伴、钥匙玩校志愿者陪伴孩子们。</div>
 </div>
 
+<!-- ABOUT -->
+<div class="about-strip">
+  <div class="about-icon">🔑</div>
+  <div class="about-text">
+    <h4>钥匙玩校 · kiidschool</h4>
+    <p>成立于2015年 · 成都 · 专业营地教育品牌<br>游戏即学习 · 40+原创营期 · 500+游戏项目</p>
+  </div>
+</div>
+  </div>
+</div>
+
+<!-- 常见问答 抽屉 -->
+<div class="filter-sheet" id="faq-sheet">
+  <div class="filter-sheet-bg" onclick="closeFaqSheet()"></div>
+  <div class="filter-sheet-content">
+    <div class="filter-sheet-handle"></div>
+    <div class="filter-sheet-head">
+      <span class="filter-sheet-title">❓ 常见问答</span>
+      <button class="filter-sheet-clear" onclick="closeFaqSheet()">关闭</button>
+    </div>
+
 <!-- 常见QA -->
 <div class="qa-section">
   <h3 class="qa-h">❓ 常见问题</h3>
@@ -3037,14 +3077,14 @@
   </div>
 </div>
 
-<!-- ABOUT -->
-<div class="about-strip">
-  <div class="about-icon">🔑</div>
-  <div class="about-text">
-    <h4>钥匙玩校 · kiidschool</h4>
-    <p>成立于2015年 · 成都 · 专业营地教育品牌<br>游戏即学习 · 40+原创营期 · 500+游戏项目</p>
+    <div style="margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #FFF8F2, #FFE8D8); border-radius: 12px; text-align: center;">
+      <div style="font-size: 28px; margin-bottom: 6px;">🤖</div>
+      <div style="font-size: 13px; font-weight: 800; color: #1A1A2E;">AI 智能助手</div>
+      <div style="font-size: 11.5px; color: #888; margin-top: 4px;">即将开放，对话式回答家长所有疑问</div>
+    </div>
   </div>
 </div>
+
 
 <!-- FOOTER CTA -->
 <div class="footer-cta">
@@ -3093,6 +3133,22 @@
     document.getElementById('filter-sheet').classList.remove('open');
     document.body.style.overflow = '';
     updateFilterBadge();
+  }
+  function openAboutSheet() {
+    document.getElementById('about-sheet').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeAboutSheet() {
+    document.getElementById('about-sheet').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function openFaqSheet() {
+    document.getElementById('faq-sheet').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeFaqSheet() {
+    document.getElementById('faq-sheet').classList.remove('open');
+    document.body.style.overflow = '';
   }
   function updateFilterBadge() {
     const n = state.themes.size + state.locs.size + (state.selectedDateRange ? 1 : 0);
