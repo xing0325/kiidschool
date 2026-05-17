@@ -139,6 +139,164 @@
     }
     .clear-btn:hover { background: #FFEEE3; }
 
+    /* ── 年龄 Tabs（小红书首页风，sticky 到 header 下方） ── */
+    .age-nav {
+      position: sticky;
+      top: 54px;
+      z-index: 99;
+      background: #fff;
+      display: flex;
+      border-bottom: 1px solid #F0EDE8;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+    }
+    .age-nav-tab {
+      flex: 1;
+      padding: 13px 4px 11px;
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: #888;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.15s;
+      user-select: none;
+    }
+    .age-nav-tab.active {
+      color: #FF6B35;
+      font-weight: 800;
+    }
+    .age-nav-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 25%; right: 25%;
+      height: 2.5px;
+      background: #FF6B35;
+      border-radius: 2px;
+    }
+    .age-nav-tab .count {
+      font-size: 10px; color: #BBB; font-weight: 500;
+      margin-left: 3px;
+    }
+    .age-nav-tab.active .count { color: #FF9233; }
+
+    /* ── 底栏（筛选 + 咨询报名） ── */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      max-width: 480px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+      display: flex; gap: 10px;
+      box-shadow: 0 -2px 14px rgba(0,0,0,0.08);
+      z-index: 200;
+      border-top: 1px solid #F0EDE8;
+    }
+    body.detail-open .bottom-bar { display: none; }
+    .bottom-bar-btn {
+      flex: 1;
+      padding: 12px 8px;
+      border: 1.5px solid #E8E4DE;
+      background: #fff;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #555;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      position: relative;
+    }
+    .bottom-bar-btn.cta {
+      flex: 2;
+      background: linear-gradient(135deg, #FF6B35, #FF9233);
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 14px rgba(255,107,53,0.4);
+    }
+    .filter-count-badge {
+      position: absolute;
+      top: -4px; right: -4px;
+      background: #FF6B35; color: #fff;
+      font-size: 10px; font-weight: 800;
+      min-width: 16px; height: 16px;
+      padding: 0 4px;
+      border-radius: 8px;
+      display: none;
+      align-items: center; justify-content: center;
+    }
+    .filter-count-badge.show { display: flex; }
+
+    /* 底栏抽屉（筛选 sheet） */
+    .filter-sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      display: none;
+    }
+    .filter-sheet.open { display: block; }
+    .filter-sheet-bg {
+      position: absolute; inset: 0;
+      background: rgba(26,26,46,0.4);
+      backdrop-filter: blur(2px);
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+    .filter-sheet-content {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      max-width: 480px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 18px 18px 0 0;
+      padding: 14px 16px calc(20px + env(safe-area-inset-bottom));
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .filter-sheet-handle {
+      width: 36px; height: 4px;
+      background: #DDD2C0;
+      border-radius: 2px;
+      margin: 0 auto 12px;
+    }
+    .filter-sheet-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .filter-sheet-title { font-size: 16px; font-weight: 800; color: #1A1A2E; }
+    .filter-sheet-clear {
+      font-size: 12px; color: #FF6B35;
+      background: none; border: none; cursor: pointer;
+      padding: 6px 10px;
+    }
+    .filter-sheet-actions {
+      display: flex; gap: 10px;
+      margin-top: 14px;
+    }
+    .filter-sheet-actions button {
+      flex: 1; padding: 14px;
+      border-radius: 12px; border: none;
+      font-size: 15px; font-weight: 800;
+      cursor: pointer;
+    }
+    .filter-sheet-cancel {
+      background: #F5F3EF; color: #555;
+    }
+    .filter-sheet-apply {
+      background: linear-gradient(135deg, #FF6B35, #FF9233);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(255,107,53,0.35);
+    }
+
+    /* body 底部留位避免最后一张卡被底栏挡 */
+    body { padding-bottom: 72px; }
+    body.detail-open { padding-bottom: 0; }
+
     /* ── 周次 Tabs（顶部横滑） ── */
     .week-tabs {
       display: flex;
@@ -1390,52 +1548,13 @@
   </div>
 </section>
 
-<!-- FILTER -->
-<div class="filter-wrap">
-  <div class="filter-header">
-    <span class="filter-title">🔍 筛选</span>
-    <button class="filter-toggle" onclick="toggleFilterCollapse()" aria-label="折叠/展开筛选">
-      <span class="ft-text">收起</span><span class="ft-arrow">▲</span>
-    </button>
-  </div>
-
-  <div class="filter-body" id="filter-body">
-    <div class="filter-section">
-      <div class="filter-label">年龄 <span class="filter-hint">可多选</span></div>
-      <div class="theme-chips">
-        <span class="chip active" data-age-group="all" onclick="toggleAge(this)">全部</span>
-        <span class="chip" data-age-group="9-12" onclick="toggleAge(this)">9-12 岁</span>
-        <span class="chip" data-age-group="12-16" onclick="toggleAge(this)">12-16 岁</span>
-        <span class="chip" data-age-group="14-18" onclick="toggleAge(this)">14-18 岁</span>
-      </div>
-    </div>
-
-    <div class="filter-section">
-      <div class="filter-label">主题 <span class="filter-hint">可多选</span></div>
-      <div class="theme-chips" id="theme-chips-wrap">
-        <span class="chip active" data-theme="all" onclick="toggleTheme(this)">全部</span>
-        <span class="chip" data-theme="学院制" onclick="toggleTheme(this)">🏰 学院制</span>
-        <span class="chip" data-theme="通识" onclick="toggleTheme(this)">📖 通识</span>
-        <span class="chip" data-theme="职业探索" onclick="toggleTheme(this)">🧭 职业探索</span>
-        <span class="chip" data-theme="创造" onclick="toggleTheme(this)">✨ 创造</span>
-        <span class="chip" data-theme="财商" onclick="toggleTheme(this)">💰 财商</span>
-      </div>
-    </div>
-
-    <div class="filter-section">
-      <div class="filter-label">地点 <span class="filter-hint">可多选</span></div>
-      <div class="theme-chips" id="loc-chips-wrap">
-        <span class="chip active" data-loc="all" onclick="toggleLoc(this)">全部</span>
-        <span class="chip" data-loc="标榜" onclick="toggleLoc(this)">🏫 四川国际标榜职业学院</span>
-        <span class="chip" data-loc="麓客岛" onclick="toggleLoc(this)">🏝 麓客岛</span>
-      </div>
-    </div>
-
-    <div class="clear-row">
-      <button class="clear-btn" onclick="clearAllFilters()">清除全部筛选</button>
-    </div>
-  </div>
-</div>
+<!-- 年龄 Tabs（小红书首页风） -->
+<nav class="age-nav" id="age-nav">
+  <button class="age-nav-tab active" data-age="all" onclick="selectAgeTab('all')">全部</button>
+  <button class="age-nav-tab" data-age="9-12" onclick="selectAgeTab('9-12')">9-12 岁</button>
+  <button class="age-nav-tab" data-age="12-16" onclick="selectAgeTab('12-16')">12-16 岁</button>
+  <button class="age-nav-tab" data-age="14-18" onclick="selectAgeTab('14-18')">14-18 岁</button>
+</nav>
 
 <!-- 周次 Tabs -->
 <div class="week-tabs" id="week-tabs"></div>
@@ -2662,9 +2781,53 @@
 </aside>
 
 <!-- FAB 浮动咨询按钮 -->
-<button class="fab" onclick="document.querySelector('.cta-btn-primary').click(); document.querySelector('.footer-cta')?.scrollIntoView({behavior:'smooth'});">
-  💬 咨询报名
-</button>
+<!-- 底栏：筛选 + 咨询报名 -->
+<div class="bottom-bar">
+  <button class="bottom-bar-btn" onclick="openFilterSheet()">
+    🔍 筛选 <span class="filter-count-badge" id="filter-count-badge">0</span>
+  </button>
+  <button class="bottom-bar-btn cta" onclick="document.querySelector('.footer-cta')?.scrollIntoView({behavior:'smooth'});">
+    💬 咨询报名
+  </button>
+</div>
+
+<!-- 筛选抽屉（底部弹出） -->
+<div class="filter-sheet" id="filter-sheet">
+  <div class="filter-sheet-bg" onclick="closeFilterSheet()"></div>
+  <div class="filter-sheet-content">
+    <div class="filter-sheet-handle"></div>
+    <div class="filter-sheet-head">
+      <span class="filter-sheet-title">筛选条件</span>
+      <button class="filter-sheet-clear" onclick="clearAllFilters()">清除全部</button>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">主题 <span class="filter-hint">可多选</span></div>
+      <div class="theme-chips" id="theme-chips-wrap">
+        <span class="chip active" data-theme="all" onclick="toggleTheme(this)">全部</span>
+        <span class="chip" data-theme="学院制" onclick="toggleTheme(this)">🏰 学院制</span>
+        <span class="chip" data-theme="通识" onclick="toggleTheme(this)">📖 通识</span>
+        <span class="chip" data-theme="职业探索" onclick="toggleTheme(this)">🧭 职业探索</span>
+        <span class="chip" data-theme="创造" onclick="toggleTheme(this)">✨ 创造</span>
+        <span class="chip" data-theme="财商" onclick="toggleTheme(this)">💰 财商</span>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">地点 <span class="filter-hint">可多选</span></div>
+      <div class="theme-chips" id="loc-chips-wrap">
+        <span class="chip active" data-loc="all" onclick="toggleLoc(this)">全部</span>
+        <span class="chip" data-loc="标榜" onclick="toggleLoc(this)">🏫 四川国际标榜职业学院</span>
+        <span class="chip" data-loc="麓客岛" onclick="toggleLoc(this)">🏝 麓客岛</span>
+      </div>
+    </div>
+
+    <div class="filter-sheet-actions">
+      <button class="filter-sheet-cancel" onclick="closeFilterSheet()">取消</button>
+      <button class="filter-sheet-apply" onclick="closeFilterSheet()">应用筛选</button>
+    </div>
+  </div>
+</div>
 
 <!-- 钥匙玩校特色 -->
 <div class="feature-section">
@@ -2908,6 +3071,36 @@
     dateEnd: null,              // Date 对象或 null
   };
 
+  // ── 年龄 Tabs（小红书首页风） ──
+  function selectAgeTab(key) {
+    document.querySelectorAll('.age-nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.age-nav-tab[data-age="${key}"]`)?.classList.add('active');
+    state.ages.clear();
+    if (key !== 'all') state.ages.add(key);
+    applyFilters();
+    updateFilterBadge();
+    // 周次 chip 数量按当前年龄过滤重算
+    if (typeof buildWeekTabs === 'function') buildWeekTabs();
+  }
+
+  // ── 筛选抽屉 ──
+  function openFilterSheet() {
+    document.getElementById('filter-sheet').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeFilterSheet() {
+    document.getElementById('filter-sheet').classList.remove('open');
+    document.body.style.overflow = '';
+    updateFilterBadge();
+  }
+  function updateFilterBadge() {
+    const n = state.themes.size + state.locs.size;
+    const badge = document.getElementById('filter-count-badge');
+    if (!badge) return;
+    badge.textContent = n;
+    badge.classList.toggle('show', n > 0);
+  }
+
   // ── 周次 Tabs ──
   const WEEK_SLOTS = [
     { key: '7.4-7.10',  label: '7.4',  sub: '-7.10', start: '2026-07-04', end: '2026-07-10' },
@@ -2919,11 +3112,18 @@
   ];
 
   function _countCampsInWeek(slot) {
-    if (!slot) return document.querySelectorAll('.camps-list .camp-card').length;
-    const filterStart = new Date(slot.start + 'T00:00:00');
-    const filterEnd = new Date(slot.end + 'T23:59:59');
     let n = 0;
     document.querySelectorAll('.camps-list .camp-card').forEach(card => {
+      // 先按当前年龄过滤
+      const ageMin = parseInt(card.dataset.ageMin);
+      const ageMax = parseInt(card.dataset.ageMax);
+      const ageGroupKey = `${ageMin}-${ageMax}`;
+      const ageOk = state.ages.size === 0 || state.ages.has(ageGroupKey);
+      if (!ageOk) return;
+
+      if (!slot) { n++; return; }
+      const filterStart = new Date(slot.start + 'T00:00:00');
+      const filterEnd = new Date(slot.end + 'T23:59:59');
       const periods = parseCardDates(card.dataset.dates || '');
       if (periods.some(p => p.start <= filterEnd && p.end >= filterStart)) n++;
     });
@@ -3032,10 +3232,12 @@
   function toggleTheme(el) {
     _toggleChipSet(el, '#theme-chips-wrap [data-theme]', 'theme', state.themes);
     applyFilters();
+    updateFilterBadge();
   }
   function toggleLoc(el) {
     _toggleChipSet(el, '#loc-chips-wrap [data-loc]', 'loc', state.locs);
     applyFilters();
+    updateFilterBadge();
   }
 
   // 折叠/展开整个筛选区
@@ -3047,10 +3249,14 @@
     state.ages.clear(); state.themes.clear(); state.locs.clear();
     state.dateStart = null; state.dateEnd = null;
     document.querySelectorAll('.filter-section .chip').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.filter-section .chip[data-age-group="all"], .filter-section .chip[data-theme="all"], .filter-section .chip[data-loc="all"]').forEach(c => c.classList.add('active'));
+    document.querySelectorAll('.filter-section .chip[data-theme="all"], .filter-section .chip[data-loc="all"]').forEach(c => c.classList.add('active'));
     // 重置周次 chip 到"全部"
     document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('active'));
     document.querySelector('.week-chip[data-week="all"]')?.classList.add('active');
+    // 重置年龄 Tab 到"全部"
+    document.querySelectorAll('.age-nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.age-nav-tab[data-age="all"]')?.classList.add('active');
+    updateFilterBadge();
     applyFilters();
   }
 
