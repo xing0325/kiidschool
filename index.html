@@ -190,7 +190,7 @@
       padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
       display: flex; gap: 10px;
       box-shadow: 0 -2px 14px rgba(0,0,0,0.08);
-      z-index: 200;
+      z-index: 1001;  /* 高于 sheet (999)，保证可点 */
       border-top: 1px solid #F0EDE8;
     }
     body.detail-open .bottom-bar { display: none; }
@@ -286,6 +286,38 @@
       border-radius: 12px; border: none;
       font-size: 15px; font-weight: 800;
       cursor: pointer;
+    }
+
+    /* full-page-sheet：占据主区域（header下 - 底栏上）而非底部弹窗 */
+    .filter-sheet.full-page-sheet .filter-sheet-bg {
+      background: #F7F5F1;
+      backdrop-filter: none;
+      bottom: 72px;
+    }
+    .filter-sheet.full-page-sheet .filter-sheet-content {
+      position: fixed;
+      top: 56px; left: 0; right: 0; bottom: 72px;
+      max-width: 480px;
+      margin: 0 auto;
+      border-radius: 0;
+      max-height: none;
+      padding: 14px 16px 20px;
+      animation: fadeUp 0.22s ease;
+      box-shadow: none;
+    }
+    .filter-sheet.full-page-sheet .filter-sheet-handle { display: none; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 底栏 tab 激活态（点了了解我们 / 常见问答 高亮对应 tab） */
+    .bottom-bar-btn.tab-active {
+      color: #FF6B35;
+      background: #FFF6F3;
+    }
+    .bottom-bar-btn.tab-active .bb-icon {
+      transform: scale(1.1);
     }
     .filter-sheet-cancel {
       background: #F5F3EF; color: #555;
@@ -2787,13 +2819,13 @@
     <span class="bb-icon">🔍</span><span class="bb-label">筛选</span>
     <span class="filter-count-badge" id="filter-count-badge">0</span>
   </button>
-  <button class="bottom-bar-btn" onclick="openAboutSheet()">
+  <button class="bottom-bar-btn" data-view-tab="about" onclick="toggleView('about')">
     <span class="bb-icon">🔑</span><span class="bb-label">了解我们</span>
   </button>
-  <button class="bottom-bar-btn" onclick="openFaqSheet()">
+  <button class="bottom-bar-btn" data-view-tab="faq" onclick="toggleView('faq')">
     <span class="bb-icon">❓</span><span class="bb-label">常见问答</span>
   </button>
-  <button class="bottom-bar-btn cta" onclick="document.querySelector('.footer-cta')?.scrollIntoView({behavior:'smooth'});">
+  <button class="bottom-bar-btn cta" onclick="goToContact()">
     <span class="bb-icon">💬</span><span class="bb-label">咨询报名</span>
   </button>
 </div>
@@ -2841,7 +2873,7 @@
   </div>
 </div>
 <!-- 关于我们 抽屉 -->
-<div class="filter-sheet" id="about-sheet">
+<div class="filter-sheet full-page-sheet" id="about-sheet">
   <div class="filter-sheet-bg" onclick="closeAboutSheet()"></div>
   <div class="filter-sheet-content">
     <div class="filter-sheet-handle"></div>
@@ -3002,7 +3034,7 @@
 </div>
 
 <!-- 常见问答 抽屉 -->
-<div class="filter-sheet" id="faq-sheet">
+<div class="filter-sheet full-page-sheet" id="faq-sheet">
   <div class="filter-sheet-bg" onclick="closeFaqSheet()"></div>
   <div class="filter-sheet-content">
     <div class="filter-sheet-handle"></div>
@@ -3134,21 +3166,59 @@
     document.body.style.overflow = '';
     updateFilterBadge();
   }
-  function openAboutSheet() {
-    document.getElementById('about-sheet').classList.add('open');
-    document.body.style.overflow = 'hidden';
+  // 视图切换：about / faq / null(默认营期)
+  function toggleView(name) {
+    const about = document.getElementById('about-sheet');
+    const faq = document.getElementById('faq-sheet');
+    const aboutOpen = about.classList.contains('open');
+    const faqOpen = faq.classList.contains('open');
+
+    // 互斥 + 二次点击同名 tab → 返回营期
+    if (name === 'about') {
+      faq.classList.remove('open');
+      if (aboutOpen) {
+        about.classList.remove('open');
+      } else {
+        about.classList.add('open');
+      }
+    } else if (name === 'faq') {
+      about.classList.remove('open');
+      if (faqOpen) {
+        faq.classList.remove('open');
+      } else {
+        faq.classList.add('open');
+      }
+    }
+    // 更新底栏激活态
+    const activeName = about.classList.contains('open') ? 'about' :
+                       faq.classList.contains('open') ? 'faq' : null;
+    document.querySelectorAll('.bottom-bar-btn').forEach(b => b.classList.remove('tab-active'));
+    if (activeName) {
+      document.querySelector(`[data-view-tab="${activeName}"]`)?.classList.add('tab-active');
+    }
+    // body 滚动锁
+    document.body.style.overflow = activeName ? 'hidden' : '';
+    // 视图切换后回顶
+    if (activeName) {
+      const content = document.querySelector(`#${activeName}-sheet .filter-sheet-content`);
+      if (content) content.scrollTop = 0;
+    } else {
+      window.scrollTo(0, 0);
+    }
   }
-  function closeAboutSheet() {
-    document.getElementById('about-sheet').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-  function openFaqSheet() {
-    document.getElementById('faq-sheet').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeFaqSheet() {
-    document.getElementById('faq-sheet').classList.remove('open');
-    document.body.style.overflow = '';
+  // 老 open/close 函数保留兼容（如外部还有引用）
+  function openAboutSheet() { toggleView('about'); }
+  function closeAboutSheet() { document.getElementById('about-sheet').classList.remove('open'); document.body.style.overflow = ''; document.querySelectorAll('.bottom-bar-btn').forEach(b => b.classList.remove('tab-active')); }
+  function openFaqSheet() { toggleView('faq'); }
+  function closeFaqSheet() { document.getElementById('faq-sheet').classList.remove('open'); document.body.style.overflow = ''; document.querySelectorAll('.bottom-bar-btn').forEach(b => b.classList.remove('tab-active')); }
+
+  // 咨询：若当前在 about/faq 视图则先返回营期，再滚到 footer-cta
+  function goToContact() {
+    closeAboutSheet();
+    closeFaqSheet();
+    requestAnimationFrame(() => {
+      document.querySelector('.footer-cta')?.scrollIntoView({ behavior: 'smooth' });
+    });
   }
   function updateFilterBadge() {
     const n = state.themes.size + state.locs.size + (state.selectedDateRange ? 1 : 0);
