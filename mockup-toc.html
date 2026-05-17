@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>侧边目录 4 方案 · 钥匙玩校</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif;
+  background: #F7F5F1;
+  color: #1A1A2E;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* === 选项卡 === */
+.tabs {
+  position: sticky; top: 0; z-index: 100;
+  background: #fff;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.tab {
+  padding: 12px 4px;
+  text-align: center;
+  font-size: 12px; font-weight: 700;
+  color: #888; cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+.tab.active { color: #FF6B35; border-bottom-color: #FF6B35; }
+.tab small { display: block; font-size: 9.5px; color: #BBB; font-weight: 500; margin-top: 2px; }
+.tab.active small { color: #FF9233; }
+
+.intro {
+  padding: 14px 16px 8px;
+  background: #fff;
+  border-bottom: 1px solid #F0EDE8;
+}
+.intro h1 { font-size: 16px; color: #1A1A2E; margin-bottom: 4px; }
+.intro p { font-size: 11.5px; color: #999; line-height: 1.5; }
+
+/* === 文章主体 === */
+.fake-article {
+  padding: 14px 16px 80px;
+  position: relative;
+}
+.fake-article h2 {
+  font-size: 16px; color: #FF6B35;
+  margin: 24px 0 8px;
+  scroll-margin-top: 60px;
+  padding-left: 8px;
+  border-left: 3px solid #FF6B35;
+}
+.fake-article p {
+  font-size: 13px; color: #555; line-height: 1.8;
+  margin-bottom: 8px;
+}
+.fake-article .placeholder-img {
+  background: linear-gradient(135deg, #FFE8D8, #FFD0B0);
+  height: 100px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: #B8540D; font-size: 12px;
+  margin: 12px 0;
+}
+
+/* ============================================
+   🅰️ 方案一 — Dot Rail（默认极简）
+   ============================================ */
+.rail-a {
+  position: fixed;
+  right: 0; top: 110px;
+  z-index: 99;
+  padding: 14px 8px 14px 10px;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(8px);
+  border-radius: 12px 0 0 12px;
+  box-shadow: -2px 4px 14px rgba(0,0,0,0.08);
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.25s ease;
+  max-width: 28px;
+  overflow: hidden;
+}
+.show-a .rail-a { display: flex; }
+.rail-a:hover, .rail-a.expanded { max-width: 220px; padding-right: 18px; }
+.rail-a-item {
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; white-space: nowrap;
+}
+.rail-a-dot {
+  width: 8px; height: 8px;
+  background: #D8CFBE;
+  border-radius: 50%; flex-shrink: 0;
+  transition: all 0.2s;
+}
+.rail-a-item.visited .rail-a-dot { background: #FFB37A; }
+.rail-a-item.current .rail-a-dot {
+  width: 22px; border-radius: 4px;
+  background: #FF6B35;
+  box-shadow: 0 0 12px rgba(255,107,53,0.4);
+}
+.rail-a-label {
+  font-size: 12px; color: #444;
+  opacity: 0; transition: opacity 0.2s;
+}
+.rail-a:hover .rail-a-label, .rail-a.expanded .rail-a-label { opacity: 1; }
+
+/* ============================================
+   🅱️ 方案二 — 数字胶囊条（始终可见）
+   ============================================ */
+.rail-b {
+  position: fixed;
+  right: 10px; top: 110px;
+  z-index: 99;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+}
+.show-b .rail-b { display: flex; }
+.rail-b-item {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(6px);
+  border-radius: 14px;
+  padding: 5px 10px 5px 8px;
+  font-size: 11px; color: #888;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: all 0.15s;
+  border: 1px solid #EAE4D8;
+}
+.rail-b-item.visited { color: #FF9233; background: #FFF6F3; }
+.rail-b-item.current {
+  background: #FF6B35; color: #fff;
+  border-color: #FF6B35;
+  padding-right: 14px;
+  box-shadow: 0 4px 12px rgba(255,107,53,0.4);
+}
+.rail-b-num {
+  width: 16px; height: 16px;
+  background: #EAE4D8;
+  color: #888;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 800;
+}
+.rail-b-item.visited .rail-b-num { background: #FFD0B0; color: #FF6B35; }
+.rail-b-item.current .rail-b-num { background: #fff; color: #FF6B35; }
+
+/* ============================================
+   🅲️ 方案三 — 时间线滑块
+   ============================================ */
+.rail-c {
+  position: fixed;
+  right: 14px; top: 120px; bottom: 120px;
+  z-index: 99;
+  width: 16px;
+  display: none;
+}
+.show-c .rail-c { display: flex; flex-direction: column; align-items: center; }
+.rail-c-line {
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  width: 2px; background: #E5DCC8;
+  transform: translateX(-50%);
+}
+.rail-c-line-filled {
+  position: absolute;
+  top: 0; left: 50%;
+  width: 2px; height: 35%;
+  background: linear-gradient(180deg, #FFB37A, #FF6B35);
+  transform: translateX(-50%);
+  transition: height 0.2s;
+}
+.rail-c-notch {
+  position: relative; z-index: 2;
+  width: 8px; height: 8px;
+  background: #fff;
+  border: 2px solid #D8CFBE;
+  border-radius: 50%;
+  cursor: pointer;
+  flex: none;
+  margin: auto 0;
+}
+.rail-c-notch.visited { border-color: #FF9233; background: #FFB37A; }
+.rail-c-notch.current {
+  width: 14px; height: 14px;
+  border-color: #FF6B35;
+  background: #FF6B35;
+  box-shadow: 0 0 0 4px rgba(255,107,53,0.2);
+}
+.rail-c-notch:hover::after {
+  content: attr(data-label);
+  position: absolute;
+  right: 20px; top: 50%; transform: translateY(-50%);
+  background: #1A1A2E; color: #fff;
+  padding: 4px 10px; border-radius: 6px;
+  font-size: 11px; white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.rail-c-notches {
+  flex: 1; display: flex; flex-direction: column;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+/* ============================================
+   🅳️ 方案四 — 浮窗罗盘（chip + 抽屉）
+   ============================================ */
+.rail-d {
+  position: fixed;
+  right: 14px; bottom: 100px;
+  z-index: 99;
+  background: #fff;
+  border: 1px solid #FFD0B0;
+  border-radius: 22px;
+  padding: 9px 14px 9px 11px;
+  display: none; align-items: center; gap: 10px;
+  box-shadow: 0 6px 20px rgba(255,107,53,0.18);
+  cursor: pointer;
+  max-width: 220px;
+}
+.show-d .rail-d { display: flex; }
+.rail-d-icon {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #FF6B35, #FFB37A);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; font-weight: 800;
+  flex-shrink: 0;
+}
+.rail-d-info { min-width: 0; }
+.rail-d-title {
+  font-size: 12.5px; font-weight: 700; color: #1A1A2E;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rail-d-progress {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 10px; color: #999; margin-top: 2px;
+}
+.rail-d-progress-bar {
+  width: 50px; height: 3px;
+  background: #F0EDE8; border-radius: 2px;
+  overflow: hidden;
+}
+.rail-d-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FFB37A, #FF6B35);
+  width: 35%;
+}
+
+/* 全局进度条（4 个方案共用） */
+.global-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px; background: transparent;
+  z-index: 999;
+  pointer-events: none;
+}
+.global-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FF6B35, #FFD93D);
+  width: 35%;
+  transition: width 0.1s;
+}
+
+/* 状态切换提示 */
+.status-chip {
+  display: inline-block;
+  background: rgba(255,107,53,0.12);
+  color: #FF6B35;
+  padding: 2px 10px; border-radius: 10px;
+  font-size: 11px; font-weight: 700;
+  margin-top: 6px;
+}
+</style>
+</head>
+<body class="show-a">
+
+<div class="global-bar"><div class="global-bar-fill" id="gbar"></div></div>
+
+<div class="tabs">
+  <div class="tab active" onclick="pick('a')">🅰️ Dot Rail<small>极简点列</small></div>
+  <div class="tab" onclick="pick('b')">🅱️ 数字胶囊<small>始终可见</small></div>
+  <div class="tab" onclick="pick('c')">🅲️ 时间线<small>滑块跟随</small></div>
+  <div class="tab" onclick="pick('d')">🅳️ 浮窗罗盘<small>当前+进度</small></div>
+</div>
+
+<div class="intro">
+  <h1>📖 4 种侧边目录方案对比</h1>
+  <p>滚动下面的"假文章"看 4 种侧边导航分别长什么样、行为如何。顶部切换方案。</p>
+  <div class="status-chip" id="status">当前选中：🅰️ Dot Rail</div>
+</div>
+
+<div class="fake-article">
+  <h2 data-toc="1">营会简介</h2>
+  <p>2026 钥匙玩校夏令营，10+ 主题，覆盖 9-18 岁 3 个细分年龄段。我们将正式开启对钥匙玩校历年来的口碑产品进行预售。</p>
+  <p>自 2015 年创办起，钥匙玩校研发了多种高性价比的玩伴式营地教育，在玩中学的学习方式受到了很多青少年的喜欢。</p>
+  <div class="placeholder-img">[ 营会海报图 ]</div>
+
+  <h2 data-toc="2">营会安排</h2>
+  <p>整整 10 天时间里，营员会被分为四个学院，以四种不同的风格，分三个阶段完成学习的过程，最终在比赛场上见真章。</p>
+  <p>我们将比赛分为现场竞技比赛和持续性作品比赛两种形式。</p>
+  <div class="placeholder-img">[ 学院制流程图 ]</div>
+
+  <h2 data-toc="3">钥匙玩校特色</h2>
+  <p><strong>1. 游戏式学习</strong> — 原创"技艺碎片"游戏化系统</p>
+  <p><strong>2. 项目式学习</strong> — 50+ PBL 活动</p>
+  <p><strong>3. 跨学科学习</strong> — 突破文理科壁垒</p>
+  <p><strong>4. 创造性思维训练</strong> — 把想法变成真的</p>
+  <p><strong>5. 玩伴教育</strong> — 多元智能激发</p>
+  <p><strong>6. 自然+人文环境</strong> — 多层次启发</p>
+  <p><strong>7. 自由日 Gap Day</strong> — 1000+ 活动累积</p>
+  <p><strong>8. 七艺徽章</strong> — 语言/逻辑/生活/创造/休息/常识/运动</p>
+
+  <h2 data-toc="4">每日规律活动</h2>
+  <p>清晨读诗、傍晚运动、目标导向小组、桌游活动……一天的节奏让孩子在最佳状态中学习。</p>
+  <div class="placeholder-img">[ 一天时间表 ]</div>
+
+  <h2 data-toc="5">报名信息</h2>
+  <p>夏令营时间：7.4-7.13，10 天</p>
+  <p>地点：四川国际标榜职业学院</p>
+  <p>价格：原价 12800 / 早鸟价 10800 / 省 2000</p>
+
+  <h2 data-toc="6">营地环境</h2>
+  <p>四川国际标榜职业学院 —— 学生宿舍 4-6 人间，独立卫浴 + 空调。</p>
+  <p>麓客岛营地 —— 湖景木屋 8-10 人间，营地封闭式管理。</p>
+  <div class="placeholder-img">[ 营地照片 ]</div>
+
+  <h2 data-toc="7">钥匙玩校玩伴</h2>
+  <p>池晓、林文萍、杨波、大眼、高山、王淘……13 位 12-18 岁玩伴，7 位 9-12 岁玩伴。</p>
+  <div class="placeholder-img">[ 玩伴合影 ]</div>
+
+  <h2 data-toc="8">营员和家长反馈</h2>
+  <p>"这个暑假参加了钥匙玩校的游戏营，10 天时间，让我乐在其中……"</p>
+  <p>"梓钦在家也曾痴迷网游动漫两三年，钥匙玩校让他打开自己……"</p>
+
+  <h2 data-toc="9">关于我们</h2>
+  <p>钥匙玩校，开门的钥匙，好玩的学校。成立于 2015 年，专业的青春期营地教育品牌。</p>
+  <p>"让教育好玩起来"，以"游戏即学习"为核心理念。</p>
+</div>
+
+<!-- 🅰️ Dot Rail -->
+<aside class="rail-a" id="railA">
+  <div class="rail-a-item visited"><span class="rail-a-dot"></span><span class="rail-a-label">1. 营会简介</span></div>
+  <div class="rail-a-item visited"><span class="rail-a-dot"></span><span class="rail-a-label">2. 营会安排</span></div>
+  <div class="rail-a-item current"><span class="rail-a-dot"></span><span class="rail-a-label">3. 钥匙玩校特色</span></div>
+  <div class="rail-a-item"><span class="rail-a-dot"></span><span class="rail-a-label">4. 每日规律活动</span></div>
+  <div class="rail-a-item"><span class="rail-a-dot"></span><span class="rail-a-label">5. 报名信息</span></div>
+  <div class="rail-a-item"><span class="rail-a-dot"></span><span class="rail-a-label">6. 营地环境</span></div>
+  <div class="rail-a-item"><span class="rail-a-dot"></span><span class="rail-a-label">7. 钥匙玩校玩伴</span></div>
+  <div class="rail-a-item"><span class="rail-a-dot"></span><span class="rail-a-label">8. 反馈</span></div>
+  <div class="rail-a-item"><span class="rail-a-dot"></span><span class="rail-a-label">9. 关于我们</span></div>
+</aside>
+
+<!-- 🅱️ 数字胶囊 -->
+<aside class="rail-b" id="railB">
+  <div class="rail-b-item visited"><span class="rail-b-num">1</span>简介</div>
+  <div class="rail-b-item visited"><span class="rail-b-num">2</span>安排</div>
+  <div class="rail-b-item current"><span class="rail-b-num">3</span>钥匙玩校特色</div>
+  <div class="rail-b-item"><span class="rail-b-num">4</span>每日活动</div>
+  <div class="rail-b-item"><span class="rail-b-num">5</span>报名</div>
+  <div class="rail-b-item"><span class="rail-b-num">6</span>营地</div>
+  <div class="rail-b-item"><span class="rail-b-num">7</span>玩伴</div>
+  <div class="rail-b-item"><span class="rail-b-num">8</span>反馈</div>
+  <div class="rail-b-item"><span class="rail-b-num">9</span>关于</div>
+</aside>
+
+<!-- 🅲️ 时间线 -->
+<aside class="rail-c" id="railC">
+  <div class="rail-c-line"></div>
+  <div class="rail-c-line-filled"></div>
+  <div class="rail-c-notches">
+    <div class="rail-c-notch visited" data-label="1. 营会简介"></div>
+    <div class="rail-c-notch visited" data-label="2. 营会安排"></div>
+    <div class="rail-c-notch current" data-label="3. 钥匙玩校特色"></div>
+    <div class="rail-c-notch" data-label="4. 每日活动"></div>
+    <div class="rail-c-notch" data-label="5. 报名信息"></div>
+    <div class="rail-c-notch" data-label="6. 营地环境"></div>
+    <div class="rail-c-notch" data-label="7. 玩伴"></div>
+    <div class="rail-c-notch" data-label="8. 反馈"></div>
+    <div class="rail-c-notch" data-label="9. 关于我们"></div>
+  </div>
+</aside>
+
+<!-- 🅳️ 浮窗罗盘 -->
+<aside class="rail-d" id="railD">
+  <div class="rail-d-icon">3</div>
+  <div class="rail-d-info">
+    <div class="rail-d-title">钥匙玩校特色</div>
+    <div class="rail-d-progress">
+      <span>35%</span>
+      <div class="rail-d-progress-bar"><div class="rail-d-progress-fill"></div></div>
+      <span>9 章</span>
+    </div>
+  </div>
+</aside>
+
+<script>
+function pick(k) {
+  document.body.classList.remove('show-a','show-b','show-c','show-d');
+  document.body.classList.add('show-'+k);
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', 'abcd'[i] === k);
+  });
+  const names = {
+    a: '🅰️ Dot Rail（极简点列）',
+    b: '🅱️ 数字胶囊（始终可见）',
+    c: '🅲️ 时间线滑块（跟随滚动）',
+    d: '🅳️ 浮窗罗盘（chip + 抽屉）',
+  };
+  document.getElementById('status').textContent = '当前选中：' + names[k];
+}
+
+// 全局进度条跟随滚动
+function update() {
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = max > 0 ? (window.pageYOffset / max * 100) : 0;
+  document.getElementById('gbar').style.width = pct + '%';
+}
+window.addEventListener('scroll', update, { passive: true });
+update();
+</script>
+
+</body>
+</html>
