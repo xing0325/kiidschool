@@ -131,32 +131,6 @@
     }
     .chip.active { border-color: #FF6B35; color: #FF6B35; background: #FFF6F3; }
 
-    .date-range {
-      display: flex; align-items: center; gap: 6px;
-    }
-    .date-range input[type="date"] {
-      flex: 1; min-width: 0;
-      padding: 8px 10px;
-      border: 1.5px solid #E8E4DE; border-radius: 8px;
-      font-size: 12.5px; color: #555; background: #fff;
-      font-family: inherit;
-    }
-    .date-range input[type="date"]:focus {
-      outline: none; border-color: #FF6B35;
-    }
-    .date-range input[type="date"]:not([value=""]):valid {
-      color: #FF6B35; border-color: #FFD0B0;
-    }
-    .date-sep { font-size: 12px; color: #999; flex-shrink: 0; }
-    .date-clear {
-      width: 28px; height: 28px; padding: 0;
-      background: #F5F3EF; border: none; border-radius: 50%;
-      font-size: 12px; color: #999; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .date-clear:hover { background: #FFEEE3; color: #FF6B35; }
-
     .clear-row { padding: 10px 0 4px; display: flex; justify-content: flex-end; }
     .clear-btn {
       font-size: 12px; color: #FF6B35; background: #FFF6F3;
@@ -1454,16 +1428,6 @@
         <span class="chip active" data-loc="all" onclick="toggleLoc(this)">全部</span>
         <span class="chip" data-loc="标榜" onclick="toggleLoc(this)">🏫 四川国际标榜职业学院</span>
         <span class="chip" data-loc="麓客岛" onclick="toggleLoc(this)">🏝 麓客岛</span>
-      </div>
-    </div>
-
-    <div class="filter-section">
-      <div class="filter-label">时间 <span class="filter-hint">起止区间</span></div>
-      <div class="date-range">
-        <input type="date" id="date-start" min="2026-07-04" max="2026-08-17" onchange="onDateChange()">
-        <span class="date-sep">至</span>
-        <input type="date" id="date-end" min="2026-07-04" max="2026-08-17" onchange="onDateChange()">
-        <button class="date-clear" onclick="clearDateRange()" aria-label="清除时间">✕</button>
       </div>
     </div>
 
@@ -2996,17 +2960,9 @@
       const w = WEEK_SLOTS.find(s => s.key === key);
       state.dateStart = new Date(w.start + 'T00:00:00');
       state.dateEnd = new Date(w.end + 'T23:59:59');
-      const startEl = document.getElementById('date-start');
-      const endEl = document.getElementById('date-end');
-      if (startEl) startEl.value = w.start;
-      if (endEl) endEl.value = w.end;
     } else {
       state.dateStart = null;
       state.dateEnd = null;
-      const startEl = document.getElementById('date-start');
-      const endEl = document.getElementById('date-end');
-      if (startEl) startEl.value = '';
-      if (endEl) endEl.value = '';
     }
     applyFilters();
   }
@@ -3082,40 +3038,6 @@
     applyFilters();
   }
 
-  // ── 时间区间 ──
-  function onDateChange() {
-    const s = document.getElementById('date-start').value;  // "YYYY-MM-DD" 或 ""
-    const e = document.getElementById('date-end').value;
-    state.dateStart = s ? new Date(s + 'T00:00:00') : null;
-    state.dateEnd   = e ? new Date(e + 'T23:59:59') : null;
-    if (state.dateStart && state.dateEnd && state.dateStart > state.dateEnd) {
-      [state.dateStart, state.dateEnd] = [state.dateEnd, state.dateStart];
-      document.getElementById('date-start').value = state.dateStart.toISOString().slice(0,10);
-      document.getElementById('date-end').value   = state.dateEnd.toISOString().slice(0,10);
-    }
-    _syncWeekChip();
-    applyFilters();
-  }
-  // 手动改日期范围时，看是否正好等于某个周次 slot；是就高亮 chip
-  function _syncWeekChip() {
-    document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('active'));
-    if (!state.dateStart && !state.dateEnd) {
-      document.querySelector('.week-chip[data-week="all"]')?.classList.add('active');
-      return;
-    }
-    const sIso = state.dateStart?.toISOString().slice(0,10);
-    const eIso = state.dateEnd?.toISOString().slice(0,10);
-    const slot = WEEK_SLOTS.find(w => w.start === sIso && w.end === eIso);
-    if (slot) document.querySelector(`.week-chip[data-week="${slot.key}"]`)?.classList.add('active');
-    // 不匹配任何 slot 时，all 也不高亮（chip 视觉中性）
-  }
-  function clearDateRange() {
-    document.getElementById('date-start').value = '';
-    document.getElementById('date-end').value = '';
-    state.dateStart = null; state.dateEnd = null;
-    applyFilters();
-  }
-
   // 折叠/展开整个筛选区
   function toggleFilterCollapse() {
     document.querySelector('.filter-wrap').classList.toggle('collapsed');
@@ -3126,8 +3048,6 @@
     state.dateStart = null; state.dateEnd = null;
     document.querySelectorAll('.filter-section .chip').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.filter-section .chip[data-age-group="all"], .filter-section .chip[data-theme="all"], .filter-section .chip[data-loc="all"]').forEach(c => c.classList.add('active'));
-    document.getElementById('date-start').value = '';
-    document.getElementById('date-end').value = '';
     // 重置周次 chip 到"全部"
     document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('active'));
     document.querySelector('.week-chip[data-week="all"]')?.classList.add('active');
