@@ -4114,7 +4114,11 @@
     // 点到按钮/链接/视频内不算"打开卡片"
     if (e.target.closest('button, a, input, video, .card-qr-panel, .card-detail-panel')) return;
     const card = e.target.closest('.camps-list .camp-card');
-    if (card) openDetail(card);
+    if (!card) return;
+    // 仅当前 panel 内的卡片可点（克隆卡分布在多个 panel）
+    const panel = card.closest('.panel');
+    if (panel && panel.dataset.panel !== PANEL_KEYS[_panelIndex]) return;
+    openDetail(card);
   });
 </script>
 </body>
