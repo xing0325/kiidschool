@@ -323,6 +323,28 @@
       cursor: pointer;
     }
 
+    /* ── 4 panel 横滑容器 ── */
+    .panel-swiper {
+      overflow: hidden;
+      position: relative;
+      touch-action: pan-y;
+    }
+    .panel-track {
+      display: flex;
+      width: 400%;
+      transform: translateX(0);
+      transition: transform 280ms cubic-bezier(.2,.7,.2,1);
+      will-change: transform;
+    }
+    .panel-track.dragging { transition: none; }
+    .panel {
+      flex: 0 0 25%;
+      min-height: 60vh;
+      box-sizing: border-box;
+    }
+    /* 其他 panel 默认无 age-group-divider（直接是子集卡片） */
+    .panel:not([data-panel="all"]) .camps-list { padding-top: 8px; }
+
     /* ── 一级页面 view（与首页 home-view 互斥）── */
     .view-page {
       background: #F7F5F1;
@@ -1727,7 +1749,10 @@
   <span>共 <strong id="result-count">13</strong> 个营期</span>
 </div>
 
-<!-- CAMP CARDS -->
+<!-- CAMP CARDS（4 panel 横滑：全部 / 9-12 / 12-16 / 14-18） -->
+<div class="panel-swiper" id="panel-swiper">
+<div class="panel-track" id="panel-track">
+<section class="panel" data-panel="all" data-age="all">
 <div class="camps-list" id="camps-list">
 
   <!-- ── 🌟 推荐 ── -->
@@ -2837,6 +2862,18 @@
   </div>
 
 </div><!-- /camps-list -->
+</section><!-- /.panel[all] -->
+<section class="panel" data-panel="9-12" data-age="9-12">
+  <div class="camps-list" data-panel-list="9-12"></div>
+</section>
+<section class="panel" data-panel="12-16" data-age="12-16">
+  <div class="camps-list" data-panel-list="12-16"></div>
+</section>
+<section class="panel" data-panel="14-18" data-age="14-18">
+  <div class="camps-list" data-panel-list="14-18"></div>
+</section>
+</div><!-- /.panel-track -->
+</div><!-- /.panel-swiper -->
 
 <!-- NO RESULTS -->
 <div class="no-results" id="no-results">
