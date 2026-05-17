@@ -1556,9 +1556,6 @@
   <button class="age-nav-tab" data-age="14-18" onclick="selectAgeTab('14-18')">14-18 岁</button>
 </nav>
 
-<!-- 周次 Tabs -->
-<div class="week-tabs" id="week-tabs"></div>
-
 <!-- RESULTS -->
 <div class="results-bar">
   <span>共 <strong id="result-count">13</strong> 个营期</span>
@@ -1743,7 +1740,7 @@
   </div>
 
   <!-- 招牌通识营·世界重启 -->
-  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="通识" data-dates="7.11-7.17" data-group="9-12" data-slug="world-restart">
+  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="通识" data-dates="7.11-7.17,7.25-7.31" data-group="9-12" data-slug="world-restart">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#00B894,#00CEC9);">
         <span class="card-status done">✓</span>
@@ -2802,6 +2799,11 @@
     </div>
 
     <div class="filter-section">
+      <div class="filter-label">营期周次 <span class="filter-hint">单选</span></div>
+      <div class="week-tabs" id="week-tabs" style="padding:0;background:transparent;border:none"></div>
+    </div>
+
+    <div class="filter-section">
       <div class="filter-label">主题 <span class="filter-hint">可多选</span></div>
       <div class="theme-chips" id="theme-chips-wrap">
         <span class="chip active" data-theme="all" onclick="toggleTheme(this)">全部</span>
@@ -3064,11 +3066,10 @@
 
 <script>
   const state = {
-    ages: new Set(),            // 字符串集合，例如 "9-12" / "12-16" / "14-18"
+    ages: new Set(),                    // "9-12" / "12-16" / "14-18"
     themes: new Set(),
     locs: new Set(),
-    dateStart: null,            // Date 对象或 null
-    dateEnd: null,              // Date 对象或 null
+    selectedDateRange: null,            // 如 "7.4-7.10" 或 null（全部）
   };
 
   // ── 年龄 Tabs（小红书首页风） ──
@@ -3094,40 +3095,34 @@
     updateFilterBadge();
   }
   function updateFilterBadge() {
-    const n = state.themes.size + state.locs.size;
+    const n = state.themes.size + state.locs.size + (state.selectedDateRange ? 1 : 0);
     const badge = document.getElementById('filter-count-badge');
     if (!badge) return;
     badge.textContent = n;
     badge.classList.toggle('show', n > 0);
   }
 
-  // ── 周次 Tabs ──
-  const WEEK_SLOTS = [
-    { key: '7.4-7.10',  label: '7.4',  sub: '-7.10', start: '2026-07-04', end: '2026-07-10' },
-    { key: '7.11-7.17', label: '7.11', sub: '-7.17', start: '2026-07-11', end: '2026-07-17' },
-    { key: '7.18-7.24', label: '7.18', sub: '-7.24', start: '2026-07-18', end: '2026-07-24' },
-    { key: '7.25-7.31', label: '7.25', sub: '-7.31', start: '2026-07-25', end: '2026-07-31' },
-    { key: '8.1-8.7',   label: '8.1',  sub: '-8.7',  start: '2026-08-01', end: '2026-08-07' },
-    { key: '8.8-8.17',  label: '8.8',  sub: '-8.17', start: '2026-08-08', end: '2026-08-17' },
-  ];
-
-  function _countCampsInWeek(slot) {
-    let n = 0;
+  // ── 营地档期 Tabs（按卡片真实 data-dates 动态生成） ──
+  function _scanDateRanges() {
+    // 返回 { range: '7.4-7.10', count: 4 } 按起始日期排序
+    const map = new Map();
     document.querySelectorAll('.camps-list .camp-card').forEach(card => {
-      // 先按当前年龄过滤
       const ageMin = parseInt(card.dataset.ageMin);
       const ageMax = parseInt(card.dataset.ageMax);
       const ageGroupKey = `${ageMin}-${ageMax}`;
       const ageOk = state.ages.size === 0 || state.ages.has(ageGroupKey);
       if (!ageOk) return;
-
-      if (!slot) { n++; return; }
-      const filterStart = new Date(slot.start + 'T00:00:00');
-      const filterEnd = new Date(slot.end + 'T23:59:59');
-      const periods = parseCardDates(card.dataset.dates || '');
-      if (periods.some(p => p.start <= filterEnd && p.end >= filterStart)) n++;
+      const ranges = (card.dataset.dates || '').split(',').map(s => s.trim()).filter(Boolean);
+      ranges.forEach(r => map.set(r, (map.get(r) || 0) + 1));
     });
-    return n;
+    const sorted = [...map.entries()].sort(([a], [b]) => {
+      const k = s => {
+        const [m, d] = s.split('-')[0].split('.').map(Number);
+        return m * 100 + d;
+      };
+      return k(a) - k(b);
+    });
+    return sorted.map(([range, count]) => ({ range, count }));
   }
 
   function buildWeekTabs() {
@@ -3135,36 +3130,33 @@
     if (!tabs) return;
     tabs.innerHTML = '';
 
+    const ranges = _scanDateRanges();
+    const total = ranges.reduce((s, r) => s + r.count, 0);
+
     // 全部
     const all = document.createElement('div');
-    all.className = 'week-chip active';
-    all.dataset.week = 'all';
-    all.innerHTML = `<strong>全部</strong><small>所有营期</small><div class="count">${_countCampsInWeek(null)}</div>`;
-    all.onclick = () => selectWeek(null);
+    all.className = 'week-chip' + (state.selectedDateRange ? '' : ' active');
+    all.dataset.range = 'all';
+    all.innerHTML = `<strong>全部</strong><small>所有营期</small><div class="count">${total}</div>`;
+    all.onclick = () => selectDateRange(null);
     tabs.appendChild(all);
 
-    WEEK_SLOTS.forEach(w => {
+    ranges.forEach(({ range, count }) => {
+      const [start, end] = range.split('-');
       const chip = document.createElement('div');
-      chip.className = 'week-chip';
-      chip.dataset.week = w.key;
-      chip.innerHTML = `<strong>${w.label}</strong><small>${w.sub}</small><div class="count">${_countCampsInWeek(w)}</div>`;
-      chip.onclick = () => selectWeek(w.key);
+      chip.className = 'week-chip' + (state.selectedDateRange === range ? ' active' : '');
+      chip.dataset.range = range;
+      chip.innerHTML = `<strong>${start}</strong><small>-${end}</small><div class="count">${count}</div>`;
+      chip.onclick = () => selectDateRange(range);
       tabs.appendChild(chip);
     });
   }
 
-  function selectWeek(key) {
-    document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('active'));
-    document.querySelector(`.week-chip[data-week="${key || 'all'}"]`)?.classList.add('active');
-    if (key) {
-      const w = WEEK_SLOTS.find(s => s.key === key);
-      state.dateStart = new Date(w.start + 'T00:00:00');
-      state.dateEnd = new Date(w.end + 'T23:59:59');
-    } else {
-      state.dateStart = null;
-      state.dateEnd = null;
-    }
+  function selectDateRange(range) {
+    state.selectedDateRange = range || null;
+    buildWeekTabs(); // 重建以更新 active 态
     applyFilters();
+    updateFilterBadge();
   }
 
   // 多期角标：dates 字段含逗号即代表 N 期，自动加左下角章
@@ -3247,15 +3239,14 @@
 
   function clearAllFilters() {
     state.ages.clear(); state.themes.clear(); state.locs.clear();
-    state.dateStart = null; state.dateEnd = null;
+    state.selectedDateRange = null;
     document.querySelectorAll('.filter-section .chip').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.filter-section .chip[data-theme="all"], .filter-section .chip[data-loc="all"]').forEach(c => c.classList.add('active'));
-    // 重置周次 chip 到"全部"
-    document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('active'));
-    document.querySelector('.week-chip[data-week="all"]')?.classList.add('active');
     // 重置年龄 Tab 到"全部"
     document.querySelectorAll('.age-nav-tab').forEach(t => t.classList.remove('active'));
     document.querySelector('.age-nav-tab[data-age="all"]')?.classList.add('active');
+    // 重建档期 chips
+    if (typeof buildWeekTabs === 'function') buildWeekTabs();
     updateFilterBadge();
     applyFilters();
   }
@@ -3293,13 +3284,13 @@
       const ageMax = parseInt(card.dataset.ageMax);
       const ageGroupKey = `${ageMin}-${ageMax}`;
       const cardThemes = card.dataset.themes.split(',');
-      const cardDatePeriods = parseCardDates(card.dataset.dates);
+      const cardRanges = (card.dataset.dates || '').split(',').map(s => s.trim());
       const locText = (card.querySelector('.card-location')?.textContent) || '';
 
       const ageOk    = state.ages.size === 0    || state.ages.has(ageGroupKey);
       const themeOk  = state.themes.size === 0  || [...state.themes].some(t => cardThemes.includes(t));
       const locOk    = state.locs.size === 0    || [...state.locs].some(l => locText.includes(l));
-      const dateOk   = (!state.dateStart && !state.dateEnd) || dateRangeOverlap(cardDatePeriods, state.dateStart, state.dateEnd);
+      const dateOk   = !state.selectedDateRange || cardRanges.includes(state.selectedDateRange);
 
       if (ageOk && themeOk && locOk && dateOk) {
         card.classList.remove('hidden');
