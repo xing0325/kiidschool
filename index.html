@@ -1125,7 +1125,95 @@
       border-left: 3px solid #FF6B35;
     }
 
-    /* TOC 浮动按钮（移动端） */
+    /* 🅰️ Dot Rail 侧边导航 */
+    .detail-rail {
+      position: fixed;
+      right: 0; top: 50%;
+      transform: translateY(-50%);
+      z-index: 998;
+      padding: 14px 8px 14px 12px;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 14px 0 0 14px;
+      box-shadow: -2px 6px 18px rgba(0,0,0,0.08);
+      width: 30px;
+      max-height: 75vh;
+      overflow: hidden;
+      cursor: pointer;
+      display: none;
+    }
+    body.detail-open .detail-rail { display: block; }
+    @media (hover: hover) {
+      .detail-rail:hover {
+        width: 240px;
+        padding-right: 20px;
+      }
+      .detail-rail:hover .detail-rail-label { opacity: 1; transform: translateX(0); }
+    }
+    .detail-rail.expanded {
+      width: 240px;
+      padding-right: 20px;
+    }
+    .detail-rail.expanded .detail-rail-label { opacity: 1; transform: translateX(0); }
+
+    .detail-rail-items {
+      display: flex; flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      max-height: 70vh;
+      scrollbar-width: none;
+    }
+    .detail-rail-items::-webkit-scrollbar { display: none; }
+
+    .detail-rail-item {
+      display: flex; align-items: center; gap: 12px;
+      cursor: pointer; white-space: nowrap;
+      user-select: none;
+    }
+    .detail-rail-dot {
+      width: 8px; height: 8px;
+      background: #D8CFBE;
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .detail-rail-item.visited .detail-rail-dot {
+      background: #FFB37A;
+    }
+    .detail-rail-item.current .detail-rail-dot {
+      width: 22px;
+      border-radius: 4px;
+      background: #FF6B35;
+      box-shadow: 0 0 12px rgba(255,107,53,0.5);
+    }
+    .detail-rail-label {
+      font-size: 12.5px; color: #444;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity 0.22s 0.05s, transform 0.22s 0.05s;
+    }
+    .detail-rail-item.current .detail-rail-label {
+      color: #FF6B35; font-weight: 800;
+    }
+    .detail-rail-item.visited .detail-rail-label {
+      color: #888;
+    }
+    .detail-rail-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px;
+      background: #F0EDE8;
+      color: #888;
+      border-radius: 50%;
+      font-size: 10px; font-weight: 800;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .detail-rail-item.visited .detail-rail-num { background: #FFD0B0; color: #FF6B35; }
+    .detail-rail-item.current .detail-rail-num { background: #FF6B35; color: #fff; }
+
+    /* TOC 浮动按钮（移动端，已停用） */
     .toc-fab {
       position: fixed;
       right: 14px;
@@ -2539,16 +2627,17 @@
   <div class="detail-progress"><div class="detail-progress-fill" id="detail-progress-fill"></div></div>
   <div class="detail-body" id="detail-body"></div>
 
-  <!-- 侧边目录（桌面右侧 / 移动端抽屉） -->
-  <button class="toc-fab" id="toc-fab" onclick="toggleTOC()" aria-label="目录">☰</button>
-  <aside class="detail-toc" id="detail-toc">
-    <div class="toc-head">
-      <span>目录</span>
-      <button class="toc-close" onclick="toggleTOC()" aria-label="关闭">×</button>
-    </div>
+  <!-- 旧 TOC 抽屉（已被 rail 替代，保留 DOM 供 buildTOC 写入备用） -->
+  <aside class="detail-toc" id="detail-toc" style="display:none">
     <ul class="toc-list" id="toc-list"></ul>
   </aside>
+  <button class="toc-fab" id="toc-fab" style="display:none" aria-label="目录">☰</button>
 </div>
+
+<!-- 🅰️ Dot Rail 必须放在 detail-overlay 外（避免 transform 父级影响 fixed 定位） -->
+<aside class="detail-rail" id="detail-rail" onclick="railToggleExpand(event)">
+  <div class="detail-rail-items" id="detail-rail-items"></div>
+</aside>
 
 <!-- FAB 浮动咨询按钮 -->
 <button class="fab" onclick="document.querySelector('.cta-btn-primary').click(); document.querySelector('.footer-cta')?.scrollIntoView({behavior:'smooth'});">
@@ -3184,6 +3273,7 @@
       _tocAnchors.push({ id, text: displayText, el: p, level: 2 });
     });
 
+    // 旧 TOC 抽屉的 list（已隐藏，备用）
     const tocList = document.getElementById('toc-list');
     tocList.innerHTML = '';
     let mainIdx = 0;
@@ -3192,7 +3282,6 @@
       li.className = a.level === 2 ? 'toc-li-sub' : 'toc-li-main';
       const link = document.createElement('a');
       link.href = '#' + a.id;
-      // 给主小节加序号 1. / 2. / 3. ...
       if (a.level === 1) {
         mainIdx++;
         link.innerHTML = `<span class="toc-num">${mainIdx}</span><span class="toc-text">${a.text}</span>`;
@@ -3203,19 +3292,73 @@
       if (a.level === 2) link.classList.add('toc-sub');
       link.onclick = (e) => {
         e.preventDefault();
-        const overlay = document.getElementById('detail-overlay');
-        overlay.scrollTo({
-          top: a.el.offsetTop - 60,
-          behavior: 'smooth'
+        document.getElementById('detail-overlay').scrollTo({
+          top: a.el.offsetTop - 60, behavior: 'auto'
         });
-        document.getElementById('detail-toc').classList.remove('open');
       };
       li.appendChild(link);
       tocList.appendChild(li);
     });
 
-    if (_tocAnchors.length > 0) {
-      document.getElementById('toc-fab').style.display = 'flex';
+    // 🅰️ Dot Rail：核心 9 大章节（多个细分小节合并显示）
+    const RAIL_GROUPS = [
+      { label: '营会简介', match: ['营会简介'] },
+      { label: '营期安排', match: ['营会安排', '营期安排', '活动说明', '课程简介', '带领人'] },
+      { label: '钥匙玩校特色', match: ['钥匙玩校特色'] },
+      { label: '每日规律活动', match: ['每日规律活动'] },
+      { label: '报名信息', match: ['报名信息', '营会时间', '营会费用', '夏令营时间', '退费规则', '报名流程'] },
+      { label: '营地环境', match: ['营地环境'] },
+      { label: '玩伴介绍', match: ['钥匙玩校玩伴', '钥匙玩校玩伴们'] },
+      { label: '营员·家长反馈', match: ['营员和家长反馈', '营员反馈', '家长反馈'] },
+      { label: '关于我们', match: ['关于我们'] },
+    ];
+    _railAnchors = [];  // {label, el}
+    RAIL_GROUPS.forEach(g => {
+      const first = _tocAnchors.find(a => a.level === 1 && g.match.includes(a.text));
+      if (first) _railAnchors.push({ label: g.label, el: first.el });
+    });
+
+    const railEl = document.getElementById('detail-rail-items');
+    railEl.innerHTML = '';
+    _railAnchors.forEach((a, i) => {
+      const item = document.createElement('div');
+      item.className = 'detail-rail-item';
+      item.dataset.idx = i;
+      item.innerHTML = `
+        <span class="detail-rail-dot"></span>
+        <span class="detail-rail-num">${i + 1}</span>
+        <span class="detail-rail-label">${a.label}</span>
+      `;
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById('detail-overlay').scrollTo({
+          top: a.el.offsetTop - 60, behavior: 'auto'
+        });
+        _railKeepExpanded();
+        requestAnimationFrame(_updateProgress);
+      });
+      railEl.appendChild(item);
+    });
+  }
+  let _railAnchors = [];
+
+  let _railCollapseTimer = null;
+  function _railKeepExpanded() {
+    const rail = document.getElementById('detail-rail');
+    if (!rail) return;
+    rail.classList.add('expanded');
+    clearTimeout(_railCollapseTimer);
+    _railCollapseTimer = setTimeout(() => rail.classList.remove('expanded'), 4000);
+  }
+  function railToggleExpand(e) {
+    // 点 dot 直接跳转，不展开（item 的点击已 stopPropagation）
+    const rail = e.currentTarget;
+    rail.classList.toggle('expanded');
+    if (rail.classList.contains('expanded')) {
+      clearTimeout(_railCollapseTimer);
+      _railCollapseTimer = setTimeout(() => rail.classList.remove('expanded'), 5000);
+    } else {
+      clearTimeout(_railCollapseTimer);
     }
   }
 
@@ -3229,6 +3372,16 @@
     });
     document.querySelectorAll('#toc-list a').forEach((link, i) => {
       link.classList.toggle('active', i === activeIdx);
+    });
+
+    // 同步更新 Rail 状态：visited / current
+    let railCurIdx = -1;
+    _railAnchors.forEach((a, i) => {
+      if (a.el.offsetTop <= scrollTop) railCurIdx = i;
+    });
+    document.querySelectorAll('.detail-rail-item').forEach((item, i) => {
+      item.classList.toggle('current', i === railCurIdx);
+      item.classList.toggle('visited', i < railCurIdx);
     });
   }
 
