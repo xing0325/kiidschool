@@ -1737,14 +1737,20 @@
     /* 详情页打开动画 */
     body.detail-open .detail-main { animation: detailSlideIn 280ms cubic-bezier(.2,.8,.2,1); }
     @keyframes detailSlideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-    /* sheet 弹性 */
-    .filter-sheet.open .filter-sheet-content,
-    .contact-modal.open .contact-modal-content {
+    /* filter sheet 从底部弹起加弹性曲线（contact-modal 保留它自己的 popIn 居中动画，不覆盖） */
+    .filter-sheet.open .filter-sheet-content {
       animation: sheetSpringIn 360ms cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     @keyframes sheetSpringIn {
       from { opacity: 0; transform: translateY(40px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* footer-cta 视觉节奏：加边距和圆角，与上方卡片视觉宽度一致 */
+    .footer-cta {
+      margin: 8px 12px 32px;
+      border-radius: 18px;
+      padding: 28px 18px 30px !important;
     }
   </style>
 </head>
@@ -2802,7 +2808,10 @@
         <ul><li>热爱文学想象、奇幻世界观或剧本杀的青少年</li><li>渴望高质量社交、希望在深度互动中寻找共鸣的孩子</li><li>喜欢策略思考，乐于通过语言沟通解决问题的表达型选手</li></ul>
       </div>
     </div>
-    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div><!-- /camps-list -->
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button>
+  </div>
+
+</div><!-- /camps-list -->
 
 <!-- NO RESULTS -->
 <div class="no-results" id="no-results">
@@ -3279,6 +3288,8 @@
   // 当前选中的年龄段："all" | "9-12" | "12-16" | "14-18"
   let _currentAge = 'all';
 
+  const AGE_KEYS = ['all', '9-12', '12-16', '14-18'];
+
   function selectAgeTab(key) {
     _currentAge = key;
     document.querySelectorAll('.age-nav-tab').forEach(t => t.classList.remove('active'));
@@ -3293,6 +3304,44 @@
     // 触发卡片淡入淡出
     if (typeof applyFilters === 'function') applyFilters();
   }
+
+  // 横滑手势：在 camps-list 区域水平滑动 → 切下一个/上一个年龄段
+  (function attachAgeSwipe() {
+    const area = document.getElementById('camps-list');
+    if (!area) return;
+    let startX = 0, startY = 0, dx = 0, dy = 0, locked = null, dragging = false;
+
+    area.addEventListener('touchstart', (e) => {
+      if (document.body.classList.contains('detail-open')) return;
+      if (!document.body.classList.contains('view-home')) return;
+      if (e.touches.length !== 1) return;
+      startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+      dx = dy = 0; locked = null; dragging = true;
+    }, { passive: true });
+
+    area.addEventListener('touchmove', (e) => {
+      if (!dragging) return;
+      dx = e.touches[0].clientX - startX;
+      dy = e.touches[0].clientY - startY;
+      if (!locked && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
+        locked = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+      }
+      if (locked === 'h' && e.cancelable) e.preventDefault();
+    }, { passive: false });
+
+    area.addEventListener('touchend', () => {
+      if (!dragging) return;
+      dragging = false;
+      if (locked !== 'h') return;
+      const threshold = (area.clientWidth || window.innerWidth) * 0.20;
+      if (Math.abs(dx) < threshold) return;
+      const cur = AGE_KEYS.indexOf(_currentAge);
+      let next = cur;
+      if (dx < 0) next = Math.min(cur + 1, AGE_KEYS.length - 1);  // 左滑 → 下一段
+      else next = Math.max(cur - 1, 0);                            // 右滑 → 上一段
+      if (next !== cur) selectAgeTab(AGE_KEYS[next]);
+    });
+  })();
 
   // ── 筛选抽屉 ──
   function openFilterSheet() {
