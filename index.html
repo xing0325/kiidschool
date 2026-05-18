@@ -1836,6 +1836,38 @@
       40%  { transform: scale(1.14); }
       100% { transform: scale(1); }
     }
+
+    /* ═══ #2 Material Ripple ═══ */
+    .has-ripple { position: relative; overflow: hidden; }
+    .has-ripple > .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 107, 53, 0.28);
+      pointer-events: none;
+      transform: scale(0);
+      opacity: 1;
+      animation: rippleExpand 560ms cubic-bezier(.2,.7,.2,1) forwards;
+      mix-blend-mode: multiply;
+    }
+    .has-ripple.on-dark > .ripple { background: rgba(255,255,255,0.32); mix-blend-mode: screen; }
+    @keyframes rippleExpand {
+      0%   { transform: scale(0);   opacity: 1; }
+      100% { transform: scale(2.4); opacity: 0; }
+    }
+
+    /* ═══ #3 Skeleton 流光波纹占位 ═══ */
+    .skeleton-wave {
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0) 100%) #EDE7DE;
+      background-size: 220% 100%;
+      background-repeat: no-repeat;
+      background-position: -150% 0;
+      animation: skeletonWave 1.5s linear infinite;
+    }
+    @keyframes skeletonWave {
+      0%   { background-position: -150% 0; }
+      100% { background-position:  150% 0; }
+    }
   </style>
 </head>
 <body class="view-home">
@@ -1914,7 +1946,7 @@
   </div>
 
   <!-- 六艺通识营 -->
-  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="学习力,跨学科" data-dates="7.4-7.10,7.11-7.17" data-group="9-12" data-slug="liuyi">
+  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="跨学科通识" data-dates="7.4-7.10,7.11-7.17" data-group="9-12" data-slug="liuyi">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
         <span class="card-status done">✓</span>
@@ -1959,7 +1991,7 @@
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 头脑特工队 -->
-  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="心理抗挫" data-dates="7.4-7.10,7.11-7.17,7.18-7.24,7.25-7.31" data-group="9-12" data-slug="emotion-team">
+  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="情绪" data-dates="7.4-7.10,7.11-7.17,7.18-7.24,7.25-7.31" data-group="9-12" data-slug="emotion-team">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#6C5CE7,#A29BFE);">
         <span class="card-status done">✓</span>
@@ -2004,7 +2036,7 @@
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 勇敢者游戏 -->
-  <div class="camp-card" data-status="todo" data-age-min="9" data-age-max="12" data-themes="心理抗挫,户外冒险" data-dates="7.18-7.24" data-group="9-12">
+  <div class="camp-card" data-status="todo" data-age-min="9" data-age-max="12" data-themes="剧本营,冒险" data-dates="7.18-7.24" data-group="9-12">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#E17055,#D63031);">
         <span class="card-status todo">✗</span>
@@ -2049,7 +2081,7 @@
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 招牌通识营·世界重启 -->
-  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="跨学科" data-dates="7.11-7.17,7.25-7.31" data-group="9-12" data-slug="world-restart">
+  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="动手创造" data-dates="7.11-7.17,7.25-7.31" data-group="9-12" data-slug="world-restart">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#00B894,#00CEC9);">
         <span class="card-status done">✓</span>
@@ -2094,7 +2126,7 @@
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 少年大富翁创业营 -->
-  <div class="camp-card" data-status="todo" data-age-min="9" data-age-max="12" data-themes="财商" data-dates="7.4-7.10" data-group="9-12">
+  <div class="camp-card" data-status="todo" data-age-min="9" data-age-max="12" data-themes="财商,PBL" data-dates="7.4-7.10" data-group="9-12">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#F9CA24,#F0932B);">
         <span class="card-status todo">✗</span>
@@ -2139,7 +2171,7 @@
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 学院制夏令营2.0 -->
-  <div class="camp-card featured" data-status="todo" data-age-min="9" data-age-max="12" data-themes="学院制" data-dates="8.8-8.17" data-group="recommend" data-rank="2">
+  <div class="camp-card featured" data-status="todo" data-age-min="9" data-age-max="12" data-themes="经典招牌" data-dates="8.8-8.17" data-group="recommend" data-rank="2">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#6A3093,#A044FF);">
         <span class="card-status todo">✗</span>
@@ -2184,7 +2216,7 @@
     </div>
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
   <!-- 招牌通识 · 重走人类创造之路 -->
-  <div class="camp-card" data-slug="human-history" data-status="done" data-age-min="9" data-age-max="12" data-themes="跨学科" data-dates="7.4-7.10,7.18-7.24" data-group="9-12">
+  <div class="camp-card" data-slug="human-history" data-status="done" data-age-min="9" data-age-max="12" data-themes="动手创造" data-dates="7.4-7.10,7.18-7.24" data-group="9-12">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#A8E6CF,#7FCDCD);">
         <span class="card-status done">✓</span>
@@ -2217,7 +2249,7 @@
   </div>
 
   <!-- 硬核成长营 · 命运手斧 -->
-  <div class="camp-card" data-slug="fate-axe" data-status="done" data-age-min="9" data-age-max="12" data-themes="户外冒险,心理抗挫" data-dates="7.11-7.17" data-group="9-12">
+  <div class="camp-card" data-slug="fate-axe" data-status="done" data-age-min="9" data-age-max="12" data-themes="跨学科通识" data-dates="7.11-7.17" data-group="9-12">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#F77F3C,#FFB347);">
         <span class="card-status done">✓</span>
@@ -2250,7 +2282,7 @@
   </div>
 
   <!-- 火星生存指南 -->
-  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="跨学科,户外冒险" data-dates="7.18-7.24" data-group="9-12">
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="跨学科通识" data-dates="7.18-7.24" data-group="9-12">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
         <span class="card-status blank" title="该营期介绍正在准备中"></span>
@@ -2283,7 +2315,7 @@
   </div>
 
   <!-- 数学战争 -->
-  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="思辨解谜" data-dates="7.25-7.31" data-group="9-12">
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="跨学科通识,逻辑" data-dates="7.25-7.31" data-group="9-12">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
         <span class="card-status blank" title="该营期介绍正在准备中"></span>
@@ -2315,7 +2347,7 @@
   </div>
 
   <!-- 水形物语 -->
-  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="艺术叙事" data-dates="7.25-7.31" data-group="9-12">
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="跨学科通识" data-dates="7.25-7.31" data-group="9-12">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
         <span class="card-status blank" title="该营期介绍正在准备中"></span>
@@ -2347,7 +2379,7 @@
   </div>
 
   <!-- 时间玩家 -->
-  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="思辨解谜" data-dates="8.1-8.7" data-group="9-12">
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="跨学科通识,时间管理" data-dates="8.1-8.7" data-group="9-12">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
         <span class="card-status blank" title="该营期介绍正在准备中"></span>
@@ -2379,7 +2411,7 @@
   </div>
 
   <!-- 搞笑诺贝尔 -->
-  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="跨学科,思辨解谜" data-dates="8.1-8.7" data-group="9-12">
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="跨学科通识,科学素养" data-dates="8.1-8.7" data-group="9-12">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
         <span class="card-status blank" title="该营期介绍正在准备中"></span>
@@ -2412,7 +2444,7 @@
   </div>
 
   <!-- 造船 PBL -->
-  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="AI科创,跨学科" data-dates="8.1-8.7" data-group="9-12">
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="硬核创造,PBL" data-dates="8.1-8.7" data-group="9-12">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
         <span class="card-status blank" title="该营期介绍正在准备中"></span>
@@ -2444,7 +2476,7 @@
   </div>
 
   <!-- 定向越野 + AI 工具 -->
-  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="户外冒险,AI科创" data-dates="8.1-8.7" data-group="9-12">
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="逻辑,AI" data-dates="8.1-8.7" data-group="9-12">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
         <span class="card-status blank" title="该营期介绍正在准备中"></span>
@@ -2531,7 +2563,7 @@
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 名侦探学院 -->
-  <div class="camp-card" data-status="todo" data-age-min="12" data-age-max="16" data-themes="思辨解谜" data-dates="8.8-8.14" data-group="12-16">
+  <div class="camp-card" data-status="todo" data-age-min="12" data-age-max="16" data-themes="学院制,侦探推理" data-dates="8.8-8.14" data-group="12-16">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#1A1A2E,#16213E);">
         <span class="card-status todo">✗</span>
@@ -2575,7 +2607,7 @@
     </div>
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
   <!-- 招牌跨学科 · 运气秘籍 -->
-  <div class="camp-card" data-slug="luck-recipe" data-status="done" data-age-min="12" data-age-max="16" data-themes="跨学科,财商,学习力" data-dates="7.25-7.31" data-group="12-16">
+  <div class="camp-card" data-slug="luck-recipe" data-status="done" data-age-min="12" data-age-max="16" data-themes="跨学科通识" data-dates="7.25-7.31" data-group="12-16">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
         <span class="card-status done">✓</span>
@@ -2608,7 +2640,7 @@
   </div>
 
   <!-- 玩笑盲盒营 · 玩耍抗抑 -->
-  <div class="camp-card" data-slug="joy-blindbox" data-status="done" data-age-min="12" data-age-max="16" data-themes="心理抗挫" data-dates="8.1-8.7" data-group="12-16">
+  <div class="camp-card" data-slug="joy-blindbox" data-status="done" data-age-min="12" data-age-max="16" data-themes="跨学科通识" data-dates="8.1-8.7" data-group="12-16">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF6B9D,#FFA8A8);">
         <span class="card-status done">✓</span>
@@ -2641,7 +2673,7 @@
   </div>
 
   <!-- 第一桶金 -->
-  <div class="camp-card" data-status="blank" data-age-min="12" data-age-max="16" data-themes="财商" data-dates="7.25-7.31" data-group="12-16">
+  <div class="camp-card" data-status="blank" data-age-min="12" data-age-max="16" data-themes="跨学科通识,财商" data-dates="7.25-7.31" data-group="12-16">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
         <span class="card-status blank" title="该营期介绍正在准备中"></span>
@@ -2673,7 +2705,7 @@
   </div>
 
   <!-- 饥饿游戏 -->
-  <div class="camp-card" data-status="blank" data-age-min="12" data-age-max="16" data-themes="户外冒险" data-dates="8.1-8.7" data-group="12-16">
+  <div class="camp-card" data-status="blank" data-age-min="12" data-age-max="16" data-themes="跨学科通识" data-dates="8.1-8.7" data-group="12-16">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
         <span class="card-status blank" title="该营期介绍正在准备中"></span>
@@ -2758,7 +2790,7 @@
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 学习方法升级营 -->
-  <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="学习力" data-dates="7.23-7.25" data-group="14-18" data-slug="learning-method">
+  <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="学习方法" data-dates="7.23-7.25" data-group="14-18" data-slug="learning-method">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF6B35,#FFD93D);">
         <span class="card-status done">✓</span>
@@ -2803,7 +2835,7 @@
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- AI游戏设计营 -->
-  <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="AI科创" data-dates="7.25-7.31" data-group="14-18" data-slug="ai-game">
+  <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="AI,创造" data-dates="7.25-7.31" data-group="14-18" data-slug="ai-game">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#7B2FBE,#00D4FF);">
         <span class="card-status done">✓</span>
@@ -2849,7 +2881,7 @@
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 龙与地下城跑团营 -->
-  <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="艺术叙事" data-dates="8.1-8.7" data-group="14-18" data-slug="dnd">
+  <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="跑团" data-dates="8.1-8.7" data-group="14-18" data-slug="dnd">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#4A0E8F,#B01E38);">
         <span class="card-status done">✓</span>
@@ -3092,16 +3124,29 @@
       <div class="filter-label">主题 <span class="filter-hint">可多选</span></div>
       <div class="theme-chips" id="theme-chips-wrap">
         <span class="chip active" data-theme="all" onclick="toggleTheme(this)">全部</span>
-        <span class="chip with-icon" data-theme="学院制" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>招牌学院</span>
-        <span class="chip with-icon" data-theme="学习力" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3 2.5 2.5 0 0 1 2.46-2z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2z"/></svg>学习力</span>
-        <span class="chip with-icon" data-theme="跨学科" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>跨学科</span>
-        <span class="chip with-icon" data-theme="心理抗挫" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>心理抗挫</span>
-        <span class="chip with-icon" data-theme="户外冒险" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 21 14 3"/><path d="M20.5 21 10 3"/><path d="M15.5 21 12 15l-3.5 6"/><path d="M2 21h20"/></svg>户外冒险</span>
-        <span class="chip with-icon" data-theme="思辨解谜" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>思辨解谜</span>
-        <span class="chip with-icon" data-theme="AI科创" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>AI 科创</span>
-        <span class="chip with-icon" data-theme="艺术叙事" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>艺术叙事</span>
-        <span class="chip with-icon" data-theme="财商" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>财商</span>
-        <span class="chip with-icon" data-theme="职业探索" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>职业探索</span>
+        <!-- 高频通用 -->
+        <span class="chip" data-theme="跨学科通识" onclick="toggleTheme(this)">🌍 跨学科通识</span>
+        <span class="chip" data-theme="经典招牌" onclick="toggleTheme(this)">⭐ 经典招牌</span>
+        <span class="chip" data-theme="学院制" onclick="toggleTheme(this)">🎓 学院制</span>
+        <span class="chip" data-theme="学习方法" onclick="toggleTheme(this)">🧠 学习方法</span>
+        <!-- 内容主题 -->
+        <span class="chip" data-theme="动手创造" onclick="toggleTheme(this)">🛠️ 动手创造</span>
+        <span class="chip" data-theme="硬核创造" onclick="toggleTheme(this)">🔩 硬核创造</span>
+        <span class="chip" data-theme="创造" onclick="toggleTheme(this)">✨ 创造</span>
+        <span class="chip" data-theme="PBL" onclick="toggleTheme(this)">📋 PBL</span>
+        <span class="chip" data-theme="AI" onclick="toggleTheme(this)">🤖 AI</span>
+        <!-- 能力 / 学科 -->
+        <span class="chip" data-theme="逻辑" onclick="toggleTheme(this)">🔍 逻辑</span>
+        <span class="chip" data-theme="科学素养" onclick="toggleTheme(this)">🔬 科学素养</span>
+        <span class="chip" data-theme="侦探推理" onclick="toggleTheme(this)">🕵️ 侦探推理</span>
+        <span class="chip" data-theme="时间管理" onclick="toggleTheme(this)">⏰ 时间管理</span>
+        <!-- 体验 / 情绪 / 财商 -->
+        <span class="chip" data-theme="情绪" onclick="toggleTheme(this)">💛 情绪</span>
+        <span class="chip" data-theme="冒险" onclick="toggleTheme(this)">🏕️ 冒险</span>
+        <span class="chip" data-theme="剧本营" onclick="toggleTheme(this)">🎭 剧本营</span>
+        <span class="chip" data-theme="跑团" onclick="toggleTheme(this)">🎲 跑团</span>
+        <span class="chip" data-theme="财商" onclick="toggleTheme(this)">💰 财商</span>
+        <span class="chip" data-theme="职业探索" onclick="toggleTheme(this)">🚀 职业探索</span>
       </div>
     </div>
 
@@ -3711,6 +3756,41 @@
   }, { passive: true });
 
   // 显式跑一次 applyFilters，确保任何浏览器初始都全部可见
+  // #2 Material Ripple —— 全局事件委托，按 .has-ripple 触发
+  function spawnRipple(el, x, y) {
+    const rect = el.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const r = document.createElement('span');
+    r.className = 'ripple';
+    r.style.width = r.style.height = size + 'px';
+    r.style.left = (x - rect.left - size / 2) + 'px';
+    r.style.top  = (y - rect.top  - size / 2) + 'px';
+    el.appendChild(r);
+    setTimeout(() => r.remove(), 600);
+  }
+  document.addEventListener('pointerdown', (e) => {
+    const target = e.target.closest('.has-ripple');
+    if (!target) return;
+    spawnRipple(target, e.clientX, e.clientY);
+  }, { passive: true });
+
+  // #3 Skeleton：图片/视频未加载完时显示流光，加载完移除
+  function attachSkeleton(media) {
+    if (!media) return;
+    // 已经完成或已是 cached
+    if (media.tagName === 'IMG' && media.complete && media.naturalWidth > 0) return;
+    media.classList.add('skeleton-wave');
+    const off = () => { media.classList.remove('skeleton-wave'); };
+    if (media.tagName === 'IMG') {
+      media.addEventListener('load', off, { once: true });
+      media.addEventListener('error', off, { once: true });
+    } else if (media.tagName === 'VIDEO') {
+      media.addEventListener('loadeddata', off, { once: true });
+      media.addEventListener('error', off, { once: true });
+      // 视频懒挂载完 src 后会触发 loadeddata，所以这里只 attach 即可
+    }
+  }
+
   window.addEventListener('DOMContentLoaded', () => {
     if (typeof applyFilters === 'function') applyFilters();
     document.querySelectorAll('.camp-card').forEach(c => c.classList.remove('hidden'));
@@ -3721,6 +3801,16 @@
     reevaluateVideos();
     attachDragDismiss(document.getElementById('filter-sheet'),  '.filter-sheet-content',  () => closeFilterSheet());
     attachDragDismiss(document.getElementById('contact-modal'), '.contact-modal-content', () => closeContactModal());
+
+    // #2 Ripple 标记：给可点元素加 .has-ripple
+    document.querySelectorAll(
+      '.camp-card, .card-contact-btn, .chip, .age-nav-tab, .filter-fab, .bottom-bar-btn, .filter-sheet-cancel, .filter-sheet-apply'
+    ).forEach(el => el.classList.add('has-ripple'));
+    // 深色 CTA 用白色 ripple
+    document.querySelectorAll('.card-contact-btn, .bottom-bar-btn.cta').forEach(el => el.classList.add('on-dark'));
+
+    // #3 给所有 poster-img 挂 skeleton
+    document.querySelectorAll('img.poster-img, video.poster-img').forEach(attachSkeleton);
   });
 
   // H · chip 选中弹簧（通用）
