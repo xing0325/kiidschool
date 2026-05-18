@@ -331,6 +331,7 @@
     }
     .panel-track {
       display: flex;
+      align-items: flex-start; /* panels 各自顶对齐，不再被拉伸 */
       width: 400%;
       transform: translateX(0);
       transition: transform 280ms cubic-bezier(.2,.7,.2,1);
@@ -339,7 +340,6 @@
     .panel-track.dragging { transition: none; }
     .panel {
       flex: 0 0 25%;
-      min-height: 60vh;
       box-sizing: border-box;
     }
     /* 其他 panel 默认无 age-group-divider（直接是子集卡片） */
@@ -3337,6 +3337,17 @@
   let _panelIndex = 0;
   const _panelScroll = [0, 0, 0, 0];
 
+  // 把 track 高度对齐到「当前 panel 内容的实际高度」，省下方留白
+  // 注：要设在 track 上，设在 swiper 上不生效（Chrome flex+transform 怪异）
+  function syncSwiperHeight() {
+    const track = document.getElementById('panel-track');
+    if (!track) return;
+    const cur = track.querySelector(`.panel[data-panel="${PANEL_KEYS[_panelIndex]}"]`);
+    if (!cur) return;
+    const h = cur.scrollHeight;
+    if (h > 0) track.style.height = h + 'px';
+  }
+
   function setPanel(idx) {
     if (idx < 0 || idx >= PANEL_KEYS.length) return;
     // 保存当前 panel 的 scroll
@@ -3347,9 +3358,11 @@
     // 顶部年龄 tab 高亮同步
     document.querySelectorAll('.age-nav-tab').forEach(t => t.classList.remove('active'));
     document.querySelector(`.age-nav-tab[data-age="${PANEL_KEYS[idx]}"]`)?.classList.add('active');
+    // swiper 高度跟随当前 panel
+    syncSwiperHeight();
     // 恢复 scroll（同步；RAF 在 panel-track transition 期间会被吞）
     window.scrollTo(0, _panelScroll[idx] || 0);
-    // 通知（Task 9 IO 用）
+    // 通知（IO 用）
     window.dispatchEvent(new CustomEvent('panelchange', { detail: { idx, key: PANEL_KEYS[idx] } }));
   }
 
@@ -3744,6 +3757,12 @@
     // bottom sheet 下滑收起
     attachDragDismiss(document.getElementById('filter-sheet'),  '.filter-sheet-content',  () => closeFilterSheet());
     attachDragDismiss(document.getElementById('contact-modal'), '.contact-modal-content', () => closeContactModal());
+    // 首屏卡片渲染完先同步一次 swiper 高度
+    syncSwiperHeight();
+    // 懒加载图片陆续到位会撑高 panel，3 次延时补救（避开 panel 切换时的 height transition）
+    [500, 1500, 3500].forEach(ms => setTimeout(syncSwiperHeight, ms));
+    // 窗口 resize 也重算
+    window.addEventListener('resize', syncSwiperHeight, { passive: true });
   });
 
   // ── 多选筛选辅助：通用「全部 + N 个具体值」逻辑 ──
@@ -3872,6 +3891,9 @@
 
     document.getElementById('result-count').textContent = count;
     document.getElementById('no-results').classList.toggle('show', count === 0);
+
+    // 筛选后 panel 内卡片数变了，高度跟随重算
+    if (typeof syncSwiperHeight === 'function') syncSwiperHeight();
   }
 
   function toggleQR(btn) {
