@@ -3659,6 +3659,19 @@
     document.querySelectorAll('video.poster-img[data-src]').forEach(v => _videoIO.observe(v));
   }
 
+  // 详情页 article 内的 video（不在 panel 里，独立 IO，只看视口）
+  const _detailVideoIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const v = entry.target;
+      if (!entry.isIntersecting) { try { v.pause(); } catch(e){} return; }
+      if (!v.getAttribute('src') && v.dataset.src) v.src = v.dataset.src;
+      const p = v.play(); if (p && p.catch) p.catch(() => {});
+    });
+  }, { rootMargin: '200px 0px', threshold: 0.1 });
+  function bindDetailVideosIO(scope) {
+    (scope || document).querySelectorAll('video[data-src]:not(.poster-img)').forEach(v => _detailVideoIO.observe(v));
+  }
+
   // 切 panel：把非当前 panel 的视频全部 pause，再立刻把当前 panel 视口内的挂 src + 播
   function reevaluateVideos(currentKey) {
     document.querySelectorAll('video.poster-img').forEach(v => {
@@ -4002,6 +4015,9 @@
 
         // 构建 TOC
         buildTOC(wrapper.querySelector('.wechat-article'));
+
+        // 详情页内 video 懒挂载（article HTML 已把 src 改为 data-src）
+        bindDetailVideosIO(wrapper);
       } catch (e) {
         console.warn('Article load failed:', e);
         const empty = document.createElement('div');
