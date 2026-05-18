@@ -1,0 +1,4097 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>钥匙玩校 · 2026夏令营</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', sans-serif;
+      background: #F7F5F1;
+      color: #1A1A2E;
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: #fff;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 1px 0 #F0EDE8;
+    }
+    .logo-block { display: flex; flex-direction: column; }
+    .logo-cn { font-size: 17px; font-weight: 900; color: #1A1A2E; letter-spacing: -0.3px; line-height: 1; }
+    .logo-cn em { color: #FF6B35; font-style: normal; }
+    .logo-en { font-size: 10px; color: #aaa; letter-spacing: 1.5px; margin-top: 2px; text-transform: uppercase; }
+    .header-badge {
+      background: #FF6B35; color: #fff;
+      font-size: 10px; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(150deg, #FF6B35 0%, #FF9233 45%, #FFD93D 100%);
+      padding: 32px 20px 44px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -60px; right: -60px;
+      width: 220px; height: 220px;
+      background: rgba(255,255,255,0.12); border-radius: 50%;
+    }
+    .hero::after {
+      content: ''; position: absolute; bottom: -80px; left: -40px;
+      width: 260px; height: 260px;
+      background: rgba(255,255,255,0.07); border-radius: 50%;
+    }
+    .hero-kicker { font-size: 11px; color: rgba(255,255,255,0.8); font-weight: 600; letter-spacing: 3px; margin-bottom: 6px; position: relative; z-index: 1; }
+    .hero-title { font-size: 40px; font-weight: 900; color: #fff; line-height: 1.05; position: relative; z-index: 1; text-shadow: 0 2px 16px rgba(200,80,0,0.3); }
+    .hero-sub { font-size: 14px; color: rgba(255,255,255,0.88); margin-top: 6px; position: relative; z-index: 1; }
+    .hero-credo { margin-top: 12px; position: relative; z-index: 1; }
+    .hero-credo p { font-size: 12.5px; color: rgba(255,255,255,0.92); line-height: 1.65; font-weight: 500; }
+    .hero-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 16px; position: relative; z-index: 1; }
+    .hero-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 11px; border-radius: 20px; }
+    .presale-strip {
+      background: rgba(26,26,46,0.85); color: #FFD93D;
+      font-size: 11px; font-weight: 700;
+      padding: 7px 16px;
+      display: flex; align-items: center; gap: 6px;
+      position: relative; z-index: 1;
+      margin: 20px -20px 0;
+    }
+    .presale-dot {
+      width: 6px; height: 6px; background: #FF6B35; border-radius: 50%;
+      animation: pulse 1.2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity:1; }
+      50% { transform: scale(1.4); opacity:0.6; }
+    }
+
+    /* ── FILTER ── */
+    .filter-wrap {
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .filter-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 16px 9px;
+      border-bottom: 1px solid #F0EDE8;
+    }
+    .filter-title { font-size: 14px; font-weight: 800; color: #1A1A2E; letter-spacing: 0.5px; }
+    .filter-toggle {
+      background: none; border: none; cursor: pointer;
+      font-size: 12px; color: #FF6B35; font-weight: 700;
+      display: flex; align-items: center; gap: 3px;
+      padding: 4px 6px;
+    }
+    .filter-toggle .ft-arrow { font-size: 9px; transition: transform 0.2s; }
+    .filter-wrap.collapsed .filter-toggle .ft-arrow { transform: rotate(180deg); }
+    .filter-wrap.collapsed .filter-toggle .ft-text::after { content: '展开'; }
+    .filter-wrap.collapsed .filter-toggle .ft-text { font-size: 0; }
+    .filter-wrap:not(.collapsed) .filter-toggle .ft-text::after { content: '收起'; }
+    .filter-wrap:not(.collapsed) .filter-toggle .ft-text { font-size: 0; }
+
+    .filter-body {
+      padding: 4px 16px 4px;
+      max-height: 80vh; overflow-y: auto;
+      transition: max-height 0.25s ease, padding 0.25s ease;
+    }
+    .filter-wrap.collapsed .filter-body {
+      max-height: 0; padding-top: 0; padding-bottom: 0; overflow: hidden;
+    }
+
+    .filter-section { padding: 10px 0 6px; border-bottom: 1px dashed #F5F0E8; }
+    .filter-section:last-of-type { border-bottom: none; }
+    .filter-label {
+      font-size: 12px; font-weight: 700; color: #888;
+      margin-bottom: 8px;
+      display: flex; align-items: baseline; gap: 6px;
+    }
+    .filter-hint { font-size: 10px; color: #C0B7A5; font-weight: 500; }
+
+    .theme-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip {
+      padding: 6px 14px; border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+      border: 1.5px solid #E8E4DE; color: #777; background: #fff;
+      cursor: pointer; transition: all 0.15s; user-select: none;
+    }
+    .chip.active { border-color: #FF6B35; color: #FF6B35; background: #FFF6F3; }
+    .chip.with-icon { display: inline-flex; align-items: center; gap: 5px; padding-left: 10px; }
+    .chip.with-icon svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .chip:active { transform: scale(0.95); }
+
+    .clear-row { padding: 10px 0 4px; display: flex; justify-content: flex-end; }
+    .clear-btn {
+      font-size: 12px; color: #FF6B35; background: #FFF6F3;
+      border: 1px solid #FFD0B0; border-radius: 16px;
+      padding: 5px 14px; cursor: pointer; font-weight: 600;
+    }
+    .clear-btn:hover { background: #FFEEE3; }
+
+    /* ── 年龄 Tabs（小红书首页风，sticky 到 header 下方） ── */
+    .home-top-bar {
+      position: sticky;
+      top: 54px;
+      z-index: 99;
+      background: #fff;
+      display: flex;
+      align-items: stretch;
+      border-bottom: 1px solid #F0EDE8;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+    }
+    .age-nav {
+      flex: 1;
+      display: flex;
+      min-width: 0;
+    }
+    .filter-fab {
+      flex: 0 0 44px;
+      width: 44px;
+      border: none;
+      border-left: 1px solid #F0EDE8;
+      background: #fff;
+      color: #1A1A2E;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      position: relative;
+    }
+    .filter-fab:active { background: #F5F3EF; }
+    .filter-fab svg { display: block; }
+    .filter-fab .filter-count-badge {
+      position: absolute;
+      top: 8px; right: 6px;
+      min-width: 16px; height: 16px;
+      padding: 0 4px;
+      border-radius: 8px;
+      background: #FF6B35;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      display: none;
+      align-items: center; justify-content: center;
+      line-height: 1;
+    }
+    .filter-fab .filter-count-badge.show { display: flex; }
+    .age-nav-tab {
+      flex: 1;
+      padding: 13px 4px 11px;
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: #888;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.15s;
+      user-select: none;
+    }
+    .age-nav-tab.active {
+      color: #FF6B35;
+      font-weight: 800;
+    }
+    .age-nav-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 25%; right: 25%;
+      height: 2.5px;
+      background: #FF6B35;
+      border-radius: 2px;
+    }
+    .age-nav-tab .count {
+      font-size: 10px; color: #BBB; font-weight: 500;
+      margin-left: 3px;
+    }
+    .age-nav-tab.active .count { color: #FF9233; }
+
+    /* ── 底栏（筛选 + 咨询报名） ── */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      max-width: 480px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+      display: flex; gap: 10px;
+      box-shadow: 0 -2px 14px rgba(0,0,0,0.08);
+      z-index: 1001;  /* 高于 sheet (999)，保证可点 */
+      border-top: 1px solid #F0EDE8;
+    }
+    body.detail-open .bottom-bar { display: none; }
+    .bottom-bar-btn {
+      flex: 1;
+      padding: 6px 2px;
+      border: none;
+      background: none;
+      color: #888;
+      cursor: pointer;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 2px;
+      position: relative;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+    .bottom-bar-btn:active { background: #F5F3EF; }
+    .bottom-bar-btn .bb-icon { font-size: 18px; line-height: 1.2; }
+    .bottom-bar-btn .bb-label { font-size: 11px; font-weight: 700; letter-spacing: 0.3px; }
+    .bottom-bar-btn.cta {
+      background: linear-gradient(135deg, #FF6B35, #FF9233);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(255,107,53,0.45);
+      margin: -10px 6px;
+      border-radius: 14px;
+      transform: translateY(-2px);
+    }
+    .bottom-bar-btn.cta .bb-icon { font-size: 20px; }
+    .bottom-bar-btn.cta .bb-label { font-weight: 800; }
+    .bottom-bar-btn.cta:active { background: linear-gradient(135deg, #E85A29, #FF7E18); transform: translateY(-1px) scale(0.97); }
+    .filter-count-badge {
+      position: absolute;
+      top: -4px; right: -4px;
+      background: #FF6B35; color: #fff;
+      font-size: 10px; font-weight: 800;
+      min-width: 16px; height: 16px;
+      padding: 0 4px;
+      border-radius: 8px;
+      display: none;
+      align-items: center; justify-content: center;
+    }
+    .filter-count-badge.show { display: flex; }
+
+    /* 底栏抽屉（筛选 sheet） */
+    .filter-sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      display: none;
+    }
+    .filter-sheet.open { display: block; }
+    .filter-sheet-bg {
+      position: absolute; inset: 0;
+      background: rgba(26,26,46,0.4);
+      backdrop-filter: blur(2px);
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+    .filter-sheet-content {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      max-width: 480px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 18px 18px 0 0;
+      padding: 14px 16px calc(20px + env(safe-area-inset-bottom));
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .filter-sheet-handle {
+      width: 36px; height: 4px;
+      background: #DDD2C0;
+      border-radius: 2px;
+      margin: 0 auto 12px;
+    }
+    .filter-sheet-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .filter-sheet-title { font-size: 16px; font-weight: 800; color: #1A1A2E; }
+    .filter-sheet-clear {
+      font-size: 12px; color: #FF6B35;
+      background: none; border: none; cursor: pointer;
+      padding: 6px 10px;
+    }
+    .filter-sheet-actions {
+      display: flex; gap: 10px;
+      margin-top: 14px;
+    }
+    .filter-sheet-actions button {
+      flex: 1; padding: 14px;
+      border-radius: 12px; border: none;
+      font-size: 15px; font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* ── 一级页面 view（与首页 home-view 互斥）── */
+    .view-page {
+      background: #F7F5F1;
+      min-height: calc(100vh - 72px);
+      padding-bottom: 100px; /* 给底栏留位 */
+      animation: fadeUp 0.18s ease;
+    }
+    .view-page[hidden] { display: none; }
+    .view-page-head {
+      position: sticky; top: 0; z-index: 50;
+      background: #fff;
+      padding: 12px 16px;
+      border-bottom: 1px solid #F0EDE8;
+    }
+    .view-page-title {
+      font-size: 17px; font-weight: 800; color: #1A1A2E;
+    }
+    .view-page-body {
+      padding: 14px 16px 0;
+    }
+    /* body class 互斥控制 */
+    body.view-about .home-view,
+    body.view-faq .home-view { display: none; }
+    body.view-home #view-about,
+    body.view-home #view-faq { display: none; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 底栏 tab 激活态（点了了解我们 / 常见问答 高亮对应 tab） */
+    .bottom-bar-btn.tab-active {
+      color: #FF6B35;
+      background: #FFF6F3;
+    }
+    .bottom-bar-btn.tab-active .bb-icon {
+      transform: scale(1.1);
+    }
+
+    /* 咨询客服 弹窗 */
+    .contact-modal {
+      position: fixed; inset: 0;
+      z-index: 1002;
+      display: none;
+    }
+    .contact-modal.open { display: block; }
+    .contact-modal-bg {
+      position: absolute; inset: 0;
+      background: rgba(26,26,46,0.55);
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.2s ease;
+    }
+    .contact-modal-content {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 88%; max-width: 380px;
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px 16px 16px;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+      animation: popIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    .contact-modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 4px;
+    }
+    .contact-modal-title {
+      font-size: 16px; font-weight: 800; color: #1A1A2E;
+    }
+    .contact-modal-close {
+      width: 28px; height: 28px; padding: 0;
+      background: #F5F3EF; border: none; border-radius: 50%;
+      font-size: 16px; color: #888; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .contact-modal-subtitle {
+      font-size: 11.5px; color: #888;
+      margin-bottom: 12px;
+    }
+    .contact-qr-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .contact-qr-item {
+      background: linear-gradient(150deg, #FFF8F2, #FFEEE0);
+      border: 1px solid #FFD0B0;
+      border-radius: 12px;
+      padding: 10px 8px 12px;
+      text-align: center;
+    }
+    .contact-qr-item img {
+      width: 100%; aspect-ratio: 1;
+      object-fit: contain;
+      background: #fff;
+      border-radius: 6px;
+      display: block;
+    }
+    .contact-qr-label {
+      font-size: 13px; font-weight: 800;
+      color: #FF6B35; margin-top: 8px;
+    }
+    .contact-qr-hint {
+      font-size: 10.5px; color: #888; margin-top: 2px;
+    }
+    .contact-modal-tip {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 11.5px; color: #777;
+      background: #F7F5F1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      line-height: 1.5;
+    }
+    .filter-sheet-cancel {
+      background: #F5F3EF; color: #555;
+    }
+    .filter-sheet-apply {
+      background: linear-gradient(135deg, #FF6B35, #FF9233);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(255,107,53,0.35);
+    }
+
+    /* body 底部留位避免最后一张卡被底栏挡 */
+    body { padding-bottom: 72px; }
+    body.detail-open { padding-bottom: 0; }
+
+    /* ── 周次 Tabs（顶部横滑） ── */
+    .week-tabs {
+      display: flex;
+      overflow-x: auto;
+      gap: 8px;
+      padding: 10px 12px 9px;
+      background: #fff;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      border-bottom: 1px solid #F0EDE8;
+    }
+    .week-tabs::-webkit-scrollbar { display: none; }
+    .week-chip {
+      flex-shrink: 0;
+      padding: 7px 12px;
+      border: 1.5px solid #E5DCC8;
+      border-radius: 16px;
+      font-size: 12px;
+      color: #666;
+      cursor: pointer;
+      background: #fff;
+      display: flex; flex-direction: column;
+      align-items: center;
+      line-height: 1.15;
+      min-width: 48px;
+      text-align: center;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .week-chip strong {
+      font-weight: 800; font-size: 12.5px;
+    }
+    .week-chip small {
+      font-size: 9.5px; color: #BBB; font-weight: 500;
+      margin-top: 1px;
+    }
+    .week-chip .count {
+      background: #F7F5F1; color: #999;
+      font-size: 9px; font-weight: 700;
+      padding: 1px 5px; border-radius: 8px;
+      margin-top: 3px;
+    }
+    .week-chip.active {
+      background: #FF6B35;
+      border-color: #FF6B35;
+      color: #fff;
+    }
+    .week-chip.active small { color: rgba(255,255,255,0.85); }
+    .week-chip.active .count {
+      background: rgba(255,255,255,0.25); color: #fff;
+    }
+    .week-chip.disabled {
+      opacity: 0.4; cursor: not-allowed;
+    }
+
+    /* ── RESULTS BAR ── */
+    .results-bar {
+      padding: 12px 16px 8px; font-size: 12px; color: #aaa;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .results-bar strong { color: #FF6B35; font-weight: 800; font-size: 15px; }
+
+    /* ── AGE GROUP DIVIDER ── */
+    .age-group-divider {
+      display: flex; align-items: center; gap: 10px;
+      padding: 6px 12px 10px;
+    }
+    .age-group-divider .line { flex: 1; height: 1px; background: #EDE9E3; }
+    .age-group-divider .label {
+      font-size: 13px; font-weight: 800; color: #FF6B35;
+      background: #FFF6F3; padding: 3px 12px; border-radius: 20px;
+      border: 1px solid #FFDDCC;
+    }
+
+    /* ── CAMP CARDS ── */
+    .camps-list { padding: 0 12px 20px; }
+
+    .camp-card {
+      background: #fff; border-radius: 16px; margin-bottom: 11px;
+      overflow: hidden; box-shadow: 0 1px 8px rgba(0,0,0,0.07);
+      cursor: pointer; transition: box-shadow 0.2s;
+      position: relative;
+    }
+    .camp-card:active { opacity: 0.93; }
+    .camp-card.hidden { display: none; }
+
+    .camp-card.featured::before {
+      content: '⭐ 热门';
+      position: absolute; top: 10px; right: 0;
+      background: #FF6B35; color: #fff;
+      font-size: 10px; font-weight: 700;
+      padding: 3px 10px 3px 12px; border-radius: 10px 0 0 10px;
+      z-index: 5;
+    }
+
+    .card-main { display: flex; align-items: stretch; }
+
+    /* Left poster */
+    .card-poster {
+      width: 108px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 16px 8px 12px; position: relative;
+      min-height: 130px;
+    }
+    .poster-img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; border-radius: inherit;
+      z-index: 1;
+    }
+    .card-icon { font-size: 36px; line-height: 1; position: relative; z-index: 2; }
+    .card-age-badge { position: relative; z-index: 2; }
+    .card-duration { position: relative; z-index: 2; }
+    .card-age-badge {
+      margin-top: 8px;
+      background: rgba(255,255,255,0.22); color: rgba(255,255,255,0.95);
+      font-size: 10px; font-weight: 700;
+      padding: 3px 8px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.3); white-space: nowrap;
+    }
+    .card-duration { position: absolute; bottom: 10px; font-size: 10px; color: rgba(255,255,255,0.65); }
+
+    /* Right info */
+    .card-body {
+      flex: 1; min-width: 0;
+      padding: 13px 12px 12px 10px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .card-name { font-size: 15px; font-weight: 800; color: #1A1A2E; line-height: 1.2; }
+    .card-subtitle {
+      font-size: 11.5px; color: #999; line-height: 1.45;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .card-dates-wrap { display: flex; flex-direction: column; gap: 2px; margin-top: 2px; }
+    .card-date-row { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #FF6B35; font-weight: 600; }
+    .card-location { display: flex; align-items: center; gap: 3px; font-size: 11px; color: #bbb; }
+    .card-meta-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .card-meta-pill {
+      font-size: 10px; color: #aaa;
+      background: #F7F5F1; padding: 2px 7px; border-radius: 4px;
+    }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
+    .card-tag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+    .card-price-row { display: flex; align-items: baseline; gap: 5px; margin-top: 4px; }
+    .card-price { font-size: 17px; font-weight: 900; color: #FF6B35; }
+    .card-price-unit { font-size: 12px; font-weight: 500; color: #FF6B35; }
+    .card-orig-price { font-size: 11px; color: #d0ccc7; text-decoration: line-through; }
+    .card-save { font-size: 10px; color: #fff; background: #FF6B35; padding: 1px 6px; border-radius: 4px; font-weight: 700; }
+    .card-price-hint { font-size: 10.5px; color: #999; font-weight: 500; line-height: 1.4; flex-basis: 100%; margin-top: 2px; }
+    .card-price-row { flex-wrap: wrap; }
+
+    /* 详情展开（产品亮点+适合人群） */
+    .card-detail-toggle {
+      width: 100%; background: #fff;
+      border: none; border-top: 1px solid #F5F0EB;
+      padding: 9px 16px; cursor: pointer;
+      font-size: 12.5px; font-weight: 600; color: #888;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .card-detail-toggle:hover { background: #FAF8F4; color: #555; }
+    .card-detail-toggle .arrow { font-size: 10px; transition: transform 0.2s; }
+    .card-detail-toggle.open .arrow { transform: rotate(180deg); }
+    .card-detail-toggle.open { color: #FF6B35; background: #FFF8F3; }
+    .card-detail-panel {
+      display: none;
+      padding: 12px 16px 16px;
+      background: #FFFBF5;
+      border-top: 1px dashed #F0E5D2;
+    }
+    .card-detail-panel.open { display: block; }
+    .detail-section { margin-bottom: 12px; }
+    .detail-section:last-of-type { margin-bottom: 6px; }
+    .detail-section h5 {
+      font-size: 11px; font-weight: 800; color: #B8540D;
+      letter-spacing: 1px; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .detail-section h5::before {
+      content: ''; width: 3px; height: 11px;
+      background: #FF6B35; border-radius: 2px;
+    }
+    .detail-section p { font-size: 12px; color: #555; line-height: 1.7; }
+    .detail-section ul { list-style: none; padding: 0; margin: 0; }
+    .detail-section ul li {
+      font-size: 12px; color: #555; line-height: 1.65;
+      padding: 3px 0 3px 16px; position: relative;
+    }
+    .detail-section ul li::before {
+      content: '✓'; position: absolute; left: 0; top: 3px;
+      color: #FF6B35; font-weight: 800; font-size: 11px;
+    }
+    .detail-tip {
+      margin-top: 10px; padding: 8px 12px;
+      background: #FFF3E5; border-radius: 8px;
+      font-size: 11px; color: #A66515; text-align: center;
+      border: 1px dashed #FFD9B0;
+    }
+
+    /* QR expand */
+    .card-qr-toggle {
+      width: 100%;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 9px 16px;
+      background: #FFFAF7;
+      border: none; border-top: 1px solid #F5F0EB;
+      font-size: 13px; font-weight: 700; color: #FF6B35;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .card-qr-toggle:hover { background: #FFF0E8; }
+    /* R2 简化：内嵌 QR 改为"咨询/报名"按钮 */
+    .card-contact-btn {
+      width: 100%;
+      padding: 11px 16px;
+      background: linear-gradient(135deg, #FF6B35, #FF9233);
+      border: none;
+      font-size: 13.5px; font-weight: 800; color: #fff;
+      letter-spacing: 0.5px;
+      cursor: pointer; transition: filter 0.15s, transform 0.1s;
+    }
+    .card-contact-btn:active { transform: scale(0.985); filter: brightness(0.95); }
+    /* 列表顶部统一一次免责说明 */
+    .list-disclaimer {
+      margin: 4px 16px 12px;
+      padding: 8px 14px;
+      background: #FAFAF6;
+      border-radius: 8px;
+      font-size: 11.5px; color: #888; line-height: 1.55;
+      text-align: center;
+    }
+    /* 卡片入场轻动画（依赖原 .camp-card.hidden { display: none } 行 543） */
+    .camp-card:not(.hidden) { animation: cardFadeIn 320ms cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes cardFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .card-qr-toggle .arrow { font-size: 10px; transition: transform 0.2s; }
+    .card-qr-toggle.open .arrow { transform: rotate(180deg); }
+
+    .card-qr-panel {
+      display: none; padding: 16px;
+      background: #FFFAF7;
+      border-top: 1px dashed #FFD9C0;
+      text-align: center;
+    }
+    .card-qr-panel.open { display: block; }
+    .card-qr-panel img {
+      width: 150px; height: 150px;
+      object-fit: contain;
+      border: 1px solid #F0EDE8; border-radius: 8px;
+      background: #fff; padding: 4px;
+    }
+    .card-qr-panel .qr-label {
+      font-size: 11px; color: #bbb; margin-top: 6px;
+    }
+    .card-qr-panel .qr-placeholder {
+      width: 150px; height: 150px;
+      background: #F7F5F1;
+      border: 2px dashed #E0DCD6; border-radius: 8px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      margin: 0 auto; gap: 4px;
+    }
+    .card-qr-panel .qr-placeholder span:first-child { font-size: 32px; }
+    .card-qr-panel .qr-placeholder span:last-child { font-size: 11px; color: #ccc; }
+
+    /* ── NO RESULTS ── */
+    .no-results { text-align: center; padding: 56px 20px; display: none; }
+    .no-results.show { display: block; }
+    .no-results-icon { font-size: 52px; margin-bottom: 12px; }
+    .no-results p { font-size: 14px; color: #bbb; }
+    .no-results button {
+      margin-top: 16px; padding: 8px 24px;
+      background: #FF6B35; color: #fff; border: none;
+      border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+
+    /* ── DAILY SCHEDULE ── */
+    .schedule-section {
+      margin: 8px 12px 16px;
+      border-radius: 16px; overflow: hidden;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.07);
+    }
+    .schedule-header {
+      background: linear-gradient(135deg, #8B6914, #C9952A);
+      padding: 18px 20px 14px;
+      text-align: center;
+    }
+    .schedule-header h3 {
+      font-size: 22px; font-weight: 900; color: #fff;
+      letter-spacing: 1px; margin-bottom: 2px;
+    }
+    .schedule-header p { font-size: 11px; color: rgba(255,255,255,0.7); }
+    .schedule-body {
+      background: #FDFAF5;
+      display: flex;
+    }
+    .schedule-col {
+      flex: 1; padding: 14px 10px;
+      border-right: 1px solid #F0EAE0;
+    }
+    .schedule-col:last-child { border-right: none; }
+    .schedule-col-title {
+      font-size: 12px; font-weight: 800; color: #C9952A;
+      margin-bottom: 8px; text-align: center;
+      letter-spacing: 0.5px;
+    }
+    .schedule-time {
+      font-size: 11px; color: #666;
+      padding: 3px 0; line-height: 1.5;
+      text-align: center;
+    }
+    .schedule-time + .schedule-time { border-top: 1px solid #F0EAE0; }
+
+    /* ── FOOTER CTA ── */
+    .footer-cta {
+      background: linear-gradient(135deg, #1A1A2E 0%, #2D2D5C 100%);
+      padding: 32px 20px 36px; text-align: center;
+    }
+    .footer-cta h3 { font-size: 20px; font-weight: 900; color: #fff; margin-bottom: 6px; }
+    .footer-cta p { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.7; margin-bottom: 20px; }
+    .footer-cta p em { color: #FFD93D; font-style: normal; font-weight: 600; }
+    .cta-buttons { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+    .cta-btn-primary {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; max-width: 280px;
+      background: #FF6B35; color: #fff;
+      padding: 14px 24px; border-radius: 50px;
+      font-size: 15px; font-weight: 800; border: none; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(255,107,53,0.4);
+    }
+    .cta-btn-secondary { font-size: 12px; color: rgba(255,255,255,0.45); background: none; border: none; cursor: pointer; }
+    .footer-note { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 20px; line-height: 1.7; }
+
+    /* ── ABOUT STRIP ── */
+    .about-strip {
+      background: #fff; border-top: 1px solid #F0EDE8;
+      padding: 20px 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .about-icon { font-size: 28px; }
+    .about-text h4 { font-size: 13px; font-weight: 800; color: #1A1A2E; margin-bottom: 2px; }
+    .about-text p { font-size: 11px; color: #aaa; line-height: 1.5; }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(10px); }
+      to { opacity:1; transform: translateY(0); }
+    }
+    .camp-card { animation: fadeUp 0.25s ease both; }
+
+    /* ── 推荐分组高亮 ── */
+    .recommend-divider .label {
+      background: linear-gradient(135deg,#FFEACD,#FFD0A8);
+      color: #B8540D; border-color: #FFC58A;
+      font-size: 13.5px;
+    }
+
+    /* ── 有海报图的卡片：横幅版式（完整显示原图比例，不裁切） ── */
+    .camp-card:has(.poster-img[src*="images/camps/"]) .card-main {
+      flex-direction: column;
+    }
+    .camp-card:has(.poster-img[src*="images/camps/"]) .card-poster {
+      width: 100%;
+      aspect-ratio: 16 / 7;
+      min-height: 0;
+      padding: 0;
+      align-items: stretch; justify-content: stretch;
+      background: #1A1A2E !important;  /* 用图四周留色填充 */
+    }
+    .camp-card:has(.poster-img[src*="images/camps/"]) .poster-img {
+      object-fit: contain;
+      background: #1A1A2E;
+    }
+    .camp-card:has(.poster-img[src*="images/camps/"]) .card-icon { display: none; }
+    /* 横幅模式下的徽章重定位 */
+    .camp-card:has(.poster-img[src*="images/camps/"]) .card-age-badge {
+      position: absolute; top: 10px; left: 10px;
+      margin-top: 0;
+      background: rgba(0,0,0,0.55); border-color: rgba(255,255,255,0.2);
+      z-index: 3;
+    }
+    .camp-card:has(.poster-img[src*="images/camps/"]) .card-duration {
+      bottom: 10px; right: 12px; left: auto;
+      background: rgba(0,0,0,0.55); color: #fff;
+      padding: 2px 8px; border-radius: 10px;
+      z-index: 3;
+    }
+
+    /* ── 板块大标题 ── */
+    .section-title-strip {
+      text-align: center; padding: 28px 16px 4px;
+    }
+    .section-title-strip h2 {
+      font-size: 22px; font-weight: 900; color: #1A1A2E;
+      letter-spacing: 1px; display: inline-block;
+      position: relative;
+    }
+    .section-title-strip h2::before,
+    .section-title-strip h2::after {
+      content: ''; position: absolute; top: 50%;
+      width: 24px; height: 2px; background: #FF6B35; border-radius: 2px;
+    }
+    .section-title-strip h2::before { right: calc(100% + 10px); }
+    .section-title-strip h2::after  { left:  calc(100% + 10px); }
+    .section-title-strip p {
+      font-size: 11px; color: #aaa; letter-spacing: 1px; margin-top: 6px;
+    }
+
+    /* ── VENUE ── */
+    .venue-section { margin: 16px 12px; }
+    .venue-h {
+      font-size: 16px; font-weight: 900; color: #1A1A2E;
+      padding: 0 4px 10px; display: flex; align-items: center; gap: 6px;
+    }
+    .venue-block {
+      background: #fff; border-radius: 16px; padding: 14px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.07);
+      margin-bottom: 12px;
+    }
+    .venue-name {
+      font-size: 14px; font-weight: 800; color: #FF6B35;
+      margin-bottom: 10px; padding-left: 8px;
+      border-left: 3px solid #FF6B35;
+    }
+    .venue-count {
+      font-size: 11px; color: #aaa; font-weight: 600;
+      margin-left: 4px;
+    }
+    .venue-scroll {
+      display: flex; gap: 8px;
+      overflow-x: auto; overflow-y: hidden;
+      -ms-overflow-style: none; scrollbar-width: none;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 4px;
+      margin: 0 -14px; padding-left: 14px; padding-right: 14px;
+    }
+    .venue-scroll::-webkit-scrollbar { display: none; }
+    .venue-scroll img {
+      flex: 0 0 auto;
+      width: 75%; max-width: 280px;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 10px;
+      scroll-snap-align: start;
+      cursor: zoom-in;
+      background: #F8F5F0;
+    }
+    .venue-hint {
+      margin-top: 8px; text-align: center;
+      font-size: 10.5px; color: #C0B7A5; letter-spacing: 0.5px;
+    }
+
+    /* 灯箱 */
+    .lightbox {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.92); z-index: 1000;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 100%; max-height: 100%;
+      object-fit: contain; border-radius: 4px;
+    }
+    .lightbox-close {
+      position: absolute; top: 20px; right: 20px;
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.15);
+      border: none; border-radius: 50%;
+      color: #fff; font-size: 24px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+
+    /* ── 特色 / 玩伴占位 ── */
+    .feature-section { margin: 12px 12px; }
+    .feature-h {
+      font-size: 16px; font-weight: 900; color: #1A1A2E;
+      padding: 0 4px 10px; display: flex; align-items: center; gap: 6px;
+    }
+    .feature-placeholder {
+      background: #fff; border-radius: 16px;
+      padding: 32px 20px; text-align: center;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.07);
+      border: 1.5px dashed #E5DCC8;
+    }
+    .feature-placeholder .ph-icon-lg { font-size: 40px; margin-bottom: 8px; }
+    .feature-placeholder p { font-size: 13px; color: #999; line-height: 1.6; }
+    .feature-placeholder .ph-hint { font-size: 11px; color: #C0B7A5; margin-top: 4px; }
+
+    /* 特色卡片 */
+    .feature-card {
+      background: #fff; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.07);
+    }
+    .feature-hero {
+      width: 100%; display: block;
+      background: #1A1A2E;
+    }
+    .feature-list { list-style: none; padding: 14px 14px 4px; }
+    .feature-list li {
+      display: flex; gap: 10px;
+      padding: 10px 0; border-bottom: 1px dashed #F0EDE8;
+    }
+    .feature-list li:last-child { border-bottom: none; }
+    .fl-num {
+      flex: 0 0 24px; width: 24px; height: 24px;
+      background: linear-gradient(135deg, #FF6B35, #FF9233);
+      color: #fff; font-size: 12px; font-weight: 800;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1px;
+    }
+    .feature-list li > div { flex: 1; min-width: 0; }
+    .feature-list strong {
+      display: block; font-size: 14px; font-weight: 800;
+      color: #1A1A2E; margin-bottom: 3px;
+    }
+    .feature-list p {
+      font-size: 12.5px; color: #666; line-height: 1.65;
+    }
+    .feature-credo {
+      background: linear-gradient(135deg, #FFF8F2, #FFE8D8);
+      padding: 16px 16px 18px;
+      font-size: 12.5px; line-height: 1.85;
+      color: #5C4030; text-align: center;
+      border-top: 1px solid #FFE0C7;
+    }
+    .feature-credo em {
+      font-style: normal;
+      color: #FF6B35; font-weight: 800; font-size: 13.5px;
+    }
+
+    /* 玩伴 */
+    .playmate-group-title {
+      font-size: 13px; font-weight: 800; color: #FF6B35;
+      margin: 6px 4px 10px; padding-left: 8px;
+      border-left: 3px solid #FF6B35;
+    }
+    .playmate-scroll {
+      display: flex; gap: 10px;
+      overflow-x: auto; overflow-y: hidden;
+      -ms-overflow-style: none; scrollbar-width: none;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 6px;
+      margin: 0 -14px; padding-left: 14px; padding-right: 14px;
+    }
+    .playmate-scroll::-webkit-scrollbar { display: none; }
+    .playmate-card {
+      flex: 0 0 auto;
+      width: 78%; max-width: 290px;
+      background: #fff; border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+      scroll-snap-align: start;
+      display: flex; flex-direction: column;
+    }
+    .playmate-card img {
+      width: 100%; aspect-ratio: 1/1;
+      object-fit: cover;
+      background: #F8F5F0;
+    }
+    .pm-name {
+      padding: 10px 12px 4px;
+      font-size: 15px; font-weight: 800; color: #1A1A2E;
+    }
+    .pm-role {
+      font-size: 10.5px; color: #fff; background: #FF6B35;
+      padding: 2px 7px; border-radius: 10px;
+      font-weight: 700; margin-left: 4px; vertical-align: 2px;
+    }
+    .playmate-card p {
+      padding: 0 12px 12px;
+      font-size: 12px; color: #666; line-height: 1.65;
+    }
+    .playmate-footnote {
+      margin-top: 10px; font-size: 10.5px; color: #C0B7A5;
+      text-align: center; padding: 0 12px; line-height: 1.6;
+    }
+
+    /* ── QA ── */
+    .qa-section { margin: 16px 12px 24px; }
+    .qa-h {
+      font-size: 16px; font-weight: 900; color: #1A1A2E;
+      padding: 0 4px 10px; display: flex; align-items: center; gap: 6px;
+    }
+    .qa-item {
+      background: #fff; border-radius: 12px;
+      margin-bottom: 8px; overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    }
+    .qa-q {
+      width: 100%; background: none; border: none; cursor: pointer;
+      padding: 14px 16px; text-align: left;
+      font-size: 13.5px; font-weight: 700; color: #1A1A2E;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .qa-arrow { font-size: 11px; color: #FF6B35; transition: transform 0.2s; }
+    .qa-q.open .qa-arrow { transform: rotate(180deg); }
+    .qa-q.open { color: #FF6B35; }
+    .qa-a {
+      display: none; padding: 0 16px 14px;
+      border-top: 1px dashed #F0EDE8;
+      padding-top: 10px;
+    }
+    .qa-a.open { display: block; }
+    .qa-a p {
+      font-size: 12.5px; color: #555; line-height: 1.7; margin-bottom: 6px;
+    }
+    .qa-a p:last-child { margin-bottom: 0; }
+    .qa-a strong { color: #FF6B35; font-weight: 700; }
+
+    /* ========================================
+       Master-Detail 改造（双列瀑布流 + 详情覆盖）
+       ======================================== */
+
+    /* Hero 压缩 */
+    .hero { padding: 22px 20px 0; }
+    .hero-title { font-size: 32px; }
+    .hero-credo { margin-top: 10px; }
+    .hero-credo p { font-size: 11.5px; line-height: 1.55; }
+    .hero-pills { margin-top: 12px; }
+    .hero-stats { display: none; }
+    .presale-strip { font-size: 10.5px; padding: 6px 16px; }
+
+    /* ===== Master 层：双列网格 ===== */
+    .camps-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 12px 20px;
+    }
+    .age-group-divider {
+      grid-column: 1 / -1;
+      padding: 12px 4px 6px;
+    }
+    .recommend-divider { padding-top: 4px; }
+
+    /* mini 卡片样式（覆盖原有 card 样式） */
+    .camp-card {
+      margin-bottom: 0;
+      cursor: pointer;
+    }
+    .camp-card .card-main {
+      flex-direction: column;
+    }
+    .camp-card .card-poster {
+      width: 100%;
+      aspect-ratio: 4/3;
+      min-height: 0;
+      height: auto;
+      padding: 0;
+      align-items: stretch;
+      justify-content: stretch;
+    }
+    .camp-card:has(.poster-img[src*="images/camps/"]) .card-poster {
+      aspect-ratio: 4/3;
+    }
+    .camp-card .card-body {
+      padding: 8px 10px 10px;
+      gap: 2px;
+    }
+    .camp-card .card-name {
+      font-size: 13px;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+      overflow: hidden;
+    }
+    .camp-card .card-date-row { font-size: 10.5px; }
+    .camp-card .card-location { font-size: 10.5px; }
+    .camp-card .card-price { font-size: 16px; }
+    .camp-card .card-price-unit { font-size: 10px; }
+    .camp-card .card-price-row { gap: 2px; }
+
+    /* mini 模式下隐藏次要内容 */
+    .camp-card .card-subtitle,
+    .camp-card .card-meta-row,
+    .camp-card .card-tags,
+    .camp-card .card-detail-toggle,
+    .camp-card .card-detail-panel,
+    .camp-card .card-qr-toggle,
+    .camp-card .card-qr-panel,
+    .camp-card .card-price-hint {
+      display: none;
+    }
+    /* 列表视图：价格行展示「早鸟价 + 划线价 + 省X」让用户感知优惠 */
+    .camp-card .card-price-row {
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+    }
+    .camp-card .card-orig-price {
+      font-size: 10.5px; color: #b5b0a8; text-decoration: line-through;
+    }
+    .camp-card .card-save {
+      font-size: 9px; color: #fff; background: #FF6B35;
+      padding: 1px 5px; border-radius: 3px; font-weight: 700;
+      line-height: 1.5;
+    }
+
+    /* mini 模式下徽章位置缩小 */
+    .camp-card .card-age-badge {
+      top: 6px; left: 6px; font-size: 9px; padding: 2px 6px;
+    }
+    .camp-card .card-duration {
+      bottom: 6px; right: 6px; font-size: 9px; padding: 1px 6px;
+    }
+    .camp-card.featured::before {
+      font-size: 9px; padding: 2px 7px 2px 9px; top: 6px;
+    }
+
+    /* === 多期角标 (卡片左下) === */
+    .card-weeks-badge {
+      position: absolute;
+      bottom: 6px; left: 6px;
+      background: linear-gradient(135deg, #FF6B35, #FF9233);
+      color: #fff;
+      font-size: 10px; font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 10px;
+      z-index: 3;
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 6px rgba(255,107,53,0.4);
+    }
+    .detail-overlay .card-weeks-badge {
+      bottom: 10px; left: 10px;
+      font-size: 12px;
+      padding: 4px 11px;
+    }
+
+    /* === 卡片状态标记 (右上角) === */
+    .card-status {
+      position: absolute;
+      top: 6px; right: 6px;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 900;
+      z-index: 5;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      backdrop-filter: blur(2px);
+    }
+    .card-status.done { background: #4CAF50; color: #fff; }
+    .card-status.todo { background: #FFA726; color: #fff; }
+    .card-status.blank {
+      background: rgba(255,255,255,0.92);
+      color: #8B7B5C;
+      border: 1.5px dashed #C0B7A5;
+      box-shadow: none;
+      width: 26px; height: 26px;
+      font-size: 16px; font-weight: 900;
+      font-family: Arial, sans-serif;  /* 避免中文字体 fallback */
+    }
+    .card-status.blank::before {
+      content: '?';
+      line-height: 1;
+    }
+    /* featured 的 ::before 在 top:6 right:0，避免和 status 重叠 → status 下移到 top:32 */
+    .camp-card.featured .card-status { top: 32px; }
+
+    /* 毛坯房卡片 (data-status="blank") 的整体外观 */
+    .camp-card[data-status="blank"] {
+      background: repeating-linear-gradient(135deg, #FFF8F0, #FFF8F0 10px, #FBF3E8 10px, #FBF3E8 20px);
+      border: 1.5px dashed #DCD0BC;
+      box-shadow: none;
+      cursor: default;
+    }
+    .camp-card[data-status="blank"] .card-poster {
+      background: linear-gradient(135deg, #F0E8D8, #E5DCC0) !important;
+      aspect-ratio: 4/3;
+    }
+    .camp-card[data-status="blank"] .card-poster::before {
+      content: '🏗';
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 38px; opacity: 0.55;
+      z-index: 2;
+    }
+    .camp-card[data-status="blank"] .card-name {
+      color: #8B7B5C;
+    }
+    .camp-card[data-status="blank"] .card-price {
+      color: #B0A795;
+    }
+    .camp-card[data-status="blank"] .card-icon,
+    .camp-card[data-status="blank"] .poster-img {
+      display: none;
+    }
+    /* 毛坯房不允许点开看详情 */
+    body:not(.detail-open) .camp-card[data-status="blank"]:active {
+      transform: none;
+    }
+    .camp-card:has(.poster-img[src*="images/camps/"])::before {
+      /* 移除原本的 ::before 渐变蒙版（mini 卡用不上） */
+      content: none;
+    }
+
+    /* ===== Detail 覆盖层 ===== */
+    .detail-overlay {
+      position: fixed; inset: 0; z-index: 999;
+      background: #F7F5F1;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+      max-width: 480px;
+      margin: 0 auto;
+      right: 0; left: 0;
+    }
+    .detail-overlay.open { transform: translateX(0); }
+    .detail-bar {
+      position: sticky; top: 0; z-index: 10;
+      background: #fff;
+      padding: 10px 12px;
+      display: flex; align-items: center; gap: 8px;
+      border-bottom: 1px solid #F0EDE8;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+    }
+    .detail-back {
+      background: none; border: none; cursor: pointer;
+      width: 36px; height: 36px; padding: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; color: #1A1A2E;
+      border-radius: 50%;
+    }
+    .detail-back:hover { background: #F5F3EF; }
+    .detail-title {
+      font-size: 14px; font-weight: 700; color: #1A1A2E;
+      flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .detail-body {
+      flex: 1;
+      padding: 12px 12px 100px;
+    }
+
+    /* 卡片在 detail 层里恢复"完整"显示 */
+    .detail-overlay .camp-card {
+      display: block !important;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      cursor: default;
+    }
+    .detail-overlay .camp-card .card-main { flex-direction: column; }
+    .detail-overlay .camp-card .card-poster {
+      width: 100%;
+      aspect-ratio: 16/7;
+      min-height: 0;
+    }
+    .detail-overlay .camp-card:has(.poster-img[src*="images/camps/"]) .card-poster {
+      aspect-ratio: 16/7;
+    }
+    .detail-overlay .camp-card .card-body {
+      padding: 14px 14px 14px;
+      gap: 6px;
+    }
+    .detail-overlay .camp-card .card-name {
+      font-size: 18px;
+      -webkit-line-clamp: unset;
+      display: block;
+    }
+    .detail-overlay .camp-card .card-subtitle,
+    .detail-overlay .camp-card .card-meta-row,
+    .detail-overlay .camp-card .card-tags,
+    .detail-overlay .camp-card .card-detail-toggle,
+    .detail-overlay .camp-card .card-qr-toggle,
+    .detail-overlay .camp-card .card-price-hint {
+      display: flex;
+    }
+    .detail-overlay .camp-card .card-subtitle { display: -webkit-box; -webkit-line-clamp: unset; }
+    .detail-overlay .camp-card .card-detail-panel.open,
+    .detail-overlay .camp-card .card-qr-panel.open {
+      display: block;
+    }
+    .detail-overlay .camp-card .card-date-row,
+    .detail-overlay .camp-card .card-location { font-size: 12px; }
+    .detail-overlay .camp-card .card-price { font-size: 22px; }
+    .detail-overlay .camp-card .card-price-unit { font-size: 13px; }
+
+    .detail-overlay .camp-card .card-age-badge {
+      top: 10px; left: 10px; font-size: 11px; padding: 3px 9px;
+    }
+    .detail-overlay .camp-card .card-duration {
+      bottom: 10px; right: 12px; font-size: 11px; padding: 2px 8px;
+    }
+    .detail-overlay .camp-card.featured::before {
+      font-size: 10px; padding: 3px 10px 3px 12px; top: 10px;
+    }
+
+    /* 锁住背景滚动 */
+    body.detail-open { overflow: hidden; }
+
+    /* ===== FAB 浮动咨询按钮 ===== */
+    .fab {
+      position: fixed; bottom: 18px; right: 18px;
+      z-index: 200;
+      background: linear-gradient(135deg, #FF6B35, #FF9233);
+      color: #fff;
+      font-size: 13px; font-weight: 800;
+      padding: 13px 20px;
+      border-radius: 28px;
+      box-shadow: 0 6px 20px rgba(255,107,53,0.45);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .fab:active { transform: scale(0.97); }
+    body.detail-open .fab { display: none; }
+
+    /* ========================================
+       卡片完工状态角标（右上角徽章）
+       ✓ 绿色 = 有详情 (data-slug 设置)
+       ✗ 红色 = 缺详情
+       🚧 灰色 = 毛坯卡（data-blank）
+       ======================================== */
+    .camp-card { position: relative; }
+    .camp-card::after {
+      position: absolute;
+      top: 6px; right: 6px;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 20px;
+      text-align: center;
+      z-index: 5;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+      pointer-events: none;
+    }
+    .camp-card[data-slug]::after {
+      content: '✓';
+      color: #2BB673;
+    }
+    .camp-card:not([data-slug]):not([data-blank])::after {
+      content: '✗';
+      color: #E74C3C;
+    }
+    .camp-card[data-blank]::after {
+      content: '🚧';
+      font-size: 11px;
+      background: rgba(245,243,239,0.95);
+    }
+    /* featured 卡片的"热门"丝带在 top:6px right:0，把状态标记下移避免叠加 */
+    .camp-card.featured::after {
+      top: 28px;
+    }
+    /* 详情层里隐藏角标（避免干扰阅读） */
+    .detail-overlay .camp-card::after { display: none; }
+
+    /* ========================================
+       详情页：阅读进度条 / 侧边 TOC / 微信原文
+       ======================================== */
+
+    /* 全局阅读进度条（屏幕最顶端，主页+详情都用） */
+    .global-progress {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: transparent;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .global-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #FF6B35, #FFD93D);
+      width: 0%;
+      transition: width 0.08s linear;
+      box-shadow: 0 1px 4px rgba(255,107,53,0.4);
+    }
+    /* 兼容旧 detail-progress（不再需要单独的，保留作占位） */
+    .detail-progress { display: none; }
+    .detail-progress-fill { display: none; }
+
+    /* 微信原文容器 */
+    .detail-article {
+      margin: 14px 12px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 18px 16px 20px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    }
+    .detail-article-head {
+      padding-bottom: 12px;
+      border-bottom: 1px dashed #F0EDE8;
+      margin-bottom: 14px;
+    }
+    .detail-article-head .label {
+      font-size: 10.5px; color: #C0B7A5; letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .detail-article-head .read-time {
+      font-size: 11px; color: #999;
+    }
+    .wechat-article {
+      font-size: 14.5px; line-height: 1.85;
+      color: #1A1A2E;
+    }
+    .wechat-article p { margin: 10px 0; }
+    .wechat-article img { max-width: 100%; height: auto; display: block; margin: 12px auto; border-radius: 6px; }
+    .wechat-article video { max-width: 100%; height: auto; display: block; margin: 12px auto; border-radius: 6px; }
+    .wechat-article h1 { display: none; }  /* 标题已在卡片显示，避免重复 */
+    .wechat-article h2,
+    .wechat-article h3,
+    .wechat-article h4 {
+      color: #FF6B35;
+      margin: 22px 0 10px;
+      font-weight: 800;
+      scroll-margin-top: 70px;
+    }
+    .wechat-article h2 { font-size: 18px; }
+    .wechat-article h3 { font-size: 16px; }
+    .wechat-article h4 { font-size: 15px; }
+    .wechat-article blockquote {
+      border-left: 3px solid #FF6B35;
+      padding: 4px 12px;
+      color: #666;
+      margin: 14px 0;
+      background: #FFF8F2;
+      border-radius: 0 6px 6px 0;
+    }
+    .wechat-article strong { color: #1A1A2E; }
+    .wechat-article a { color: #FF6B35; text-decoration: none; border-bottom: 1px solid #FFD0B0; }
+    .wechat-article hr {
+      border: none; height: 1px;
+      background: linear-gradient(90deg, transparent, #E5DCC8, transparent);
+      margin: 24px 0;
+    }
+    /* TOC 锚点段落 */
+    .wechat-article .toc-anchor {
+      scroll-margin-top: 70px;
+      font-weight: 800 !important;
+      color: #FF6B35 !important;
+      font-size: 17px !important;
+      margin-top: 26px !important;
+      padding-left: 10px;
+      border-left: 3px solid #FF6B35;
+    }
+
+    /* 🅰️ Dot Rail 侧边导航 */
+    .detail-rail {
+      position: fixed;
+      right: 0; top: 50%;
+      transform: translateY(-50%);
+      z-index: 998;
+      padding: 14px 8px 14px 12px;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 14px 0 0 14px;
+      box-shadow: -2px 6px 18px rgba(0,0,0,0.08);
+      width: 30px;
+      max-height: 75vh;
+      overflow: hidden;
+      cursor: pointer;
+      display: none;
+    }
+    body.detail-open .detail-rail { display: block; }
+    @media (hover: hover) {
+      .detail-rail:hover {
+        width: 240px;
+        padding-right: 20px;
+      }
+      .detail-rail:hover .detail-rail-label { opacity: 1; transform: translateX(0); }
+    }
+    .detail-rail.expanded {
+      width: 240px;
+      padding-right: 20px;
+    }
+    .detail-rail.expanded .detail-rail-label { opacity: 1; transform: translateX(0); }
+
+    .detail-rail-items {
+      display: flex; flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      max-height: 70vh;
+      scrollbar-width: none;
+    }
+    .detail-rail-items::-webkit-scrollbar { display: none; }
+
+    .detail-rail-item {
+      display: flex; align-items: center; gap: 12px;
+      cursor: pointer; white-space: nowrap;
+      user-select: none;
+    }
+    .detail-rail-dot {
+      width: 8px; height: 8px;
+      background: #D8CFBE;
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .detail-rail-item.visited .detail-rail-dot {
+      background: #FFB37A;
+    }
+    .detail-rail-item.current .detail-rail-dot {
+      width: 22px;
+      border-radius: 4px;
+      background: #FF6B35;
+      box-shadow: 0 0 12px rgba(255,107,53,0.5);
+    }
+    .detail-rail-label {
+      font-size: 12.5px; color: #444;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity 0.22s 0.05s, transform 0.22s 0.05s;
+    }
+    .detail-rail-item.current .detail-rail-label {
+      color: #FF6B35; font-weight: 800;
+    }
+    .detail-rail-item.visited .detail-rail-label {
+      color: #888;
+    }
+    .detail-rail-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px;
+      background: #F0EDE8;
+      color: #888;
+      border-radius: 50%;
+      font-size: 10px; font-weight: 800;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .detail-rail-item.visited .detail-rail-num { background: #FFD0B0; color: #FF6B35; }
+    .detail-rail-item.current .detail-rail-num { background: #FF6B35; color: #fff; }
+
+    /* TOC 浮动按钮（移动端，已停用） */
+    .toc-fab {
+      position: fixed;
+      right: 14px;
+      bottom: 80px;
+      width: 44px; height: 44px;
+      background: #fff;
+      border: 1.5px solid #FFD0B0;
+      border-radius: 50%;
+      font-size: 18px; color: #FF6B35;
+      cursor: pointer; z-index: 1000;
+      box-shadow: 0 4px 14px rgba(255,107,53,0.25);
+      display: none;
+    }
+    body.detail-open .toc-fab { display: flex; align-items: center; justify-content: center; }
+
+    /* TOC 抽屉 */
+    .detail-toc {
+      position: fixed;
+      right: 0; top: 0; bottom: 0;
+      width: 78%; max-width: 280px;
+      background: #fff;
+      box-shadow: -8px 0 24px rgba(0,0,0,0.12);
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
+      z-index: 1001;
+      display: flex; flex-direction: column;
+    }
+    .detail-toc.open { transform: translateX(0); }
+    .toc-head {
+      padding: 14px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #F0EDE8;
+      font-size: 14px; font-weight: 800; color: #1A1A2E;
+    }
+    .toc-close {
+      background: none; border: none; cursor: pointer;
+      font-size: 22px; color: #999;
+      width: 32px; height: 32px;
+    }
+    .toc-list {
+      list-style: none; padding: 8px 0;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .toc-list li {
+      padding: 0;
+    }
+    .toc-list a {
+      display: block;
+      padding: 11px 18px;
+      color: #555;
+      text-decoration: none;
+      font-size: 13.5px;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .toc-list a:hover,
+    .toc-list a.active {
+      background: #FFF6F3;
+      color: #FF6B35;
+      border-left-color: #FF6B35;
+    }
+    .toc-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px;
+      background: #F0EDE8;
+      color: #888;
+      border-radius: 50%;
+      font-size: 10px; font-weight: 800;
+      margin-right: 8px;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .toc-list a.active .toc-num {
+      background: #FF6B35;
+      color: #fff;
+    }
+    .toc-list a.toc-li-main, .toc-list a:not(.toc-sub) {
+      display: flex; align-items: center;
+    }
+    .toc-list a.toc-sub {
+      padding-left: 34px;
+      font-size: 12px;
+      color: #888;
+      font-weight: 400;
+    }
+    .toc-list a.toc-sub::before {
+      content: '·';
+      margin-right: 6px;
+      color: #C0B7A5;
+    }
+    .toc-list a.toc-sub.active {
+      color: #FF6B35;
+      font-weight: 600;
+    }
+    /* 文章里的子级锚点样式（区别于主小节） */
+    .wechat-article .toc-anchor.toc-anchor-sub {
+      font-size: 14.5px !important;
+      color: #1A1A2E !important;
+      border-left: 2px solid #FFD0B0 !important;
+      padding-left: 8px;
+      margin-top: 14px !important;
+      font-weight: 700 !important;
+    }
+
+    /* 详情元信息（顶 bar 右侧） */
+    .detail-meta {
+      font-size: 10.5px; color: #999;
+      flex-shrink: 0;
+      padding-left: 8px;
+    }
+
+    /* ───────── R2-no-panel polish ───────── */
+    :root {
+      --ink-dark: #2a2520;    /* 暖深色，做标题/正文 */
+      --ink-soft: #6b6258;    /* 副标题灰 */
+    }
+    /* 字体层级 */
+    .card-name { font-size: 18px !important; letter-spacing: -0.2px; color: var(--ink-dark) !important; line-height: 1.25 !important; }
+    .card-subtitle { font-size: 12.5px; color: var(--ink-soft); margin-top: 3px; line-height: 1.45; }
+    .card-price { font-size: 19px !important; letter-spacing: -0.3px; }
+    /* 卡片留白扩大 */
+    .camp-card { margin-bottom: 14px !important; box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 14px rgba(0,0,0,0.03); }
+    .camp-card .card-body { padding: 14px 14px 12px !important; }
+    /* 状态图标降级 */
+    .card-status { font-size: 11px !important; padding: 2px 6px !important; opacity: 0.7; }
+    /* 价格行单行布局 */
+    .card-price-row { gap: 8px; align-items: baseline; }
+    .card-orig-price { font-size: 12px !important; color: #aaa !important; }
+    .card-save { font-size: 11px !important; }
+    /* 通用 active 反馈 */
+    button:not(.bottom-bar-btn):not(.filter-sheet-cancel):active,
+    .camp-card:active,
+    .age-nav-tab:active { transform: scale(0.98); opacity: 0.92; transition: transform 120ms, opacity 120ms; }
+    /* 图片 lazy 之前的 placeholder（米色块） */
+    img.poster-img, video.poster-img { background: #EDE7DE; }
+    /* 列表底部 padding 防底栏遮 */
+    .camps-list { padding-bottom: 96px; }
+    /* 顶部条 sticky 阴影区分 */
+    .home-top-bar { box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02); }
+    /* 年龄 tab 切换平滑下划线 */
+    .age-nav-tab.active::after { transition: all 250ms cubic-bezier(.2,.8,.2,1); }
+    /* 卡片 hover 微动效（仅桌面） */
+    @media (hover: hover) { .camp-card:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.06), 0 12px 28px rgba(0,0,0,0.05); transition: all 200ms; } }
+    /* 详情页打开动画 */
+    body.detail-open .detail-main { animation: detailSlideIn 280ms cubic-bezier(.2,.8,.2,1); }
+    @keyframes detailSlideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    /* sheet 弹性 */
+    .filter-sheet.open .filter-sheet-content,
+    .contact-modal.open .contact-modal-content {
+      animation: sheetSpringIn 360ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes sheetSpringIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="view-home">
+
+<!-- 全局阅读进度条（始终贴屏幕最顶端） -->
+<div class="global-progress"><div class="global-progress-fill" id="global-progress-fill"></div></div>
+
+<div class="home-view"><!-- /.home-view 闭合在 contact-modal 之前 -->
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo-block">
+    <div class="logo-cn"><em>钥匙</em>玩校</div>
+    <div class="logo-en">kiidschool</div>
+  </div>
+  <div class="header-badge">2026 夏令营</div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-kicker">2026 SUMMER CAMP</div>
+  <div class="hero-title">在创造中寻找自己<br>在玩耍中爱上学习</div>
+  <div class="hero-credo">
+    <p>钥匙玩校，懂教育，会游戏，爱孩子。</p>
+    <p>玩得开心，学得畅快，回味悠长，受益终身。</p>
+    <p>孩子的爱好会被尊重，孩子的天赋会被保护。</p>
+  </div>
+  <div class="hero-pills">
+    <span class="hero-pill">20+主题</span>
+    <span class="hero-pill">9-18岁</span>
+    <span class="hero-pill">7月4日-8月17日</span>
+  </div>
+  <div class="presale-strip">
+    <span class="presale-dot"></span>
+    报名进行中 · 名额有限 · 先到先得
+  </div>
+</section>
+
+<!-- 顶部条：年龄 Tabs（小红书首页风） + 右侧筛选漏斗 -->
+<div class="home-top-bar">
+  <nav class="age-nav" id="age-nav">
+    <button class="age-nav-tab active" data-age="all" onclick="selectAgeTab('all')">全部</button>
+    <button class="age-nav-tab" data-age="9-12" onclick="selectAgeTab('9-12')">9-12 岁</button>
+    <button class="age-nav-tab" data-age="12-16" onclick="selectAgeTab('12-16')">12-16 岁</button>
+    <button class="age-nav-tab" data-age="14-18" onclick="selectAgeTab('14-18')">14-18 岁</button>
+  </nav>
+  <button class="filter-fab" aria-label="筛选" onclick="openFilterSheet()">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 5h18M6 12h12M10 19h4"/>
+    </svg>
+    <span class="filter-count-badge" id="filter-count-badge">0</span>
+  </button>
+</div>
+
+<!-- RESULTS -->
+<div class="results-bar">
+  <span>共 <strong id="result-count">13</strong> 个营期</span>
+</div>
+
+<!-- CAMP CARDS（单列表，年龄段通过 hide/show 筛选；R2-no-panel） -->
+<div class="list-disclaimer">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
+<div class="camps-list" id="camps-list">
+
+  <!-- ── 🌟 推荐 ── -->
+  <div class="age-group-divider recommend-divider" data-group="recommend">
+    <div class="line"></div>
+    <div class="label">🌟 推荐</div>
+    <div class="line"></div>
+  </div>
+
+  <!-- ── 9-12岁 ── -->
+  <div class="age-group-divider" data-group="9-12">
+    <div class="line"></div>
+    <div class="label">9 — 12岁</div>
+    <div class="line"></div>
+  </div>
+
+  <!-- 六艺通识营 -->
+  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="学习力,跨学科" data-dates="7.4-7.10,7.11-7.17" data-group="9-12" data-slug="liuyi">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status done">✓</span>
+        <img decoding="async" loading="lazy" class="poster-img" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/camps/liuyi.jpg" onerror="this.style.display='none'" alt="">
+        <div class="card-icon">🎨</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">六艺通识营</div>
+        <div class="card-subtitle">在游戏和创造中锤炼通用技能</div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.4-7.10 &nbsp;|&nbsp; 7.11-7.17</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFF3E0;color:#E65100;">通识</span>
+          <span class="card-tag" style="background:#F3E5F5;color:#6A1B9A;">人文</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>古为今用的素质拓荒营。将传统六艺转化为现代协作、观察、自控等七大通用能力，通过 GBL（游戏学习）和 PBL（项目学习）结合，打好通识基础。7 天高频互动，保护孩子天然的好奇心，让孩子学会"高水平地玩"，提升应对挑战的学习底气。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>家长希望培养孩子综合素质、不局限于单一技能的全面发展型孩子</li><li>喜欢动手制作、参与集体游戏，乐于探究问题原因的孩子</li><li>需要提升自控力、表达力和社交信心的低年级学生</li></ul>
+      </div>
+    </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
+
+  <!-- 头脑特工队 -->
+  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="心理抗挫" data-dates="7.4-7.10,7.11-7.17,7.18-7.24,7.25-7.31" data-group="9-12" data-slug="emotion-team">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#6C5CE7,#A29BFE);">
+        <span class="card-status done">✓</span>
+        <video class="poster-img" data-src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/camps/emotion-anim.mp4" loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="none" onerror="this.style.display='none'"></video>
+        <div class="card-icon">🧠</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">头脑特工队</div>
+        <div class="card-subtitle">探索情绪力量，萌发行动能力</div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.4–7.31 共4期可选</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#EDE7F6;color:#4527A0;">探索</span>
+          <span class="card-tag" style="background:#E8EAF6;color:#283593;">思维</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>国内少有的深度情绪智力（EQ）训练营。基于心理学理论，将负面情绪转化为适应力、逻辑力和创造力。通过阶梯式情绪挑战为孩子种下"心理疫苗"，让他们学会与愤怒、悲伤、恐惧共处，培养面对困难时的松弛感与成长型思维。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>情绪波动较大，或家长希望提升其情绪调节能力的青少年</li><li>性格偏内向、害羞，需要在安全环境下练习社交突破的孩子</li><li>渴望被理解，需要建立内心安全感和自信心的孩子</li></ul>
+      </div>
+    </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
+
+  <!-- 勇敢者游戏 -->
+  <div class="camp-card" data-status="todo" data-age-min="9" data-age-max="12" data-themes="心理抗挫,户外冒险" data-dates="7.18-7.24" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#E17055,#D63031);">
+        <span class="card-status todo">✗</span>
+        <video class="poster-img" data-src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/camps/brave.mp4" loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="none" onerror="this.style.display='none'"></video>
+        <div class="card-icon">⚔️</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">勇敢者游戏</div>
+        <div class="card-subtitle">挑战赫拉克勒斯的 6 大试炼，觉醒 12 项英雄之力</div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.18-7.24</div>
+        </div>
+        <div class="card-location">📍 成都·麓客岛</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FBE9E7;color:#BF360C;">冒险</span>
+          <span class="card-tag" style="background:#FFF3E0;color:#E65100;">探索</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>专治"不敢表达、怕输、怕被拒绝"的勇气加持营。以希腊神话为背景，将成长中的挑战转化为英雄试炼。通过游戏化教学，让孩子在对抗失败的过程中觉醒"勇者之心"，重建"我能行"的强大信念，学会重定义问题。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>在生活中比较谨慎、害怕犯错，需要勇气突破的"乖孩子"</li><li>热爱神话故事、剧本冒险，喜欢沉浸式角色体验的孩子</li><li>家长希望其在 AI 时代保持"敢于提问、敢于尝试"特质的孩子</li></ul>
+      </div>
+    </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
+
+  <!-- 招牌通识营·世界重启 -->
+  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="跨学科" data-dates="7.11-7.17,7.25-7.31" data-group="9-12" data-slug="world-restart">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#00B894,#00CEC9);">
+        <span class="card-status done">✓</span>
+        <img decoding="async" loading="lazy" class="poster-img" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/camps/world.jpg" onerror="this.style.display='none'" alt="">
+        <div class="card-icon">🌍</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">招牌通识营 · 世界重启</div>
+        <div class="card-subtitle">灾难后重建文明 · 跨学科生存与协作实战</div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.11-7.17</div>
+        </div>
+        <div class="card-location">📍 成都·麓客岛</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#E0F2F1;color:#00695C;">通识</span>
+          <span class="card-tag" style="background:#F3E5F5;color:#6A1B9A;">人文</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>生存与文明模拟营。模拟灾难后重建文明，引导孩子学习生存技能、信息分析与协作领导力。跨学科实战现场，既有原始技术发掘，也有对人性的深度思考，旨在培养孩子在极端环境下的应变能力与生存智慧。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>对科学、历史、生存技能有浓厚兴趣的"创造者"</li><li>脑洞大开，对社会运行机制和文明演化充满好奇的少年</li></ul>
+      </div>
+    </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
+
+  <!-- 少年大富翁创业营 -->
+  <div class="camp-card" data-status="todo" data-age-min="9" data-age-max="12" data-themes="财商" data-dates="7.4-7.10" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#F9CA24,#F0932B);">
+        <span class="card-status todo">✗</span>
+        <video class="poster-img" data-src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/camps/monopoly.mp4" loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="none" onerror="this.style.display='none'"></video>
+        <div class="card-icon">💰</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">少年大富翁创业营</div>
+        <div class="card-subtitle">在行动中培养创造幸福的能力</div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.4-7.10</div>
+        </div>
+        <div class="card-location">📍 成都·麓客岛</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFFDE7;color:#F57F17;">创造</span>
+          <span class="card-tag" style="background:#FFF8E1;color:#FF8F00;">财商</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>一场关于价值与金钱的正确认知课。营员将体验从"产品设计"到"公司成立"的完整闭环，学习储蓄、风险与价值创造。不教钻营之道，只教如何用智慧和良知创造幸福，让孩子理解财富的本质是信任与合作。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>对金钱、买卖、商业世界表现出浓厚兴趣的小"创业者"</li><li>家长希望引导孩子建立正确财富观，告别盲目消费或功利心态</li><li>善于头脑风暴，乐于将创意转化为实际产品的行动派</li></ul>
+      </div>
+    </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
+
+  <!-- 学院制夏令营2.0 -->
+  <div class="camp-card featured" data-status="todo" data-age-min="9" data-age-max="12" data-themes="学院制" data-dates="8.8-8.17" data-group="recommend" data-rank="2">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#6A3093,#A044FF);">
+        <span class="card-status todo">✗</span>
+        <video class="poster-img" data-src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/camps/academy.mp4" loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="none" onerror="this.style.display='none'"></video>
+        <div class="card-icon">🏰</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">10天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">学院制夏令营 2.0</div>
+        <div class="card-subtitle">在创造性的玩耍中成就发光童年</div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 8.8-8.17</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人×4学院</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#EDE7F6;color:#4527A0;">通识</span>
+          <span class="card-tag" style="background:#F3E5F5;color:#6A1B9A;">创造</span>
+          <span class="card-tag" style="background:#FCE4EC;color:#880E4F;">10天</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">10800</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥12800</span>
+          <span class="card-save">省2000</span>
+        </div>
+      </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>核心理念是"有意义的玩耍"，不急于灌输成功学，而是让孩子在自由创造中建立自我效能感。通过试错与探索，让孩子在快乐中产生"我可以"的力量，为青少年时期的激情寻找打下坚实的心理基础。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>正处于自我意识萌芽期，需要独立空间和正面引导的孩子</li><li>好奇心旺盛，喜欢在玩耍中学习和发现世界的探索型少年</li><li>家长希望其在快乐童年与未来挑战之间建立平稳过渡</li></ul>
+      </div>
+    </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
+  <!-- 招牌通识 · 重走人类创造之路 -->
+  <div class="camp-card" data-slug="human-history" data-status="done" data-age-min="9" data-age-max="12" data-themes="跨学科" data-dates="7.4-7.10,7.18-7.24" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#A8E6CF,#7FCDCD);">
+        <span class="card-status done">✓</span>
+        <video class="poster-img" data-src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/camps/human-history.mp4" onerror="this.style.display='none'" alt="" loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="none"></video>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">招牌通识 · 重走人类创造之路</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.4-7.10 &nbsp;|&nbsp; 7.18-7.24</div>
+        </div>
+        <div class="card-location">📍 成都·麓客岛</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFF3E0;color:#E65100;">通识</span>
+          <span class="card-tag" style="background:#FFFDE7;color:#F57F17;">创造</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 硬核成长营 · 命运手斧 -->
+  <div class="camp-card" data-slug="fate-axe" data-status="done" data-age-min="9" data-age-max="12" data-themes="户外冒险,心理抗挫" data-dates="7.11-7.17" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#F77F3C,#FFB347);">
+        <span class="card-status done">✓</span>
+        <video class="poster-img" data-src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/camps/fate-axe.mp4" onerror="this.style.display='none'" alt="" loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="none"></video>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">硬核成长营 · 命运手斧</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.11-7.17</div>
+        </div>
+        <div class="card-location">📍 成都·麓客岛</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#E0F7FA;color:#006064;">户外</span>
+          <span class="card-tag" style="background:#FCE4EC;color:#880E4F;">心理</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 火星生存指南 -->
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="跨学科,户外冒险" data-dates="7.18-7.24" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">火星生存指南</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.18-7.24</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFFDE7;color:#F57F17;">创造</span>
+          <span class="card-tag" style="background:#E8EAF6;color:#283593;">思辨</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 数学战争 -->
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="思辨解谜" data-dates="7.25-7.31" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">数学战争</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.25-7.31</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#E8EAF6;color:#283593;">思辨</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 水形物语 -->
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="艺术叙事" data-dates="7.25-7.31" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">水形物语</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.25-7.31</div>
+        </div>
+        <div class="card-location">📍 成都·麓客岛</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFFDE7;color:#F57F17;">创造</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 时间玩家 -->
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="思辨解谜" data-dates="8.1-8.7" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">时间玩家</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 8.1-8.7</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#E8EAF6;color:#283593;">思辨</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 搞笑诺贝尔 -->
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="跨学科,思辨解谜" data-dates="8.1-8.7" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">搞笑诺贝尔</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 8.1-8.7</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFFDE7;color:#F57F17;">创造</span>
+          <span class="card-tag" style="background:#E8EAF6;color:#283593;">思辨</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 造船 PBL -->
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="AI科创,跨学科" data-dates="8.1-8.7" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">造船 PBL</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 8.1-8.7</div>
+        </div>
+        <div class="card-location">📍 成都·麓客岛</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFFDE7;color:#F57F17;">创造</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 定向越野 + AI 工具 -->
+  <div class="camp-card" data-status="blank" data-age-min="9" data-age-max="12" data-themes="户外冒险,AI科创" data-dates="8.1-8.7" data-group="9-12">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">9-12岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">定向越野 + AI 工具</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 8.1-8.7</div>
+        </div>
+        <div class="card-location">📍 成都·麓客岛</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 25人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#E0F7FA;color:#006064;">户外</span>
+          <span class="card-tag" style="background:#FFFDE7;color:#F57F17;">创造</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 12-16岁 ── -->
+  <div class="age-group-divider" data-group="12-16">
+    <div class="line"></div>
+    <div class="label">12 — 16岁</div>
+    <div class="line"></div>
+  </div>
+
+  <!-- 招牌学院制6.0 -->
+  <div class="camp-card featured" data-status="todo" data-age-min="12" data-age-max="16" data-themes="学院制" data-dates="7.4-7.13" data-group="recommend" data-rank="1">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#2C3E50,#4CA1AF);">
+        <span class="card-status todo">✗</span>
+        <video class="poster-img" data-src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/camps/academy.mp4" loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="none" onerror="this.style.display='none'"></video>
+        <div class="card-icon">⚗️</div>
+        <div class="card-age-badge">12-16岁</div>
+        <div class="card-duration">10天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">招牌学院制 6.0</div>
+        <div class="card-subtitle">在霍格沃茨般的学习体验中延伸童年</div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.4-7.13</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 30人×4学院</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#E3F2FD;color:#0D47A1;">通识</span>
+          <span class="card-tag" style="background:#E8F5E9;color:#1B5E20;">创造</span>
+          <span class="card-tag" style="background:#FCE4EC;color:#880E4F;">10天</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">10800</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥12800</span>
+          <span class="card-save">省2000</span>
+        </div>
+      </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>钥匙玩校的"王牌口碑营"，主打高热血感的学院对抗与全方位能力进阶。营会提供 60+ 项新奇体验，让孩子在 10 天内扩大舒适区，通过竞技与作品创作双重形式发掘潜能。一场关于荣誉、团队与自我突破的盛夏庆典，能极大提升孩子的集体荣誉感和自信心。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>无论"学霸"还是"贪玩"的孩子，只要渴望交友、渴望证明自己</li><li>性格鲜明、有主见，甚至在常规学校环境中显得"不太听话"的孩子</li><li>喜欢挑战、热爱团队合作，希望体验多元化技能学习的青少年</li></ul>
+      </div>
+    </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
+
+  <!-- 名侦探学院 -->
+  <div class="camp-card" data-status="todo" data-age-min="12" data-age-max="16" data-themes="思辨解谜" data-dates="8.8-8.14" data-group="12-16">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#1A1A2E,#16213E);">
+        <span class="card-status todo">✗</span>
+        <video class="poster-img" data-src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/camps/detective.mp4" loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="none" onerror="this.style.display='none'"></video>
+        <div class="card-icon">🔍</div>
+        <div class="card-age-badge">12-16岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">名侦探学院 2.0</div>
+        <div class="card-subtitle">释放解谜求真天性，少年天生是侦探！</div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 8.8-8.14</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 30人×4学院</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#EDE7F6;color:#4527A0;">探索</span>
+          <span class="card-tag" style="background:#E8EAF6;color:#283593;">思维</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">7280</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥8280</span>
+          <span class="card-save">省1000</span>
+        </div>
+      </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>点燃主动学习热情的逻辑解谜营。利用孩子天生的好奇心，将跨学科知识转化为案件线索。通过推理与侦破，让孩子从"被动听令"转为"主动探索"，在追求真相的过程中训练严密的逻辑思维与观察力。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>逻辑控、推理迷，对《名侦探柯南》等侦探题材感兴趣的孩子</li><li>思维活跃，不喜欢标准答案，喜欢追问"为什么"的学生</li><li>需要提升观察细致度、分析判断力的青少年</li></ul>
+      </div>
+    </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
+  <!-- 招牌跨学科 · 运气秘籍 -->
+  <div class="camp-card" data-slug="luck-recipe" data-status="done" data-age-min="12" data-age-max="16" data-themes="跨学科,财商,学习力" data-dates="7.25-7.31" data-group="12-16">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status done">✓</span>
+        <video class="poster-img" data-src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/articles/_shared/192ac88aac606f73.mp4" onerror="this.style.display='none'" alt="" loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="none"></video>
+        <div class="card-age-badge">12-16岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">招牌跨学科 · 运气秘籍</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.25-7.31</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 30人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFF3E0;color:#E65100;">通识</span>
+          <span class="card-tag" style="background:#FFF8E1;color:#FF8F00;">财商</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 玩笑盲盒营 · 玩耍抗抑 -->
+  <div class="camp-card" data-slug="joy-blindbox" data-status="done" data-age-min="12" data-age-max="16" data-themes="心理抗挫" data-dates="8.1-8.7" data-group="12-16">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF6B9D,#FFA8A8);">
+        <span class="card-status done">✓</span>
+        <video class="poster-img" data-src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/camps/joy-blindbox.mp4" onerror="this.style.display='none'" alt="" loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="none"></video>
+        <div class="card-age-badge">12-16岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">玩笑盲盒营 · 玩耍抗抑</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 8.1-8.7</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 30人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFF3E0;color:#E65100;">通识</span>
+          <span class="card-tag" style="background:#FCE4EC;color:#880E4F;">心理</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 第一桶金 -->
+  <div class="camp-card" data-status="blank" data-age-min="12" data-age-max="16" data-themes="财商" data-dates="7.25-7.31" data-group="12-16">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">12-16岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">第一桶金</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.25-7.31</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 30人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FFF8E1;color:#FF8F00;">财商</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 饥饿游戏 -->
+  <div class="camp-card" data-status="blank" data-age-min="12" data-age-max="16" data-themes="户外冒险" data-dates="8.1-8.7" data-group="12-16">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
+        <span class="card-status blank" title="该营期介绍正在准备中"></span>
+        <div class="card-icon">🏕</div>
+        <div class="card-age-badge">12-16岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">饥饿游戏</div>
+        <div class="card-subtitle"></div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 8.1-8.7</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 30人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#E0F7FA;color:#006064;">户外</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">5980</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥6580</span>
+          <span class="card-save">省600</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 14-18岁 ── -->
+  <div class="age-group-divider" data-group="14-18">
+    <div class="line"></div>
+    <div class="label">14 — 18岁</div>
+    <div class="line"></div>
+  </div>
+
+  <!-- 职业探索学院制3.0 -->
+  <div class="camp-card featured" data-status="todo" data-age-min="14" data-age-max="18" data-themes="学院制,职业探索" data-dates="7.14-7.23" data-group="recommend" data-rank="3">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#0F3443,#34E89E);">
+        <span class="card-status todo">✗</span>
+        <video class="poster-img" data-src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/camps/career-anim.mp4" loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="none" onerror="this.style.display='none'"></video>
+        <div class="card-icon">🧭</div>
+        <div class="card-age-badge">14-18岁</div>
+        <div class="card-duration">10天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">职业探索学院制 3.0</div>
+        <div class="card-subtitle">在职业"大航海"中发现自己的天赋和志向</div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.14-7.23</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 30人×4学院</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#E8F5E9;color:#1B5E20;">职业</span>
+          <span class="card-tag" style="background:#E0F7FA;color:#006064;">探索</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">12800</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥14800</span>
+          <span class="card-save">省2000</span>
+        </div>
+      </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>专为高中生设计的"人生方向指南针"。通过职场七艺锻造和真实跨界对话，帮助孩子在 AI 时代精准定位个人优势。营员将经历从能力试炼到实战竞技的全过程，并通过与各界大咖的深度沙龙，打破职业认知壁垒，建立应对未来不确定性的独立心态。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>处于职业迷茫期，渴望探索未来专业或就业方向的学生</li><li>希望提升沟通、决策、领导力等"软实力"的准大学生</li><li>对世界充满好奇，喜欢听取不同人生经验、乐于深度思考的孩子</li></ul>
+      </div>
+    </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
+
+  <!-- 学习方法升级营 -->
+  <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="学习力" data-dates="7.23-7.25" data-group="14-18" data-slug="learning-method">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#FF6B35,#FFD93D);">
+        <span class="card-status done">✓</span>
+        <img decoding="async" loading="lazy" class="poster-img" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/camps/learning.jpg" onerror="this.style.display='none'" alt="">
+        <div class="card-icon">📖</div>
+        <div class="card-age-badge">14-18岁</div>
+        <div class="card-duration">3天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">学习方法升级营</div>
+        <div class="card-subtitle">把学习变回一件"激动人心的事"</div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.23-7.25</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">🔒 老营员专属</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#E8F5E9;color:#1B5E20;">职业</span>
+          <span class="card-tag" style="background:#FFF3E0;color:#E65100;">思维</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">4280</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥4580</span>
+          <span class="card-save">省300</span>
+        </div>
+      </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>解决"厌学"与"低效学习"的工具箱。由资深导师带领，结合认知工具和真实学情，手把手教孩子设计适合自己的学习路径。核心目标是把学习变回一件激动人心的事，让孩子掌握无路标也能行走的能力，实现从被动刷题到主动求知的转变。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>学习努力但方法欠缺，感到身心俱疲、无意义感的高中生</li><li>希望在假期复盘学习策略，提升自主学习效率的自我驱动型学生</li><li>对学习产生抵触情绪，需要重拾学习趣味和掌控感的孩子</li></ul>
+      </div>
+    </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
+
+  <!-- AI游戏设计营 -->
+  <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="AI科创" data-dates="7.25-7.31" data-group="14-18" data-slug="ai-game">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#7B2FBE,#00D4FF);">
+        <span class="card-status done">✓</span>
+        <video class="poster-img" data-src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/camps/ai-game.mp4" loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="none" onerror="this.style.display='none'"></video>
+        <div class="card-icon">🎮</div>
+        <div class="card-age-badge">14-18岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">AI游戏设计营</div>
+        <div class="card-subtitle">从玩游戏到做游戏，掌握 AI 时代的硬核创造力</div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 7.25-7.31</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 30人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#E8EAF6;color:#1A237E;">科技</span>
+          <span class="card-tag" style="background:#EDE7F6;color:#4527A0;">AI</span>
+          <span class="card-tag" style="background:#FFFDE7;color:#F57F17;">创造</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">10800</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥12800</span>
+          <span class="card-save">省2000</span>
+        </div>
+      </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>将孩子对游戏的"沉迷"转化为"创造力"的硬核营地。利用前沿 AI 工具，模拟真实游戏公司工作流，学习编程、产品及商业思维。孩子将从游戏消费者华丽转身为开发者，亲手打造作品，在解决复杂问题的过程中培养面对失败的勇气。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>深度游戏爱好者，对游戏背后的逻辑和设计感兴趣</li><li>对 AI 技术、科技趋势有浓厚兴趣，喜欢动手创作的孩子</li><li>具备逻辑思考潜力，未来有志于从事科技、设计或产品工作的学生</li></ul>
+      </div>
+    </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
+
+  <!-- 龙与地下城跑团营 -->
+  <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="艺术叙事" data-dates="8.1-8.7" data-group="14-18" data-slug="dnd">
+    <div class="card-main">
+      <div class="card-poster" style="background:linear-gradient(150deg,#4A0E8F,#B01E38);">
+        <span class="card-status done">✓</span>
+        <video class="poster-img" data-src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/camps/dnd.mp4" loop muted playsinline webkit-playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="none" onerror="this.style.display='none'"></video>
+        <div class="card-icon">🐉</div>
+        <div class="card-age-badge">14-18岁</div>
+        <div class="card-duration">7天</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">龙与地下城跑团营</div>
+        <div class="card-subtitle">做自己故事的主角</div>
+        <div class="card-dates-wrap">
+          <div class="card-date-row">📅 8.1-8.7</div>
+        </div>
+        <div class="card-location">📍 成都·标榜</div>
+        <div class="card-meta-row">
+          <span class="card-meta-pill">🏠 住宿必须</span>
+          <span class="card-meta-pill">👥 30人</span>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:#FCE4EC;color:#880E4F;">D&D</span>
+          <span class="card-tag" style="background:#EDE7F6;color:#4527A0;">探索</span>
+          <span class="card-tag" style="background:#FFFDE7;color:#F57F17;">创造</span>
+        </div>
+        <div class="card-price-row">
+          <span class="card-price">7280</span><span class="card-price-unit">元起</span>
+          <span class="card-orig-price">¥8280</span>
+          <span class="card-save">省1000</span>
+        </div>
+      </div>
+    </div>
+    <button class="card-detail-toggle" onclick="toggleDetail(this)"><span>📖 营期亮点 · 适合人群</span><span class="arrow">▼</span></button>
+    <div class="card-detail-panel">
+      <div class="detail-section">
+        <h5>产品亮点</h5>
+        <p>一场拒绝屏幕的深度社交实验。通过沉浸式角色扮演，孩子在虚拟背景下练习现实世界急需的合作、协商与计划技巧。这不仅是游戏，更是灵魂的深度交流，帮助青少年通过"面具"探索自我边界，建立真实的人际连接与共鸣。</p>
+      </div>
+      <div class="detail-section">
+        <h5>适合人群</h5>
+        <ul><li>热爱文学想象、奇幻世界观或剧本杀的青少年</li><li>渴望高质量社交、希望在深度互动中寻找共鸣的孩子</li><li>喜欢策略思考，乐于通过语言沟通解决问题的表达型选手</li></ul>
+      </div>
+    </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div><!-- /camps-list -->
+
+<!-- NO RESULTS -->
+<div class="no-results" id="no-results">
+  <div class="no-results-icon">🔭</div>
+  <p>没有符合条件的营期</p>
+  <p style="margin-top:6px;font-size:12px;">试试调整筛选条件</p>
+  <button onclick="clearAllFilters()">清除筛选</button>
+</div>
+
+<!-- ── 夏令营特色 ── -->
+<div class="section-title-strip">
+  <h2>夏令营特色</h2>
+  <p>每日节奏 · 营地环境 · 我们 · 玩伴</p>
+</div>
+
+<!-- DAILY SCHEDULE -->
+<div class="schedule-section">
+  <div class="schedule-header">
+    <h3>每日时间安排</h3>
+    <p>规律生活，让孩子在最佳状态中学习和成长</p>
+  </div>
+  <div class="schedule-body">
+    <div class="schedule-col">
+      <div class="schedule-col-title">Morning</div>
+      <div class="schedule-time">07:30–08:00</div>
+      <div class="schedule-time">09:00–10:30</div>
+      <div class="schedule-time">10:30–12:00</div>
+    </div>
+    <div class="schedule-col">
+      <div class="schedule-col-title">Afternoon</div>
+      <div class="schedule-time">14:00–15:30</div>
+      <div class="schedule-time">15:30–17:00</div>
+    </div>
+    <div class="schedule-col">
+      <div class="schedule-col-title">Evening</div>
+      <div class="schedule-time">17:00–18:00</div>
+      <div class="schedule-time">19:00–20:30</div>
+    </div>
+  </div>
+</div>
+
+<!-- VENUE -->
+<div class="venue-section">
+  <h3 class="venue-h">🏫 营地环境</h3>
+
+  <div class="venue-block">
+    <div class="venue-name">四川国际标榜职业学院 <span class="venue-count">10 张</span></div>
+    <div class="venue-scroll">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/biaobang/biaobang-01.jpg" loading="lazy" alt="标榜营地 01" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/biaobang/biaobang-02.jpg" loading="lazy" alt="标榜营地 02" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/biaobang/biaobang-03.jpg" loading="lazy" alt="标榜营地 03" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/biaobang/biaobang-04.jpg" loading="lazy" alt="标榜营地 04" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/biaobang/biaobang-05.jpg" loading="lazy" alt="标榜营地 05" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/biaobang/biaobang-06.jpg" loading="lazy" alt="标榜营地 06" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/biaobang/biaobang-07.jpg" loading="lazy" alt="标榜营地 07" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/biaobang/biaobang-08.jpg" loading="lazy" alt="标榜营地 08" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/biaobang/biaobang-09.jpg" loading="lazy" alt="标榜营地 09" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/biaobang/biaobang-10.jpg" loading="lazy" alt="标榜营地 10" onclick="openLightbox(this)">
+    </div>
+    <div class="venue-hint">← 滑动查看更多照片，点击大图 →</div>
+  </div>
+
+  <div class="venue-block">
+    <div class="venue-name">麓客岛 <span class="venue-count">8 张</span></div>
+    <div class="venue-scroll">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/luke/luke-01.jpg" loading="lazy" alt="麓客岛 01" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/luke/luke-02.jpg" loading="lazy" alt="麓客岛 02" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/luke/luke-03.jpg" loading="lazy" alt="麓客岛 03" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/luke/luke-04.jpg" loading="lazy" alt="麓客岛 04" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/luke/luke-05.jpg" loading="lazy" alt="麓客岛 05" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/luke/luke-06.jpg" loading="lazy" alt="麓客岛 06" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/luke/luke-07.jpg" loading="lazy" alt="麓客岛 07" onclick="openLightbox(this)">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/venues/luke/luke-08.jpg" loading="lazy" alt="麓客岛 08" onclick="openLightbox(this)">
+    </div>
+    <div class="venue-hint">← 滑动查看更多照片，点击大图 →</div>
+  </div>
+</div>
+
+<!-- 灯箱 -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img decoding="async" loading="lazy" id="lightbox-img" src="" alt="">
+  <button class="lightbox-close" aria-label="关闭">×</button>
+</div>
+
+<!-- FOOTER CTA -->
+<div class="footer-cta">
+  <h3>🌟 正在报名中</h3>
+  <p>
+    <em>3人团购 / 老营员特惠 / 荣誉营员价</em> 均可咨询<br>
+    先报名锁定席位，后确认营期主题<br>
+    9-12岁联系钥匙君 · 12-18岁联系小钥匙
+  </p>
+  <div class="cta-buttons">
+    <button class="cta-btn-primary">📲 立即咨询报名</button>
+    <button class="cta-btn-secondary">关注公众号 · 获取最新营期</button>
+  </div>
+  <div class="footer-note">
+    学费到账视为报名成功，先到先得，恕不预留席位<br>
+    营期因不可抗力取消将全额退款
+  </div>
+</div>
+
+</div><!-- /.home-view -->
+
+<!-- 咨询客服 弹窗 -->
+<div class="contact-modal" id="contact-modal">
+  <div class="contact-modal-bg" onclick="closeContactModal()"></div>
+  <div class="contact-modal-content">
+    <div class="contact-modal-header">
+      <span class="contact-modal-title">💬 扫码咨询</span>
+      <button class="contact-modal-close" onclick="closeContactModal()" aria-label="关闭">×</button>
+    </div>
+    <div class="contact-modal-subtitle">按孩子年龄选择对应客服</div>
+    <div class="contact-qr-grid">
+      <div class="contact-qr-item">
+        <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr/cs-9-12.jpg" alt="9-12 岁客服" loading="lazy">
+        <div class="contact-qr-label">9-12 岁</div>
+        <div class="contact-qr-hint">钥匙君</div>
+      </div>
+      <div class="contact-qr-item">
+        <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr/cs-12-18.jpg" alt="12-18 岁客服" loading="lazy">
+        <div class="contact-qr-label">12-18 岁</div>
+        <div class="contact-qr-hint">小钥匙</div>
+      </div>
+    </div>
+    <div class="contact-modal-tip">📲 长按二维码 · 添加微信好友 · 1 对 1 答疑</div>
+  </div>
+</div>
+
+<!-- Detail 覆盖层（点击卡片后滑入） -->
+<div class="detail-overlay" id="detail-overlay">
+  <div class="detail-bar">
+    <button class="detail-back" onclick="closeDetail()" aria-label="返回">←</button>
+    <div class="detail-title" id="detail-title">营期详情</div>
+    <div class="detail-meta" id="detail-meta"></div>
+  </div>
+  <div class="detail-progress"><div class="detail-progress-fill" id="detail-progress-fill"></div></div>
+  <div class="detail-body" id="detail-body"></div>
+
+  <!-- 旧 TOC 抽屉（已被 rail 替代，保留 DOM 供 buildTOC 写入备用） -->
+  <aside class="detail-toc" id="detail-toc" style="display:none">
+    <ul class="toc-list" id="toc-list"></ul>
+  </aside>
+  <button class="toc-fab" id="toc-fab" style="display:none" aria-label="目录">☰</button>
+</div>
+
+<!-- 🅰️ Dot Rail 必须放在 detail-overlay 外（避免 transform 父级影响 fixed 定位） -->
+<aside class="detail-rail" id="detail-rail" onclick="railToggleExpand(event)">
+  <div class="detail-rail-items" id="detail-rail-items"></div>
+</aside>
+
+<!-- 底栏：3 tab + 1 sheet trigger -->
+<div class="bottom-bar">
+  <button class="bottom-bar-btn" data-view-tab="home" onclick="toggleView('home')">
+    <span class="bb-icon">🏠</span><span class="bb-label">首页</span>
+  </button>
+  <button class="bottom-bar-btn" data-view-tab="about" onclick="toggleView('about')">
+    <span class="bb-icon">🔑</span><span class="bb-label">了解我们</span>
+  </button>
+  <button class="bottom-bar-btn" data-view-tab="faq" onclick="toggleView('faq')">
+    <span class="bb-icon">❓</span><span class="bb-label">常见问答</span>
+  </button>
+  <button class="bottom-bar-btn cta" onclick="goToContact()">
+    <span class="bb-icon">💬</span><span class="bb-label">咨询报名</span>
+  </button>
+</div>
+
+<!-- 筛选抽屉（底部弹出） -->
+<div class="filter-sheet" id="filter-sheet">
+  <div class="filter-sheet-bg" onclick="closeFilterSheet()"></div>
+  <div class="filter-sheet-content">
+    <div class="filter-sheet-handle"></div>
+    <div class="filter-sheet-head">
+      <span class="filter-sheet-title">筛选条件</span>
+      <button class="filter-sheet-clear" onclick="clearAllFilters()">清除全部</button>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">年龄段 <span class="filter-hint">单选</span></div>
+      <div class="theme-chips" id="age-chips-wrap">
+        <span class="chip active" data-age="all" onclick="selectAgeTab('all')">全部</span>
+        <span class="chip" data-age="9-12" onclick="selectAgeTab('9-12')">9-12 岁</span>
+        <span class="chip" data-age="12-16" onclick="selectAgeTab('12-16')">12-16 岁</span>
+        <span class="chip" data-age="14-18" onclick="selectAgeTab('14-18')">14-18 岁</span>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">营期周次 <span class="filter-hint">单选</span></div>
+      <div class="week-tabs" id="week-tabs" style="padding:0;background:transparent;border:none"></div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">主题 <span class="filter-hint">可多选</span></div>
+      <div class="theme-chips" id="theme-chips-wrap">
+        <span class="chip active" data-theme="all" onclick="toggleTheme(this)">全部</span>
+        <span class="chip with-icon" data-theme="学院制" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>招牌学院</span>
+        <span class="chip with-icon" data-theme="学习力" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3 2.5 2.5 0 0 1 2.46-2z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2z"/></svg>学习力</span>
+        <span class="chip with-icon" data-theme="跨学科" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>跨学科</span>
+        <span class="chip with-icon" data-theme="心理抗挫" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>心理抗挫</span>
+        <span class="chip with-icon" data-theme="户外冒险" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 21 14 3"/><path d="M20.5 21 10 3"/><path d="M15.5 21 12 15l-3.5 6"/><path d="M2 21h20"/></svg>户外冒险</span>
+        <span class="chip with-icon" data-theme="思辨解谜" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>思辨解谜</span>
+        <span class="chip with-icon" data-theme="AI科创" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>AI 科创</span>
+        <span class="chip with-icon" data-theme="艺术叙事" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>艺术叙事</span>
+        <span class="chip with-icon" data-theme="财商" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>财商</span>
+        <span class="chip with-icon" data-theme="职业探索" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>职业探索</span>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">地点 <span class="filter-hint">可多选</span></div>
+      <div class="theme-chips" id="loc-chips-wrap">
+        <span class="chip active" data-loc="all" onclick="toggleLoc(this)">全部</span>
+        <span class="chip" data-loc="标榜" onclick="toggleLoc(this)">🏫 四川国际标榜职业学院</span>
+        <span class="chip" data-loc="麓客岛" onclick="toggleLoc(this)">🏝 麓客岛</span>
+      </div>
+    </div>
+
+    <div class="filter-sheet-actions">
+      <button class="filter-sheet-cancel" onclick="closeFilterSheet()">取消</button>
+      <button class="filter-sheet-apply" onclick="closeFilterSheet()">应用筛选</button>
+    </div>
+  </div>
+</div>
+<!-- 「了解我们」一级页面 -->
+<section class="view-page" id="view-about" hidden>
+  <div class="view-page-head">
+    <span class="view-page-title">🔑 了解钥匙玩校</span>
+  </div>
+  <div class="view-page-body">
+
+<!-- 钥匙玩校特色 -->
+<div class="feature-section">
+  <h3 class="feature-h">🔑 钥匙玩校特色</h3>
+  <div class="feature-card">
+    <img decoding="async" class="feature-hero" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/features/seven-arts.jpg" alt="七艺徽章" loading="lazy">
+    <ul class="feature-list">
+      <li><span class="fl-num">1</span><div><strong>游戏式学习</strong><p>原创"技艺碎片"游戏化系统 · "装币"经济体系 · "小卖部"经营项目 · 教育化桌游和户外团队游戏，让孩子在玩中学，在竞技中学会面对失败和挫折。</p></div></li>
+      <li><span class="fl-num">2</span><div><strong>项目式学习</strong><p>已开发 50+ PBL 活动，真实环境中的团队创造，把学科知识付诸实践，让孩子在创造中积累自信、建立自尊。</p></div></li>
+      <li><span class="fl-num">3</span><div><strong>跨学科学习</strong><p>打破文理科壁垒，突破书本知识，在目标导向的项目里综合应用学科知识，练习策划、设计、沟通、合作等"考试不考的必修技能"。</p></div></li>
+      <li><span class="fl-num">4</span><div><strong>创造性思维训练</strong><p>如何把想法变成真的？如何为真实问题提供创造解？如何从消费者成为创造者？这是钥匙玩校每个活动都在鼓励营员思考并行动的驱动问题。</p></div></li>
+      <li><span class="fl-num">5</span><div><strong>玩伴教育激发多元智能</strong><p>营地导师以平等姿态给予营员尊重和信任，参考多元智能理论，覆盖语言、逻辑、运动、声音、空间、博物、人际、自省、存在等各方面潜能。</p></div></li>
+      <li><span class="fl-num">6</span><div><strong>自然环境和人文环境并重</strong><p>营地空气清新、环境幽静；公共空间提供充足的书籍、桌游、工具、读本，多层次启发和激励孩子。</p></div></li>
+      <li><span class="fl-num">7</span><div><strong>自由日 Gap Day</strong><p>原创活动。预告-实施-复盘模式，每个营员可开课、可选课、可自由安排一天时间。累计已开设近 1000 项活动，每期至少 20 门选修。</p></div></li>
+      <li><span class="fl-num">8</span><div><strong>七艺徽章收集系统</strong><p>语言、逻辑、生活、创造、休息、常识、运动——七艺碎片在对应活动中潜伏并评估表现。集齐七种徽章的人，成为钥匙玩校的"荣誉营员"，永远享受荣誉待遇。</p></div></li>
+    </ul>
+    <div class="feature-credo">
+      钥匙玩校，懂教育，会游戏，爱孩子。<br>
+      玩得开心，学得畅快，回味悠长，受益终身。<br>
+      孩子的爱好会被尊重，孩子的天赋会被保护。<br>
+      <em>在创造中寻找自己，在玩耍中爱上学习。</em>
+    </div>
+  </div>
+</div>
+
+<!-- 钥匙玩校玩伴 -->
+<div class="feature-section">
+  <h3 class="feature-h">🎒 钥匙玩校玩伴</h3>
+  <div class="playmate-group-title">12-18 岁营 · 玩伴介绍 <span class="venue-count">共 13 位</span></div>
+  <div class="playmate-scroll">
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/chixiao.jpg" alt="池晓" loading="lazy">
+      <div class="pm-name">池晓 <span class="pm-role">首席玩伴</span></div>
+      <p>游戏高手·游戏/课程设计师·TEDx 讲者·罗伯特议事规则推广者。十余年青少年教育，"游戏即学习"理念推广者，设计开发上百种教育活动。钥匙玩校 & 好奇学习社区创始人。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/linwenping.jpg" alt="林文萍" loading="lazy">
+      <div class="pm-name">林文萍 <span class="pm-role">资深玩伴</span></div>
+      <p>好奇学习社区执行社长，法学专业。专注青少年心理健康教育并开发系列课程。"渡过"青少年复原项目前负责人，星级陪伴者，累计支持数百个家庭。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/yangbo.jpg" alt="杨波" loading="lazy">
+      <div class="pm-name">杨波 <span class="pm-role">资深玩伴</span></div>
+      <p>NFL FLAG / NAFL 国家橄榄球教练员、裁判员培训。专业海上厨师，用五年环游世界。开设食物科学实验室、Rice traveling、橄榄球·棒球等运动通识课程。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/dayan.jpg" alt="大眼" loading="lazy">
+      <div class="pm-name">大眼 <span class="pm-role">资深玩伴</span></div>
+      <p>游戏专家，擅长游戏化课程设计与教学，致力让青少年把在游戏中获得的优势转移到生活中。自学成才 B 站万粉 Up 主，视频播放 500 万+。擅长科学、数学。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/gaoshan.jpg" alt="高山" loading="lazy">
+      <div class="pm-name">高山 <span class="pm-role">玩伴</span></div>
+      <p>毕业于中国人民大学，青少年博物馆教育推广者，北京交通广播栏目嘉宾。开设古国文明、中国传统建筑等通识课程。擅长人文艺术、博物馆通识。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/wangtao.jpg" alt="王淘" loading="lazy">
+      <div class="pm-name">王淘 <span class="pm-role">玩伴</span></div>
+      <p>毕业于 UCLA 心理系。北京大学临床心理研究室前研究员；Field Academy 签约作者。有美国心理诊所、公益组织工作经历。关注脑科学、青少年认知与发展心理学。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/wangqi.jpg" alt="王琦" loading="lazy">
+      <div class="pm-name">王琦 <span class="pm-role">玩伴</span></div>
+      <p>毕业于中央戏剧学院。old school，文学世界漫游客，爱玩游戏更爱游戏背后的文化和故事。小众电影专家，古典乐爱好者，痴迷解谜。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/tuzi.png" alt="兔子" loading="lazy">
+      <div class="pm-name">兔子 <span class="pm-role">玩伴</span></div>
+      <p>试图跨界教育创新的"公益狂"，热爱声音和喜剧表演的"戏精"，曾在美丽中国支教项目、美丽小学任教多年。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/wanglu.jpg" alt="王鲁" loading="lazy">
+      <div class="pm-name">王鲁 <span class="pm-role">玩伴</span></div>
+      <p>毕业于浙江大学管理学院创业管理方向。翻译出版《管理创新》《创新者的培养》。美丽中国支教两年，国际学校十年。参与哈佛大学零点计划暑期项目、IB 服务学习工作坊。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/yanwenhao.jpg" alt="颜文豪" loading="lazy">
+      <div class="pm-name">颜文豪 <span class="pm-role">戏剧老师</span></div>
+      <p>毕业于台湾艺术大学。戏剧勤杂工。在戏剧世界做过导演、编剧、演员、舞台监督、音响设计、推景师傅、道具保洁。课程包含教育戏剧、创意戏剧、光影戏剧、即兴戏剧。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/zhangzhiqin.png" alt="张智钦" loading="lazy">
+      <div class="pm-name">张智钦 <span class="pm-role">玩伴</span></div>
+      <p>毕业于西班牙萨拉曼卡大学，十二年专业足球经验，丰富的运动康复知识。Steam 在线时长全球前 1%。架子鼓手，热爱生活和认识新朋友。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/wangwei.png" alt="王薇" loading="lazy">
+      <div class="pm-name">王薇 <span class="pm-role">玩伴</span></div>
+      <p>毕业于重庆交通大学应用统计学专业，在广西乡村支教两年。长期关注自我成长、乡村教育和基础理科教学。白日做梦家，热衷于帮人编织白日梦。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/maipian.jpg" alt="麦片" loading="lazy">
+      <div class="pm-name">麦片 <span class="pm-role">玩伴</span></div>
+      <p>毕业于北京师范大学珠海分校广告学专业。曾就职于顶级国际 4A 公司、公关咨询公司，并在作业帮、樊登读书等头部教育企业负责运营。擅长用传播思维与卡牌工具，带学生探索自我与他人。</p>
+    </div>
+  </div>
+  <div class="venue-hint">← 滑动查看更多玩伴 →</div>
+
+  <div class="playmate-group-title" style="margin-top: 16px;">9-12 岁营 · 玩伴介绍 <span class="venue-count">共 7 位</span></div>
+  <div class="playmate-scroll">
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/zhongxinyi.jpg" alt="钟心怡" loading="lazy">
+      <div class="pm-name">钟心怡 <span class="pm-role">玩伴</span></div>
+      <p>南京大学文学院毕业，六年国内外一线教育经验，双语艺术沙龙主持，新教育探索者。主张"行走的课堂"，通过自然探索与人文实践激发表达，强化内核。践行"玩中学"理念。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/hechao.jpg" alt="何超" loading="lazy">
+      <div class="pm-name">何超 <span class="pm-role">玩伴</span></div>
+      <p>美丽中国支教与多个项目实践经验，亚洲躲避盘联合会 ADF 指导教练员。热爱体育运动和游戏，喜欢捣鼓各种生活技能，对未知的一切始终保持热情的"超人"。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/yangxuan.png" alt="杨璇" loading="lazy">
+      <div class="pm-name">杨璇 <span class="pm-role">玩伴</span></div>
+      <p>毕业于西南财经大学。2022-2025 联合创办并运营青少年培优俱乐部，主带教 6-8 岁儿童学习习惯素养营，累计课时 420+。专业儿童户外教育领队，深度家庭教育咨询经验。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/ruoxin.jpg" alt="若欣" loading="lazy">
+      <div class="pm-name">若欣 <span class="pm-role">玩伴</span></div>
+      <p>毕业于华南师范大学教育技术学专业，坚信"做中学、玩中学"，也认为聊天是最自然的教育场景。重视与孩子的平等对话，相信尊重是成长的起点。爱好咖啡、手工与摄影。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/chenyanbin.jpg" alt="陈燕斌" loading="lazy">
+      <div class="pm-name">陈燕斌 <span class="pm-role">玩伴</span></div>
+      <p>教育 3.0 实践者，7 年教育创新工作经验。3~6 岁学龄前儿童自由游戏与心智理论建构；5 年 7~12 岁课程与营会设计带领经验。希望与孩子共建善意温暖的社会。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/dapeng.jpg" alt="大鹏" loading="lazy">
+      <div class="pm-name">大鹏 <span class="pm-role">玩伴</span></div>
+      <p>毕业于北京体育大学运动人体科学学院。10 年以上儿童体能教学与课程设计经验。把体育设计成好玩的任务，把复杂训练翻译成"白话"。业余爱好电影、漫画与户外。</p>
+    </div>
+    <div class="playmate-card">
+      <img decoding="async" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/playmates/lingr.jpg" alt="凌贰" loading="lazy">
+      <div class="pm-name">凌贰 <span class="pm-role">玩伴 · 老营员</span></div>
+      <p>过往钥匙玩校资深营员。德语专业。擅长极限飞盘，四川外国语大学飞盘队队长，带队多次参加国内比赛。保持包容、开放的心态，热衷混迹于小孩当中，目标是成为孩子王。</p>
+    </div>
+  </div>
+  <div class="venue-hint">← 滑动查看更多玩伴 →</div>
+
+  <div class="playmate-footnote">* 具体人员以现场执行为准。届时还有多位特邀玩伴、钥匙玩校志愿者陪伴孩子们。</div>
+</div>
+
+<!-- ABOUT -->
+<div class="about-strip">
+  <div class="about-icon">🔑</div>
+  <div class="about-text">
+    <h4>钥匙玩校 · kiidschool</h4>
+    <p>成立于2015年 · 成都 · 专业营地教育品牌<br>游戏即学习 · 40+原创营期 · 500+游戏项目</p>
+  </div>
+</div>
+  </div><!-- /.view-page-body -->
+</section><!-- /#view-about -->
+
+<!-- 「常见问答」一级页面 -->
+<section class="view-page" id="view-faq" hidden>
+  <div class="view-page-head">
+    <span class="view-page-title">❓ 常见问答</span>
+  </div>
+  <div class="view-page-body">
+
+<!-- 常见QA -->
+<div class="qa-section">
+  <h3 class="qa-h">❓ 常见问题</h3>
+
+  <div class="qa-item">
+    <button class="qa-q" onclick="toggleQA(this)">
+      <span>Q1：是否提供接送机服务？</span>
+      <span class="qa-arrow">▼</span>
+    </button>
+    <div class="qa-a">
+      <p>① 接送站：成都东站接送服务，<strong>单程 300 元/人</strong>，老师单独前往。</p>
+      <p>② 接送机：双流机场、天府机场分别安排负责接送的老师和大巴车，可按你们的航班时间选择班次，<strong>单程 150 元/人</strong>。开营前 1 周建立家长微信群，收集确认接送机需求。</p>
+      <p>📍 开营日接机大巴发车：<strong>中午 13:30、下午 16:30</strong></p>
+      <p>📍 结营日送机大巴发车：<strong>中午 13:30</strong></p>
+      <p>到达营地后第一时间在群里报平安，让家长安心。💗</p>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <button class="qa-q" onclick="toggleQA(this)">
+      <span>Q2：如何管理手机？</span>
+      <span class="qa-arrow">▼</span>
+    </button>
+    <div class="qa-a">
+      <p><strong>不强制管理手机。</strong></p>
+      <p>建议家长提前和孩子约定好使用规则（什么时候可以玩，什么时候收起来），老师也会协助执行。</p>
+      <p>9-12 岁小朋友睡觉前手机、手表等电子产品会由老师统一管理。</p>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <button class="qa-q" onclick="toggleQA(this)">
+      <span>Q3：营地里可以洗衣服吗？</span>
+      <span class="qa-arrow">▼</span>
+    </button>
+    <div class="qa-a">
+      <p>四川国际标榜职业学院：学校提供洗衣机，约 <strong>5 元/次</strong>。</p>
+      <p>麓客岛营地：洗衣机、烘干机 <strong>免费使用</strong>。</p>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <button class="qa-q" onclick="toggleQA(this)">
+      <span>Q4：住宿条件怎么样？</span>
+      <span class="qa-arrow">▼</span>
+    </button>
+    <div class="qa-a">
+      <p><strong>四川国际标榜职业学院：</strong>住学生宿舍，12-18 岁主题营 4-6 人/间，9-12 岁 3 人/间。独立卫浴+空调，无需自带被褥。</p>
+      <p><strong>麓客岛营地：</strong>湖景木屋，预计 8-10 人/间，室内宽敞，独立卫浴+空调，无需自带被褥。</p>
+      <p>营地封闭式管理，<strong>严格男女分宿</strong>，老师玩伴 24 小时同吃同住，由同性别老师分别管理查寝。</p>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <button class="qa-q" onclick="toggleQA(this)">
+      <span>Q5：开营报到时间和结营时间？</span>
+      <span class="qa-arrow">▼</span>
+    </button>
+    <div class="qa-a">
+      <p>开营前会建立家长微信群，群内发布【行程通知、准备物资清单、注意事项】。</p>
+      <p><strong>报到时间：开营当天 16:00</strong>，晚上 19:00 举行开营仪式。如需购买交通票务，建议选择当日 <strong>11:30-16:00</strong> 的航班或车次。</p>
+      <p><strong>结营当天</strong>：午餐后即可离开，建议选择 <strong>15:30 之后</strong> 出发的行程。</p>
+    </div>
+  </div>
+</div>
+
+    <div style="margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #FFF8F2, #FFE8D8); border-radius: 12px; text-align: center;">
+      <div style="font-size: 28px; margin-bottom: 6px;">🤖</div>
+      <div style="font-size: 13px; font-weight: 800; color: #1A1A2E;">AI 智能助手</div>
+      <div style="font-size: 11.5px; color: #888; margin-top: 4px;">即将开放，对话式回答家长所有疑问</div>
+    </div>
+  </div><!-- /.view-page-body -->
+</section><!-- /#view-faq -->
+
+
+<script>
+  const state = {
+    ages: new Set(),                    // "9-12" / "12-16" / "14-18"
+    themes: new Set(),
+    locs: new Set(),
+    selectedDateRange: null,            // 如 "7.4-7.10" 或 null（全部）
+  };
+
+  // ── 年龄 Tabs（R2-no-panel：纯过滤，不切 DOM）──
+  // 当前选中的年龄段："all" | "9-12" | "12-16" | "14-18"
+  let _currentAge = 'all';
+
+  function selectAgeTab(key) {
+    _currentAge = key;
+    document.querySelectorAll('.age-nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.age-nav-tab[data-age="${key}"]`)?.classList.add('active');
+    // 同步 filter sheet 里的年龄 chip（如有）
+    document.querySelectorAll('#age-chips-wrap .chip').forEach(c => {
+      c.classList.toggle('active', c.dataset.age === key);
+    });
+    // 同步到 state.ages（applyFilters 用）
+    state.ages.clear();
+    if (key !== 'all') state.ages.add(key);
+    // 触发卡片淡入淡出
+    if (typeof applyFilters === 'function') applyFilters();
+  }
+
+  // ── 筛选抽屉 ──
+  function openFilterSheet() {
+    document.getElementById('filter-sheet').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeFilterSheet() {
+    document.getElementById('filter-sheet').classList.remove('open');
+    document.body.style.overflow = '';
+    updateFilterBadge();
+  }
+  // 视图切换：home / about / faq —— 一级页面互斥（不再是底部弹起 sheet）
+  const _viewScroll = { home: 0, about: 0, faq: 0 };
+  let _currentView = 'home';
+  function toggleView(name) {
+    const valid = ['home', 'about', 'faq'];
+    if (!valid.includes(name)) return;
+
+    // 保存当前 view 的滚动位置
+    _viewScroll[_currentView] = window.scrollY;
+    _currentView = name;
+
+    document.body.classList.remove('view-home', 'view-about', 'view-faq');
+    document.body.classList.add('view-' + name);
+
+    const about = document.getElementById('view-about');
+    const faq   = document.getElementById('view-faq');
+    if (about) about.hidden = (name !== 'about');
+    if (faq)   faq.hidden   = (name !== 'faq');
+
+    // 底栏激活态
+    document.querySelectorAll('.bottom-bar-btn').forEach(b => b.classList.remove('tab-active'));
+    document.querySelector(`.bottom-bar-btn[data-view-tab="${name}"]`)?.classList.add('tab-active');
+
+    document.body.style.overflow = '';
+
+    // 恢复目标 view 的 scroll
+    requestAnimationFrame(() => window.scrollTo(0, _viewScroll[name] || 0));
+  }
+  // 兼容老 open/close 名字
+  function openAboutSheet() { toggleView('about'); }
+  function closeAboutSheet() { toggleView('home'); }
+  function openFaqSheet() { toggleView('faq'); }
+  function closeFaqSheet() { toggleView('home'); }
+
+  // 咨询：直接弹两个客服二维码（不切视图、不滚页面）
+  function goToContact() {
+    document.getElementById('contact-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeContactModal() {
+    document.getElementById('contact-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function updateFilterBadge() {
+    const n = state.themes.size + state.locs.size + (state.selectedDateRange ? 1 : 0);
+    const badge = document.getElementById('filter-count-badge');
+    if (!badge) return;
+    badge.textContent = n;
+    badge.classList.toggle('show', n > 0);
+  }
+
+  // ── 营地档期 Tabs（按卡片真实 data-dates 动态生成） ──
+  function _scanDateRanges() {
+    // 返回 { range: '7.4-7.10', count: 4 } 按起始日期排序
+    const map = new Map();
+    document.querySelectorAll('.camps-list .camp-card').forEach(card => {
+      const ageMin = parseInt(card.dataset.ageMin);
+      const ageMax = parseInt(card.dataset.ageMax);
+      const ageGroupKey = `${ageMin}-${ageMax}`;
+      const ageOk = state.ages.size === 0 || state.ages.has(ageGroupKey);
+      if (!ageOk) return;
+      const ranges = (card.dataset.dates || '').split(',').map(s => s.trim()).filter(Boolean);
+      ranges.forEach(r => map.set(r, (map.get(r) || 0) + 1));
+    });
+    const sorted = [...map.entries()].sort(([a], [b]) => {
+      const k = s => {
+        const [m, d] = s.split('-')[0].split('.').map(Number);
+        return m * 100 + d;
+      };
+      return k(a) - k(b);
+    });
+    return sorted.map(([range, count]) => ({ range, count }));
+  }
+
+  function buildWeekTabs() {
+    const tabs = document.getElementById('week-tabs');
+    if (!tabs) return;
+    tabs.innerHTML = '';
+
+    const ranges = _scanDateRanges();
+    const total = ranges.reduce((s, r) => s + r.count, 0);
+
+    // 全部
+    const all = document.createElement('div');
+    all.className = 'week-chip' + (state.selectedDateRange ? '' : ' active');
+    all.dataset.range = 'all';
+    all.innerHTML = `<strong>全部</strong><small>所有营期</small><div class="count">${total}</div>`;
+    all.onclick = () => selectDateRange(null);
+    tabs.appendChild(all);
+
+    ranges.forEach(({ range, count }) => {
+      const [start, end] = range.split('-');
+      const chip = document.createElement('div');
+      chip.className = 'week-chip' + (state.selectedDateRange === range ? ' active' : '');
+      chip.dataset.range = range;
+      chip.innerHTML = `<strong>${start}</strong><small>-${end}</small><div class="count">${count}</div>`;
+      chip.onclick = () => selectDateRange(range);
+      tabs.appendChild(chip);
+    });
+  }
+
+  function selectDateRange(range) {
+    state.selectedDateRange = range || null;
+    buildWeekTabs(); // 重建以更新 active 态
+    applyFilters();
+    updateFilterBadge();
+  }
+
+  // 多期角标：dates 字段含逗号即代表 N 期，自动加左下角章
+  (function addWeeksBadges() {
+    document.querySelectorAll('.camp-card').forEach(card => {
+      const dates = (card.dataset.dates || '').split(',').filter(d => d.trim());
+      if (dates.length > 1) {
+        const poster = card.querySelector('.card-poster');
+        if (poster && !poster.querySelector('.card-weeks-badge')) {
+          const badge = document.createElement('div');
+          badge.className = 'card-weeks-badge';
+          badge.textContent = dates.length + ' 期';
+          poster.appendChild(badge);
+        }
+      }
+    });
+  })();
+
+  // 按 data-dates 重建 .card-dates-wrap，让 N 期都画出来（修：之前模板只渲染了首期）
+  (function renderAllDateRows() {
+    document.querySelectorAll('.camp-card').forEach(card => {
+      const dates = (card.dataset.dates || '').split(',').map(s => s.trim()).filter(Boolean);
+      if (dates.length === 0) return;
+      const wrap = card.querySelector('.card-dates-wrap');
+      if (!wrap) return;
+      wrap.innerHTML = dates.map(d => `<div class="card-date-row">📅 ${d}</div>`).join('');
+    });
+  })();
+
+  // 推荐卡排序：将 data-group="recommend" 的卡片按 data-rank 升序移到推荐分组下方
+  (function reorderRecommend() {
+    const list = document.getElementById('camps-list');
+    const recommendDivider = list.querySelector('.recommend-divider');
+    if (!recommendDivider) return;
+    const featured = Array.from(list.querySelectorAll('.camp-card[data-group="recommend"]'))
+      .sort((a, b) => (parseInt(a.dataset.rank || 99) - parseInt(b.dataset.rank || 99)));
+    let anchor = recommendDivider;
+    featured.forEach(card => {
+      anchor.after(card);
+      anchor = card;
+    });
+  })();
+
+  // === bottom sheet drag-to-dismiss ===
+  function attachDragDismiss(sheetEl, contentSelector, closeFn) {
+    if (!sheetEl) return;
+    const content = sheetEl.querySelector(contentSelector);
+    if (!content) return;
+    let startY = 0, startT = 0, dy = 0, dragging = false;
+    let savedTransform = '';
+
+    function onStart(e) {
+      if (!sheetEl.classList.contains('open')) return;
+      if (content.scrollTop > 0) return; // 内部还能往上滚就让它滚
+      const t = e.touches[0];
+      startY = t.clientY;
+      startT = Date.now();
+      dy = 0;
+      dragging = true;
+      savedTransform = content.style.transform || '';
+      content.style.transition = 'none';
+    }
+    function onMove(e) {
+      if (!dragging) return;
+      const t = e.touches[0];
+      dy = t.clientY - startY;
+      if (dy < 0) { dy = 0; return; }
+      // 维持原 transform（contact-modal 自带 translate(-50%, -50%)），叠加 translateY(dy)
+      content.style.transform = savedTransform + ` translateY(${dy}px)`;
+    }
+    function onEnd() {
+      if (!dragging) return;
+      dragging = false;
+      content.style.transition = '';
+      const dt = Math.max(1, Date.now() - startT);
+      const vy = dy / dt;
+      if (dy > 100 || vy > 0.5) {
+        content.style.transform = savedTransform;
+        closeFn();
+      } else {
+        content.style.transform = savedTransform;
+      }
+    }
+
+    content.addEventListener('touchstart', onStart, { passive: true });
+    content.addEventListener('touchmove',  onMove,  { passive: true });
+    content.addEventListener('touchend',   onEnd);
+    content.addEventListener('touchcancel', onEnd);
+  }
+
+  // === Video 懒挂载 + IO 视口控制 + panel 双重门控 ===
+  const _videoIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const v = entry.target;
+      if (!entry.isIntersecting) {
+        try { v.pause(); } catch (e) {}
+        return;
+      }
+      // hidden 卡片不播
+      if (v.closest('.camp-card.hidden')) return;
+      if (!v.getAttribute('src') && v.dataset.src) {
+        v.src = v.dataset.src;
+      }
+      const p = v.play();
+      if (p && p.catch) p.catch(() => {});
+    });
+  }, { rootMargin: '100px 0px', threshold: 0.1 });
+
+  function rebindVideoIO() {
+    document.querySelectorAll('video.poster-img[data-src]').forEach(v => _videoIO.observe(v));
+  }
+
+  // 详情页 article 内的 video（不在 panel 里，独立 IO，只看视口）
+  const _detailVideoIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const v = entry.target;
+      if (!entry.isIntersecting) { try { v.pause(); } catch(e){} return; }
+      if (!v.getAttribute('src') && v.dataset.src) v.src = v.dataset.src;
+      const p = v.play(); if (p && p.catch) p.catch(() => {});
+    });
+  }, { rootMargin: '200px 0px', threshold: 0.1 });
+  function bindDetailVideosIO(scope) {
+    (scope || document).querySelectorAll('video[data-src]:not(.poster-img)').forEach(v => _detailVideoIO.observe(v));
+  }
+
+  // 视口内卡片视频按需启播（IO 兜底，scroll 也评估一次）
+  function reevaluateVideos() {
+    document.querySelectorAll('video.poster-img').forEach(v => {
+      if (v.closest('.camp-card.hidden')) { try { v.pause(); } catch(e){} return; }
+      const rect = v.getBoundingClientRect();
+      const inViewport = rect.top < window.innerHeight && rect.bottom > 0;
+      if (inViewport) {
+        if (!v.getAttribute('src') && v.dataset.src) v.src = v.dataset.src;
+        const p = v.play();
+        if (p && p.catch) p.catch(() => {});
+      } else {
+        try { v.pause(); } catch(e) {}
+      }
+    });
+  }
+  let _scrollTick = false;
+  window.addEventListener('scroll', () => {
+    if (_scrollTick) return;
+    _scrollTick = true;
+    setTimeout(() => {
+      _scrollTick = false;
+      reevaluateVideos();
+    }, 250);
+  }, { passive: true });
+
+  // 显式跑一次 applyFilters，确保任何浏览器初始都全部可见
+  window.addEventListener('DOMContentLoaded', () => {
+    if (typeof applyFilters === 'function') applyFilters();
+    document.querySelectorAll('.camp-card').forEach(c => c.classList.remove('hidden'));
+    document.querySelectorAll('.age-group-divider').forEach(d => d.style.display = 'flex');
+    if (typeof buildWeekTabs === 'function') buildWeekTabs();
+    if (typeof toggleView === 'function') toggleView('home');
+    rebindVideoIO();
+    reevaluateVideos();
+    attachDragDismiss(document.getElementById('filter-sheet'),  '.filter-sheet-content',  () => closeFilterSheet());
+    attachDragDismiss(document.getElementById('contact-modal'), '.contact-modal-content', () => closeContactModal());
+  });
+
+  // ── 多选筛选辅助：通用「全部 + N 个具体值」逻辑 ──
+  function _toggleChipSet(el, allSelector, dataKey, set) {
+    const v = el.dataset[dataKey];
+    if (v === 'all') {
+      document.querySelectorAll(allSelector).forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      set.clear();
+    } else {
+      document.querySelector(`${allSelector}[data-${dataKey.replace(/([A-Z])/g,'-$1').toLowerCase()}="all"]`)?.classList.remove('active');
+      el.classList.toggle('active');
+      el.classList.contains('active') ? set.add(v) : set.delete(v);
+      if (set.size === 0) {
+        const allChip = document.querySelector(`${allSelector}[data-${dataKey.replace(/([A-Z])/g,'-$1').toLowerCase()}="all"]`);
+        if (allChip) allChip.classList.add('active');
+      }
+    }
+  }
+
+  function toggleAge(el) {
+    _toggleChipSet(el, '.filter-section [data-age-group]', 'ageGroup', state.ages);
+    applyFilters();
+  }
+  function toggleTheme(el) {
+    _toggleChipSet(el, '#theme-chips-wrap [data-theme]', 'theme', state.themes);
+    applyFilters();
+    updateFilterBadge();
+  }
+  function toggleLoc(el) {
+    _toggleChipSet(el, '#loc-chips-wrap [data-loc]', 'loc', state.locs);
+    applyFilters();
+    updateFilterBadge();
+  }
+
+  // 折叠/展开整个筛选区
+  function toggleFilterCollapse() {
+    document.querySelector('.filter-wrap').classList.toggle('collapsed');
+  }
+
+  function clearAllFilters() {
+    state.ages.clear(); state.themes.clear(); state.locs.clear();
+    state.selectedDateRange = null;
+    document.querySelectorAll('.filter-section .chip').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.filter-section .chip[data-theme="all"], .filter-section .chip[data-loc="all"]').forEach(c => c.classList.add('active'));
+    // 重置年龄 Tab 到"全部"
+    document.querySelectorAll('.age-nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.age-nav-tab[data-age="all"]')?.classList.add('active');
+    // 重建档期 chips
+    if (typeof buildWeekTabs === 'function') buildWeekTabs();
+    updateFilterBadge();
+    applyFilters();
+  }
+
+  // ── 日期解析 ──
+  // 把 "7.4" 这种月日字符串转 Date（默认 2026 年）
+  function parseShortDate(s, year = 2026) {
+    const [m, d] = s.split('.').map(n => parseInt(n));
+    return new Date(year, m - 1, d);
+  }
+  // 把 "7.4-7.10,7.11-7.17" 这种数据解析成 [{start, end}, ...]
+  function parseCardDates(s) {
+    return s.split(',').map(range => {
+      const [a, b] = range.split('-');
+      return { start: parseShortDate(a), end: parseShortDate(b) };
+    });
+  }
+  // 区间重叠判断
+  function dateRangeOverlap(periods, filterStart, filterEnd) {
+    return periods.some(p => {
+      const sOk = !filterEnd   || p.start <= filterEnd;
+      const eOk = !filterStart || p.end   >= filterStart;
+      return sOk && eOk;
+    });
+  }
+
+  function applyFilters() {
+    const originalCards = document.querySelectorAll('#camps-list > .camp-card');
+    const dividers = document.querySelectorAll('#camps-list > .age-group-divider');
+    let count = 0;
+    const visibleGroups = new Set();
+
+    function evalCard(card) {
+      const ageMin = parseInt(card.dataset.ageMin);
+      const ageMax = parseInt(card.dataset.ageMax);
+      const ageGroupKey = `${ageMin}-${ageMax}`;
+      const cardThemes = card.dataset.themes.split(',');
+      const cardRanges = (card.dataset.dates || '').split(',').map(s => s.trim());
+      const locText = (card.querySelector('.card-location')?.textContent) || '';
+      const ageOk    = state.ages.size === 0    || state.ages.has(ageGroupKey);
+      const themeOk  = state.themes.size === 0  || [...state.themes].some(t => cardThemes.includes(t));
+      const locOk    = state.locs.size === 0    || [...state.locs].some(l => locText.includes(l));
+      const dateOk   = !state.selectedDateRange || cardRanges.includes(state.selectedDateRange);
+      return ageOk && themeOk && locOk && dateOk;
+    }
+
+    // 统计营期次数（一卡 dates 有 N 个就算 N 期；若筛选了具体日期只数 1 期）
+    originalCards.forEach(card => {
+      const visible = evalCard(card);
+      if (visible) {
+        card.classList.remove('hidden');
+        card.style.animationDelay = (count * 0.04) + 's';
+        visibleGroups.add(card.dataset.group);
+        const dates = (card.dataset.dates || '').split(',').map(s => s.trim()).filter(Boolean);
+        if (state.selectedDateRange) {
+          count += dates.includes(state.selectedDateRange) ? 1 : 0;
+        } else {
+          count += Math.max(1, dates.length);
+        }
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    dividers.forEach(d => {
+      d.style.display = visibleGroups.has(d.dataset.group) ? 'flex' : 'none';
+    });
+
+    // 计数动画
+    animateCount('result-count', count);
+    document.getElementById('no-results').classList.toggle('show', count === 0);
+  }
+
+  // 数字滚动动画（300ms 内从当前值过渡到目标值；带 setTimeout 兜底）
+  function animateCount(elId, target) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    const start = parseInt(el.textContent || '0', 10);
+    if (start === target) { el.textContent = target; return; }
+    // 兜底：350ms 后强制到目标
+    setTimeout(() => { el.textContent = target; }, 350);
+    const dur = 320;
+    const t0 = performance.now();
+    function step(now) {
+      const p = Math.min(1, (now - t0) / dur);
+      const v = Math.round(start + (target - start) * (1 - Math.pow(1 - p, 3)));
+      el.textContent = v;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function toggleQR(btn) {
+    btn.classList.toggle('open');
+    const panel = btn.nextElementSibling;
+    panel.classList.toggle('open');
+  }
+
+  // QA accordion
+  function toggleQA(el) {
+    el.classList.toggle('open');
+    const ans = el.nextElementSibling;
+    ans.classList.toggle('open');
+  }
+
+  // 卡片详情面板（亮点+适合人群）
+  function toggleDetail(btn) {
+    btn.classList.toggle('open');
+    const panel = btn.nextElementSibling;
+    panel.classList.toggle('open');
+  }
+
+  // 营地照片灯箱
+  function openLightbox(imgEl) {
+    const box = document.getElementById('lightbox');
+    const big = document.getElementById('lightbox-img');
+    big.src = imgEl.src;
+    big.alt = imgEl.alt || '';
+    box.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ── Master-Detail：点击卡片打开全屏详情 ──
+  let _detailSavedScroll = 0;
+  let _detailOriginCard = null;        // 记住卡片原本在 DOM 里的位置
+  let _detailOriginParent = null;
+  let _detailOriginNextSibling = null;
+
+  async function openDetail(card) {
+    if (!card) return;
+    const overlay = document.getElementById('detail-overlay');
+    const body = document.getElementById('detail-body');
+    const title = document.getElementById('detail-title');
+    const meta = document.getElementById('detail-meta');
+
+    _detailOriginCard = card;
+    _detailOriginParent = card.parentNode;
+    _detailOriginNextSibling = card.nextSibling;
+    _detailSavedScroll = window.pageYOffset;
+
+    const nameEl = card.querySelector('.card-name');
+    title.textContent = nameEl ? nameEl.textContent.trim() : '营期详情';
+    meta.textContent = '';
+
+    // 把卡片搬到 overlay 内
+    body.innerHTML = '';
+    body.appendChild(card);
+
+    // 重置进度条
+    document.getElementById('global-progress-fill').style.width = '0%';
+    document.getElementById('toc-list').innerHTML = '';
+    document.getElementById('toc-fab').style.display = 'none';
+
+    overlay.classList.add('open');
+    document.body.classList.add('detail-open');
+    overlay.scrollTop = 0;
+    history.pushState({ kiidDetail: true }, '');
+
+    // 异步加载微信原文
+    const slug = card.dataset.slug;
+    if (slug) {
+      try {
+        const res = await fetch(`../articles/${slug}/article.html`);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const text = await res.text();
+        // 提取 <article class="wechat-article">...</article>
+        const m = text.match(/<article[^>]*class="wechat-article"[^>]*>([\s\S]+?)<\/article>/);
+        let inner = m ? m[1] : '';
+        // 改写相对路径（因为现在是从 index.html 加载）
+        inner = inner.replace(/\.\.\/_shared\//g, 'articles/_shared/');
+
+        // 包装容器
+        const wrapper = document.createElement('div');
+        wrapper.className = 'detail-article';
+        // 读取标题作为元信息（H1 隐藏）
+        const titleMatch = text.match(/<h1[^>]*>([\s\S]+?)<\/h1>/);
+        const articleTitle = titleMatch ? titleMatch[1].trim() : '';
+
+        // 估读时间（中文每分钟 ~400 字）
+        const plainText = inner.replace(/<[^>]+>/g, '');
+        const readMin = Math.max(1, Math.round(plainText.length / 400));
+
+        wrapper.innerHTML = `
+          <div class="detail-article-head">
+            <div class="label">📰 微信原文</div>
+            <div class="read-time">约 ${readMin} 分钟 · ${plainText.length} 字 · 来自钥匙玩校公众号</div>
+          </div>
+          <article class="wechat-article">${inner}</article>
+        `;
+        body.appendChild(wrapper);
+        meta.textContent = `约 ${readMin} 分钟`;
+
+        // 构建 TOC
+        buildTOC(wrapper.querySelector('.wechat-article'));
+
+        // 详情页内 video 懒挂载（article HTML 已把 src 改为 data-src）
+        bindDetailVideosIO(wrapper);
+      } catch (e) {
+        console.warn('Article load failed:', e);
+        const empty = document.createElement('div');
+        empty.className = 'detail-article';
+        empty.innerHTML = '<p style="color:#999;text-align:center;padding:20px 0;">该营期详细介绍未能加载（可能是网络问题）</p>';
+        body.appendChild(empty);
+      }
+    } else {
+      // 没有 slug 的卡片：显示"详情待补"占位
+      const placeholder = document.createElement('div');
+      placeholder.className = 'detail-article';
+      placeholder.innerHTML = `
+        <div class="detail-article-head">
+          <div class="label">📰 营期介绍</div>
+        </div>
+        <p style="color:#999;text-align:center;padding:24px 0;line-height:1.8;">
+          该营期的完整介绍正在准备中 🌱<br>
+          <span style="font-size:12px;color:#C0B7A5;">点击右下角"咨询报名"加客服微信先获取最新信息</span>
+        </p>
+      `;
+      body.appendChild(placeholder);
+    }
+
+    // 监听滚动更新进度条
+    overlay.removeEventListener('scroll', _updateProgress);
+    overlay.addEventListener('scroll', _updateProgress);
+  }
+
+  function _updateProgress() {
+    // 详情页内滚动（细节用：TOC 高亮）
+    _highlightTOC();
+    // 全局进度条由 updateGlobalProgress 处理
+    updateGlobalProgress();
+  }
+
+  function updateGlobalProgress() {
+    const bar = document.getElementById('global-progress-fill');
+    if (!bar) return;
+    let pct = 0;
+    if (document.body.classList.contains('detail-open')) {
+      const overlay = document.getElementById('detail-overlay');
+      const max = overlay.scrollHeight - overlay.clientHeight;
+      pct = max > 0 ? (overlay.scrollTop / max * 100) : 0;
+    } else {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      pct = max > 0 ? (window.pageYOffset / max * 100) : 0;
+    }
+    bar.style.width = pct + '%';
+  }
+
+  // 主页滚动也驱动全局进度条
+  window.addEventListener('scroll', updateGlobalProgress, { passive: true });
+  // 详情打开/关闭后立即重算
+  window.addEventListener('load', updateGlobalProgress);
+
+  // ── TOC 构建（2 级：主小节关键字 + 数字编号子条目） ──
+  const TOC_MARKERS = [
+    '营会简介', '营会安排', '营期安排', '课程简介', '带领人', '活动说明',
+    '钥匙玩校特色', '每日规律活动', '报名信息', '营会时间', '营会费用', '夏令营时间',
+    '营地环境', '钥匙玩校玩伴', '钥匙玩校玩伴们',
+    '营员和家长反馈', '营员反馈', '家长反馈', '关于我们',
+    '退费规则', '报名流程',
+  ];
+  // 数字编号：1. / 1、/ DAY 1 / 第一阶段 / 第一天 / -01- 等
+  const NUMBERED_REGEX = /^(?:(\d{1,2})\s*[.、:。)]|DAY\s*([\d\-]+)|-\s*0?(\d{1,2})\s*-|第\s*([一二三四五六七八九十]+)\s*(?:阶段|天|部|章|期))\s*[:：、]?\s*(.+)?$/i;
+  let _tocAnchors = [];
+
+  function buildTOC(articleEl) {
+    if (!articleEl) return;
+    _tocAnchors = [];
+    const allParas = articleEl.querySelectorAll('p, section, h2, h3, h4, h5');
+    const seenMarkers = new Set();
+    const seenSubs = new Set();
+    let lastMainSeen = false;
+
+    allParas.forEach(p => {
+      const text = p.textContent.replace(/\s+/g, ' ').trim();
+      if (!text || text.length > 50) return;
+
+      // 1) 主小节匹配
+      let matched = false;
+      for (const marker of TOC_MARKERS) {
+        if (text === marker || (text.length <= 20 && text.includes(marker))) {
+          if (!seenMarkers.has(marker)) {
+            seenMarkers.add(marker);
+            const id = 'toc-' + marker.replace(/[^\w一-龥]/g, '');
+            p.id = id;
+            p.classList.add('toc-anchor');
+            _tocAnchors.push({ id, text: marker, el: p, level: 1 });
+            lastMainSeen = true;
+          }
+          matched = true;
+          break;
+        }
+      }
+      if (matched) return;
+
+      // 2) 数字编号子条目（仅在某个主小节之后）
+      if (!lastMainSeen) return;
+      const m = text.match(NUMBERED_REGEX);
+      if (!m) return;
+      const num = m[1] || m[2] || m[3] || m[4] || '';
+      const subTitle = (m[5] || '').trim().slice(0, 18);
+      if (!subTitle || subTitle.length < 2) return;
+      // 过滤：避免误把"1、2026年..."、"4、开营前..."等长文本当编号
+      if (subTitle.length > 16 && /[，。；]/.test(subTitle)) return;
+      const subKey = `${num}-${subTitle}`;
+      if (seenSubs.has(subKey)) return;
+      seenSubs.add(subKey);
+
+      const id = 'toc-sub-' + (num || 'x') + '-' + subTitle.replace(/[^\w一-龥]/g, '').slice(0, 8);
+      p.id = id;
+      p.classList.add('toc-anchor', 'toc-anchor-sub');
+      const displayText = m[2] ? `Day ${num} · ${subTitle}` : `${num}. ${subTitle}`;
+      _tocAnchors.push({ id, text: displayText, el: p, level: 2 });
+    });
+
+    // 旧 TOC 抽屉的 list（已隐藏，备用）
+    const tocList = document.getElementById('toc-list');
+    tocList.innerHTML = '';
+    let mainIdx = 0;
+    _tocAnchors.forEach(a => {
+      const li = document.createElement('li');
+      li.className = a.level === 2 ? 'toc-li-sub' : 'toc-li-main';
+      const link = document.createElement('a');
+      link.href = '#' + a.id;
+      if (a.level === 1) {
+        mainIdx++;
+        link.innerHTML = `<span class="toc-num">${mainIdx}</span><span class="toc-text">${a.text}</span>`;
+      } else {
+        link.textContent = a.text;
+      }
+      link.dataset.tocId = a.id;
+      if (a.level === 2) link.classList.add('toc-sub');
+      link.onclick = (e) => {
+        e.preventDefault();
+        document.getElementById('detail-overlay').scrollTo({
+          top: a.el.offsetTop - 60, behavior: 'auto'
+        });
+      };
+      li.appendChild(link);
+      tocList.appendChild(li);
+    });
+
+    // 🅰️ Dot Rail：核心 9 大章节（多个细分小节合并显示）
+    const RAIL_GROUPS = [
+      { label: '营会简介', match: ['营会简介'] },
+      { label: '营期安排', match: ['营会安排', '营期安排', '活动说明', '课程简介', '带领人'] },
+      { label: '钥匙玩校特色', match: ['钥匙玩校特色'] },
+      { label: '每日规律活动', match: ['每日规律活动'] },
+      { label: '报名信息', match: ['报名信息', '营会时间', '营会费用', '夏令营时间', '退费规则', '报名流程'] },
+      { label: '营地环境', match: ['营地环境'] },
+      { label: '玩伴介绍', match: ['钥匙玩校玩伴', '钥匙玩校玩伴们'] },
+      { label: '营员·家长反馈', match: ['营员和家长反馈', '营员反馈', '家长反馈'] },
+      { label: '关于我们', match: ['关于我们'] },
+    ];
+    _railAnchors = [];  // {label, el}
+    RAIL_GROUPS.forEach(g => {
+      const first = _tocAnchors.find(a => a.level === 1 && g.match.includes(a.text));
+      if (first) _railAnchors.push({ label: g.label, el: first.el });
+    });
+
+    const railEl = document.getElementById('detail-rail-items');
+    railEl.innerHTML = '';
+    _railAnchors.forEach((a, i) => {
+      const item = document.createElement('div');
+      item.className = 'detail-rail-item';
+      item.dataset.idx = i;
+      item.innerHTML = `
+        <span class="detail-rail-dot"></span>
+        <span class="detail-rail-num">${i + 1}</span>
+        <span class="detail-rail-label">${a.label}</span>
+      `;
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById('detail-overlay').scrollTo({
+          top: a.el.offsetTop - 60, behavior: 'auto'
+        });
+        _railKeepExpanded();
+        requestAnimationFrame(_updateProgress);
+      });
+      railEl.appendChild(item);
+    });
+  }
+  let _railAnchors = [];
+
+  let _railCollapseTimer = null;
+  function _railKeepExpanded() {
+    const rail = document.getElementById('detail-rail');
+    if (!rail) return;
+    rail.classList.add('expanded');
+    clearTimeout(_railCollapseTimer);
+    _railCollapseTimer = setTimeout(() => rail.classList.remove('expanded'), 4000);
+  }
+  function railToggleExpand(e) {
+    // 点 dot 直接跳转，不展开（item 的点击已 stopPropagation）
+    const rail = e.currentTarget;
+    rail.classList.toggle('expanded');
+    if (rail.classList.contains('expanded')) {
+      clearTimeout(_railCollapseTimer);
+      _railCollapseTimer = setTimeout(() => rail.classList.remove('expanded'), 5000);
+    } else {
+      clearTimeout(_railCollapseTimer);
+    }
+  }
+
+  function _highlightTOC() {
+    if (_tocAnchors.length === 0) return;
+    const overlay = document.getElementById('detail-overlay');
+    const scrollTop = overlay.scrollTop + 80;
+    let activeIdx = -1;
+    _tocAnchors.forEach((a, i) => {
+      if (a.el.offsetTop <= scrollTop) activeIdx = i;
+    });
+    document.querySelectorAll('#toc-list a').forEach((link, i) => {
+      link.classList.toggle('active', i === activeIdx);
+    });
+
+    // 同步更新 Rail 状态：visited / current
+    let railCurIdx = -1;
+    _railAnchors.forEach((a, i) => {
+      if (a.el.offsetTop <= scrollTop) railCurIdx = i;
+    });
+    document.querySelectorAll('.detail-rail-item').forEach((item, i) => {
+      item.classList.toggle('current', i === railCurIdx);
+      item.classList.toggle('visited', i < railCurIdx);
+    });
+  }
+
+  function toggleTOC() {
+    document.getElementById('detail-toc').classList.toggle('open');
+  }
+
+  function closeDetail() {
+    const overlay = document.getElementById('detail-overlay');
+    overlay.classList.remove('open');
+    document.body.classList.remove('detail-open');
+
+    // 归位卡片
+    if (_detailOriginCard && _detailOriginParent) {
+      if (_detailOriginNextSibling && _detailOriginNextSibling.parentNode === _detailOriginParent) {
+        _detailOriginParent.insertBefore(_detailOriginCard, _detailOriginNextSibling);
+      } else {
+        _detailOriginParent.appendChild(_detailOriginCard);
+      }
+      // 顺手收起详情里展开的子面板
+      _detailOriginCard.querySelectorAll('.card-detail-toggle.open, .card-qr-toggle.open').forEach(b => b.classList.remove('open'));
+      _detailOriginCard.querySelectorAll('.card-detail-panel.open, .card-qr-panel.open').forEach(p => p.classList.remove('open'));
+    }
+    _detailOriginCard = _detailOriginParent = _detailOriginNextSibling = null;
+
+    // 还原滚动位置
+    requestAnimationFrame(() => window.scrollTo(0, _detailSavedScroll));
+  }
+
+  // 手机/微信浏览器物理返回键
+  window.addEventListener('popstate', () => {
+    if (document.body.classList.contains('detail-open')) closeDetail();
+  });
+
+  // 卡片点击（事件委托，避免按钮误触发）
+  document.addEventListener('click', e => {
+    // 已经在详情态时不再处理列表卡的点击
+    if (document.body.classList.contains('detail-open')) return;
+    // 点到按钮/链接/视频内不算"打开卡片"
+    if (e.target.closest('button, a, input, video, .card-qr-panel, .card-detail-panel')) return;
+    const card = e.target.closest('.camps-list .camp-card');
+    if (!card || card.classList.contains('hidden')) return;
+    openDetail(card);
+  });
+</script>
+</body>
+</html>
