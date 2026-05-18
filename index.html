@@ -3566,6 +3566,53 @@
     });
   })();
 
+  // === bottom sheet drag-to-dismiss ===
+  function attachDragDismiss(sheetEl, contentSelector, closeFn) {
+    if (!sheetEl) return;
+    const content = sheetEl.querySelector(contentSelector);
+    if (!content) return;
+    let startY = 0, startT = 0, dy = 0, dragging = false;
+    let savedTransform = '';
+
+    function onStart(e) {
+      if (!sheetEl.classList.contains('open')) return;
+      if (content.scrollTop > 0) return; // 内部还能往上滚就让它滚
+      const t = e.touches[0];
+      startY = t.clientY;
+      startT = Date.now();
+      dy = 0;
+      dragging = true;
+      savedTransform = content.style.transform || '';
+      content.style.transition = 'none';
+    }
+    function onMove(e) {
+      if (!dragging) return;
+      const t = e.touches[0];
+      dy = t.clientY - startY;
+      if (dy < 0) { dy = 0; return; }
+      // 维持原 transform（contact-modal 自带 translate(-50%, -50%)），叠加 translateY(dy)
+      content.style.transform = savedTransform + ` translateY(${dy}px)`;
+    }
+    function onEnd() {
+      if (!dragging) return;
+      dragging = false;
+      content.style.transition = '';
+      const dt = Math.max(1, Date.now() - startT);
+      const vy = dy / dt;
+      if (dy > 100 || vy > 0.5) {
+        content.style.transform = savedTransform;
+        closeFn();
+      } else {
+        content.style.transform = savedTransform;
+      }
+    }
+
+    content.addEventListener('touchstart', onStart, { passive: true });
+    content.addEventListener('touchmove',  onMove,  { passive: true });
+    content.addEventListener('touchend',   onEnd);
+    content.addEventListener('touchcancel', onEnd);
+  }
+
   // === Video 懒挂载 + IO 视口控制 + panel 双重门控 ===
   const _videoIO = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -3683,6 +3730,9 @@
     // 视频懒挂载：IO 接管 + 立刻评估一次当前视口
     rebindVideoIO();
     reevaluateVideos(PANEL_KEYS[_panelIndex]);
+    // bottom sheet 下滑收起
+    attachDragDismiss(document.getElementById('filter-sheet'),  '.filter-sheet-content',  () => closeFilterSheet());
+    attachDragDismiss(document.getElementById('contact-modal'), '.contact-modal-content', () => closeContactModal());
   });
 
   // ── 多选筛选辅助：通用「全部 + N 个具体值」逻辑 ──
