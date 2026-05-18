@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>钥匙玩校 2026 夏令营 · 主题分类提案</title>
+<style>
+  :root {
+    --bg: #FAF8F4; --paper: #fff; --ink: #1A1A2E; --muted: #888; --line: #ECE9E2;
+    --orange: #FF6B35;
+    /* 10 个标签色 */
+    --t-xy: #8E44AD;  /* 招牌学院 */
+    --t-xl: #2563EB;  /* 学习力 */
+    --t-kx: #14B8A6;  /* 跨学科 */
+    --t-xk: #DC2626;  /* 心理抗挫 */
+    --t-hw: #16A34A;  /* 户外冒险 */
+    --t-sb: #F59E0B;  /* 思辨解谜 */
+    --t-ai: #475569;  /* AI 科创 */
+    --t-ys: #DB2777;  /* 艺术叙事 */
+    --t-cs: #D4A017;  /* 财商 */
+    --t-zy: #0891B2;  /* 职业探索 */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.6; font-size: 15px;
+    padding: 32px 16px 80px;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  header {
+    background: var(--paper); border-radius: 14px; padding: 28px 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    border-left: 6px solid var(--orange);
+  }
+  header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.3px; }
+  header h1 em { color: var(--orange); font-style: normal; }
+  header .meta { color: var(--muted); font-size: 13px; margin-top: 6px; }
+  header .summary { display: flex; gap: 24px; margin-top: 18px; flex-wrap: wrap; }
+  header .stat strong { font-size: 26px; font-weight: 800; color: var(--orange); display: block; line-height: 1; margin-bottom: 4px; }
+  header .stat span { font-size: 13px; color: var(--muted); }
+
+  h2 { font-size: 20px; font-weight: 800; margin: 36px 0 14px; display: flex; align-items: center; gap: 10px; }
+  h2::before { content: ''; width: 4px; height: 18px; background: var(--orange); border-radius: 2px; }
+  h2 small { font-size: 13px; font-weight: 500; color: var(--muted); margin-left: 6px; }
+
+  /* Tag overview - the 10 sets */
+  .tags-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .tag-card {
+    background: var(--paper); border-radius: 12px; padding: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    border-top: 4px solid var(--c);
+  }
+  .tag-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .tag-card .desc { font-size: 12px; color: var(--muted); margin-bottom: 8px; line-height: 1.5; }
+  .tag-card .count {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    background: var(--c); color: #fff;
+    font-size: 11px; font-weight: 700;
+  }
+
+  /* Tag sections - cards under each tag */
+  .tag-section { margin-top: 22px; }
+  .tag-section .heading {
+    display: flex; align-items: baseline; gap: 10px; padding: 12px 16px; border-radius: 8px;
+    background: color-mix(in srgb, var(--c) 12%, transparent);
+    border-left: 4px solid var(--c);
+    margin-bottom: 12px;
+  }
+  .tag-section .heading .name { font-size: 17px; font-weight: 800; color: var(--c); }
+  .tag-section .heading .count { font-size: 12px; color: var(--muted); }
+  .tag-section .heading .blurb { font-size: 12px; color: var(--muted); margin-left: auto; }
+  .program-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; padding: 0 4px; }
+  .program {
+    background: var(--paper); border-radius: 8px; padding: 10px 12px;
+    border: 1px solid var(--line);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .program .name { font-size: 14px; font-weight: 700; }
+  .program .meta { font-size: 11px; color: var(--muted); }
+  .program .meta .status { display: inline-block; padding: 1px 6px; border-radius: 8px; font-weight: 700; font-size: 10px; margin-right: 4px; }
+  .status.done  { background: #16A34A22; color: #16A34A; }
+  .status.todo  { background: #F59E0B22; color: #F59E0B; }
+  .status.blank { background: #88888822; color: #888; }
+  .program .other-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+  .other-tags .pill {
+    font-size: 10px; padding: 1px 6px; border-radius: 8px;
+    background: var(--pc); color: #fff;
+  }
+
+  /* Overlap matrix */
+  .overlap-section {
+    background: var(--paper); border-radius: 12px; padding: 18px;
+    margin-top: 20px;
+    border: 1px solid var(--line);
+  }
+  .overlap-section .lead { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+  .overlap-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px dashed var(--line); flex-wrap: wrap; }
+  .overlap-row:first-of-type { border-top: none; }
+  .overlap-row .pname { flex: 0 0 200px; font-weight: 700; font-size: 14px; }
+  .overlap-row .pills { display: flex; gap: 4px; flex-wrap: wrap; }
+  .overlap-row .pill {
+    font-size: 11px; padding: 2px 8px; border-radius: 10px;
+    background: var(--pc); color: #fff; font-weight: 700;
+  }
+
+  /* Venn-like SVG hint */
+  .venn-wrap { margin-top: 16px; display: flex; justify-content: center; }
+  .venn-wrap svg { max-width: 100%; height: auto; }
+
+  footer {
+    margin-top: 40px; text-align: center; color: var(--muted); font-size: 12px;
+    padding-top: 18px; border-top: 1px solid var(--line);
+  }
+  footer a { color: var(--orange); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* Legend stripe inside the matrix */
+  .matrix { display: grid; gap: 1px; background: var(--line); border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+  .matrix .cell { background: var(--paper); padding: 8px 10px; font-size: 12px; min-height: 32px; display: flex; align-items: center; justify-content: center; }
+  .matrix .head { background: #F5F2EC; font-weight: 700; font-size: 11px; }
+  .matrix .name-cell { justify-content: flex-start; font-size: 12px; font-weight: 600; padding: 6px 8px; }
+  .matrix .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dc); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1><em>钥匙玩校</em> 2026 夏令营 · 主题分类提案</h1>
+    <div class="meta">2026-05-18 · 给甲方过目 · 多标签设计，一个营期可属多个主题</div>
+    <div class="summary">
+      <div class="stat"><strong>25</strong><span>个营期产品</span></div>
+      <div class="stat"><strong>31</strong><span>个营期次数（一卡多期累加）</span></div>
+      <div class="stat"><strong>10</strong><span>个主题标签</span></div>
+      <div class="stat"><strong>3</strong><span>个年龄段</span></div>
+    </div>
+  </header>
+
+  <h2>① 10 个主题标签 <small>· 重叠互不互斥，按家长心智分组</small></h2>
+  <div class="tags-grid">
+    <div class="tag-card" style="--c: var(--t-xy);"><h3>🎓 招牌学院</h3><div class="desc">10天以上长营，综合性最强、最具品牌口碑</div><span class="count" style="--c: var(--t-xy);">3 个营期</span></div>
+    <div class="tag-card" style="--c: var(--t-xl);"><h3>🧠 学习力</h3><div class="desc">学习方法、学霸思维、通用学习技能</div><span class="count" style="--c: var(--t-xl);">3 个营期</span></div>
+    <div class="tag-card" style="--c: var(--t-kx);"><h3>🌍 跨学科</h3><div class="desc">通识 PBL、世界观建构、综合应用</div><span class="count" style="--c: var(--t-kx);">7 个营期</span></div>
+    <div class="tag-card" style="--c: var(--t-xk);"><h3>💪 心理抗挫</h3><div class="desc">情商、抗压、心理弹性、品格成长</div><span class="count" style="--c: var(--t-xk);">4 个营期</span></div>
+    <div class="tag-card" style="--c: var(--t-hw);"><h3>🏕️ 户外冒险</h3><div class="desc">户外、徒步、营地、极限挑战</div><span class="count" style="--c: var(--t-hw);">5 个营期</span></div>
+    <div class="tag-card" style="--c: var(--t-sb);"><h3>🔍 思辨解谜</h3><div class="desc">逻辑、推理、思辨、数理思维</div><span class="count" style="--c: var(--t-sb);">4 个营期</span></div>
+    <div class="tag-card" style="--c: var(--t-ai);"><h3>🤖 AI科创</h3><div class="desc">AI、编程、工程制作、未来技能</div><span class="count" style="--c: var(--t-ai);">3 个营期</span></div>
+    <div class="tag-card" style="--c: var(--t-ys);"><h3>🎭 艺术叙事</h3><div class="desc">戏剧、角色扮演、创意写作、艺术创造</div><span class="count" style="--c: var(--t-ys);">2 个营期</span></div>
+    <div class="tag-card" style="--c: var(--t-cs);"><h3>💰 财商</h3><div class="desc">商业认知、创业启蒙、价值创造</div><span class="count" style="--c: var(--t-cs);">3 个营期</span></div>
+    <div class="tag-card" style="--c: var(--t-zy);"><h3>🚀 职业探索</h3><div class="desc">生涯规划、职业体验、未来方向</div><span class="count" style="--c: var(--t-zy);">1 个营期</span></div>
+  </div>
+
+  <h2>② 每个标签的营期归属 <small>· 卡片下方的彩色小圆点 = 它同时属于哪些其它标签</small></h2>
+
+  <!-- 招牌学院 -->
+  <section class="tag-section" style="--c: var(--t-xy);">
+    <div class="heading"><span class="name">🎓 招牌学院</span><span class="count">3 个营期</span><span class="blurb">长营、产品形态招牌</span></div>
+    <div class="program-list">
+      <div class="program">
+        <span class="name">学院制夏令营 2.0</span>
+        <span class="meta"><span class="status todo">✗ todo</span> 9-12岁 · 1期 · 在创造性的玩耍中成就发光童年</span>
+      </div>
+      <div class="program">
+        <span class="name">招牌学院制 6.0</span>
+        <span class="meta"><span class="status todo">✗ todo</span> 12-16岁 · 1期 · 在霍格沃茨般的学习体验中延伸童年</span>
+      </div>
+      <div class="program">
+        <span class="name">职业探索学院制 3.0</span>
+        <span class="meta"><span class="status todo">✗ todo</span> 14-18岁 · 1期 · 在职业"大航海"中发现自己的天赋和志向</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-zy);">🚀 职业探索</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 学习力 -->
+  <section class="tag-section" style="--c: var(--t-xl);">
+    <div class="heading"><span class="name">🧠 学习力</span><span class="count">3 个营期</span><span class="blurb">学霸方法、通用学习技能</span></div>
+    <div class="program-list">
+      <div class="program">
+        <span class="name">六艺通识营</span>
+        <span class="meta"><span class="status done">✓ done</span> 9-12岁 · 2期 · 在游戏和创造中锤炼通用技能</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-kx);">🌍 跨学科</span></div>
+      </div>
+      <div class="program">
+        <span class="name">招牌跨学科 · 运气秘籍</span>
+        <span class="meta"><span class="status done">✓ done</span> 12-16岁 · 1期 · 用反脆弱设计开挂人生</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-kx);">🌍 跨学科</span><span class="pill" style="--pc: var(--t-cs);">💰 财商</span></div>
+      </div>
+      <div class="program">
+        <span class="name">学习方法升级营</span>
+        <span class="meta"><span class="status done">✓ done</span> 14-18岁 · 1期 · 把学习变回一件"激动人心的事"</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 跨学科 -->
+  <section class="tag-section" style="--c: var(--t-kx);">
+    <div class="heading"><span class="name">🌍 跨学科</span><span class="count">7 个营期</span><span class="blurb">通识 PBL、综合素养</span></div>
+    <div class="program-list">
+      <div class="program">
+        <span class="name">六艺通识营</span>
+        <span class="meta"><span class="status done">✓ done</span> 9-12岁 · 2期</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-xl);">🧠 学习力</span></div>
+      </div>
+      <div class="program">
+        <span class="name">招牌通识营 · 世界重启</span>
+        <span class="meta"><span class="status done">✓ done</span> 9-12岁 · 2期 · 灾难后重建文明 · 跨学科生存与协作实战</span>
+      </div>
+      <div class="program">
+        <span class="name">重走人类创造之路</span>
+        <span class="meta"><span class="status done">✓ done</span> 9-12岁 · 2期 · 跨学科生命史、文明史、创造力</span>
+      </div>
+      <div class="program">
+        <span class="name">火星生存指南</span>
+        <span class="meta"><span class="status blank">? 毛坯</span> 9-12岁 · 1期 · 极端环境下的跨学科生存</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-hw);">🏕️ 户外冒险</span></div>
+      </div>
+      <div class="program">
+        <span class="name">搞笑诺贝尔</span>
+        <span class="meta"><span class="status blank">? 毛坯</span> 9-12岁 · 1期 · 把奇怪的好奇心做成科学项目</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-sb);">🔍 思辨解谜</span></div>
+      </div>
+      <div class="program">
+        <span class="name">造船 PBL</span>
+        <span class="meta"><span class="status blank">? 毛坯</span> 9-12岁 · 1期 · 工程实战</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-ai);">🤖 AI科创</span></div>
+      </div>
+      <div class="program">
+        <span class="name">招牌跨学科 · 运气秘籍</span>
+        <span class="meta"><span class="status done">✓ done</span> 12-16岁 · 1期 · 反脆弱跨学科</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-xl);">🧠 学习力</span><span class="pill" style="--pc: var(--t-cs);">💰 财商</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 心理抗挫 -->
+  <section class="tag-section" style="--c: var(--t-xk);">
+    <div class="heading"><span class="name">💪 心理抗挫</span><span class="count">4 个营期</span><span class="blurb">情商、抗压、性格</span></div>
+    <div class="program-list">
+      <div class="program">
+        <span class="name">头脑特工队</span>
+        <span class="meta"><span class="status done">✓ done</span> 9-12岁 · 4期 · 探索情绪力量，萌发行动能力</span>
+      </div>
+      <div class="program">
+        <span class="name">勇敢者游戏</span>
+        <span class="meta"><span class="status todo">✗ todo</span> 9-12岁 · 1期 · 挑战赫拉克勒斯六大试炼</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-hw);">🏕️ 户外冒险</span></div>
+      </div>
+      <div class="program">
+        <span class="name">硬核成长营 · 命运手斧</span>
+        <span class="meta"><span class="status done">✓ done</span> 9-12岁 · 1期 · 拒绝内耗，长出自我效能感</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-hw);">🏕️ 户外冒险</span></div>
+      </div>
+      <div class="program">
+        <span class="name">玩笑盲盒营</span>
+        <span class="meta"><span class="status done">✓ done</span> 12-16岁 · 1期 · 玩耍抗抑，学会"有笑"学习</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 户外冒险 -->
+  <section class="tag-section" style="--c: var(--t-hw);">
+    <div class="heading"><span class="name">🏕️ 户外冒险</span><span class="count">5 个营期</span><span class="blurb">户外、徒步、营地</span></div>
+    <div class="program-list">
+      <div class="program">
+        <span class="name">勇敢者游戏</span>
+        <span class="meta"><span class="status todo">✗ todo</span> 9-12岁 · 1期</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-xk);">💪 心理抗挫</span></div>
+      </div>
+      <div class="program">
+        <span class="name">命运手斧</span>
+        <span class="meta"><span class="status done">✓ done</span> 9-12岁 · 1期 · 荒野体验式成长</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-xk);">💪 心理抗挫</span></div>
+      </div>
+      <div class="program">
+        <span class="name">火星生存指南</span>
+        <span class="meta"><span class="status blank">? 毛坯</span> 9-12岁 · 1期</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-kx);">🌍 跨学科</span></div>
+      </div>
+      <div class="program">
+        <span class="name">定向越野 + AI 工具</span>
+        <span class="meta"><span class="status blank">? 毛坯</span> 9-12岁 · 1期</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-ai);">🤖 AI科创</span></div>
+      </div>
+      <div class="program">
+        <span class="name">饥饿游戏</span>
+        <span class="meta"><span class="status blank">? 毛坯</span> 12-16岁 · 1期</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 思辨解谜 -->
+  <section class="tag-section" style="--c: var(--t-sb);">
+    <div class="heading"><span class="name">🔍 思辨解谜</span><span class="count">4 个营期</span><span class="blurb">逻辑、推理、数理思维</span></div>
+    <div class="program-list">
+      <div class="program">
+        <span class="name">数学战争</span>
+        <span class="meta"><span class="status blank">? 毛坯</span> 9-12岁 · 1期 · 数学竞赛风的游戏化课</span>
+      </div>
+      <div class="program">
+        <span class="name">时间玩家</span>
+        <span class="meta"><span class="status blank">? 毛坯</span> 9-12岁 · 1期 · 时间感知与规划</span>
+      </div>
+      <div class="program">
+        <span class="name">搞笑诺贝尔</span>
+        <span class="meta"><span class="status blank">? 毛坯</span> 9-12岁 · 1期</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-kx);">🌍 跨学科</span></div>
+      </div>
+      <div class="program">
+        <span class="name">名侦探学院 2.0</span>
+        <span class="meta"><span class="status todo">✗ todo</span> 12-16岁 · 1期 · 释放解谜求真天性</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI科创 -->
+  <section class="tag-section" style="--c: var(--t-ai);">
+    <div class="heading"><span class="name">🤖 AI科创</span><span class="count">3 个营期</span><span class="blurb">AI、编程、工程制作</span></div>
+    <div class="program-list">
+      <div class="program">
+        <span class="name">造船 PBL</span>
+        <span class="meta"><span class="status blank">? 毛坯</span> 9-12岁 · 1期</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-kx);">🌍 跨学科</span></div>
+      </div>
+      <div class="program">
+        <span class="name">定向越野 + AI 工具</span>
+        <span class="meta"><span class="status blank">? 毛坯</span> 9-12岁 · 1期</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-hw);">🏕️ 户外冒险</span></div>
+      </div>
+      <div class="program">
+        <span class="name">AI 游戏设计营</span>
+        <span class="meta"><span class="status done">✓ done</span> 14-18岁 · 1期 · 从玩游戏到做游戏，掌握 AI 时代的硬核创造力</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 艺术叙事 -->
+  <section class="tag-section" style="--c: var(--t-ys);">
+    <div class="heading"><span class="name">🎭 艺术叙事</span><span class="count">2 个营期</span><span class="blurb">戏剧、角色扮演、创意创造</span></div>
+    <div class="program-list">
+      <div class="program">
+        <span class="name">水形物语</span>
+        <span class="meta"><span class="status blank">? 毛坯</span> 9-12岁 · 1期 · 水为主题的艺术创造</span>
+      </div>
+      <div class="program">
+        <span class="name">龙与地下城跑团营</span>
+        <span class="meta"><span class="status done">✓ done</span> 14-18岁 · 1期 · 做自己故事的主角</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 财商 -->
+  <section class="tag-section" style="--c: var(--t-cs);">
+    <div class="heading"><span class="name">💰 财商</span><span class="count">3 个营期</span><span class="blurb">商业认知、创业启蒙</span></div>
+    <div class="program-list">
+      <div class="program">
+        <span class="name">少年大富翁创业营</span>
+        <span class="meta"><span class="status todo">✗ todo</span> 9-12岁 · 1期 · 在行动中培养创造幸福的能力</span>
+      </div>
+      <div class="program">
+        <span class="name">招牌跨学科 · 运气秘籍</span>
+        <span class="meta"><span class="status done">✓ done</span> 12-16岁 · 1期</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-kx);">🌍 跨学科</span><span class="pill" style="--pc: var(--t-xl);">🧠 学习力</span></div>
+      </div>
+      <div class="program">
+        <span class="name">第一桶金</span>
+        <span class="meta"><span class="status blank">? 毛坯</span> 12-16岁 · 1期</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 职业探索 -->
+  <section class="tag-section" style="--c: var(--t-zy);">
+    <div class="heading"><span class="name">🚀 职业探索</span><span class="count">1 个营期</span><span class="blurb">生涯规划、未来方向</span></div>
+    <div class="program-list">
+      <div class="program">
+        <span class="name">职业探索学院制 3.0</span>
+        <span class="meta"><span class="status todo">✗ todo</span> 14-18岁 · 1期</span>
+        <div class="other-tags"><span class="pill" style="--pc: var(--t-xy);">🎓 招牌学院</span></div>
+      </div>
+    </div>
+  </section>
+
+  <h2>③ 多标签交叉一览 <small>· 同时挂在 ≥2 个主题下的营期</small></h2>
+  <div class="overlap-section">
+    <p class="lead">这些是"集合交集"上的营期——一卡多标签，能在多个家长心智入口被找到。</p>
+    <div class="overlap-row"><span class="pname">招牌跨学科 · 运气秘籍</span><div class="pills">
+      <span class="pill" style="--pc: var(--t-kx);">🌍 跨学科</span><span class="pill" style="--pc: var(--t-cs);">💰 财商</span><span class="pill" style="--pc: var(--t-xl);">🧠 学习力</span>
+    </div></div>
+    <div class="overlap-row"><span class="pname">硬核成长营 · 命运手斧</span><div class="pills">
+      <span class="pill" style="--pc: var(--t-hw);">🏕️ 户外冒险</span><span class="pill" style="--pc: var(--t-xk);">💪 心理抗挫</span>
+    </div></div>
+    <div class="overlap-row"><span class="pname">勇敢者游戏</span><div class="pills">
+      <span class="pill" style="--pc: var(--t-xk);">💪 心理抗挫</span><span class="pill" style="--pc: var(--t-hw);">🏕️ 户外冒险</span>
+    </div></div>
+    <div class="overlap-row"><span class="pname">火星生存指南</span><div class="pills">
+      <span class="pill" style="--pc: var(--t-kx);">🌍 跨学科</span><span class="pill" style="--pc: var(--t-hw);">🏕️ 户外冒险</span>
+    </div></div>
+    <div class="overlap-row"><span class="pname">搞笑诺贝尔</span><div class="pills">
+      <span class="pill" style="--pc: var(--t-kx);">🌍 跨学科</span><span class="pill" style="--pc: var(--t-sb);">🔍 思辨解谜</span>
+    </div></div>
+    <div class="overlap-row"><span class="pname">造船 PBL</span><div class="pills">
+      <span class="pill" style="--pc: var(--t-ai);">🤖 AI科创</span><span class="pill" style="--pc: var(--t-kx);">🌍 跨学科</span>
+    </div></div>
+    <div class="overlap-row"><span class="pname">定向越野 + AI 工具</span><div class="pills">
+      <span class="pill" style="--pc: var(--t-hw);">🏕️ 户外冒险</span><span class="pill" style="--pc: var(--t-ai);">🤖 AI科创</span>
+    </div></div>
+    <div class="overlap-row"><span class="pname">六艺通识营</span><div class="pills">
+      <span class="pill" style="--pc: var(--t-xl);">🧠 学习力</span><span class="pill" style="--pc: var(--t-kx);">🌍 跨学科</span>
+    </div></div>
+    <div class="overlap-row"><span class="pname">职业探索学院制 3.0</span><div class="pills">
+      <span class="pill" style="--pc: var(--t-xy);">🎓 招牌学院</span><span class="pill" style="--pc: var(--t-zy);">🚀 职业探索</span>
+    </div></div>
+  </div>
+
+  <h2>④ 主要标签的集合可视化 <small>· 选 4 个出现最多/最关键的标签作示意</small></h2>
+  <div class="venn-wrap">
+    <svg width="640" height="380" viewBox="0 0 640 380" xmlns="http://www.w3.org/2000/svg">
+      <!-- 4 重叠圆：跨学科 / 户外冒险 / 心理抗挫 / 思辨解谜 -->
+      <circle cx="240" cy="160" r="130" fill="#14B8A6" fill-opacity="0.28" stroke="#14B8A6" stroke-width="1.5"/>
+      <circle cx="380" cy="160" r="130" fill="#16A34A" fill-opacity="0.28" stroke="#16A34A" stroke-width="1.5"/>
+      <circle cx="290" cy="260" r="120" fill="#DC2626" fill-opacity="0.24" stroke="#DC2626" stroke-width="1.5"/>
+      <circle cx="330" cy="100" r="105" fill="#F59E0B" fill-opacity="0.24" stroke="#F59E0B" stroke-width="1.5"/>
+
+      <!-- 标签 -->
+      <text x="120" y="120" font-family="-apple-system,sans-serif" font-size="14" font-weight="800" fill="#14B8A6">🌍 跨学科</text>
+      <text x="450" y="120" font-family="-apple-system,sans-serif" font-size="14" font-weight="800" fill="#16A34A">🏕️ 户外冒险</text>
+      <text x="180" y="340" font-family="-apple-system,sans-serif" font-size="14" font-weight="800" fill="#DC2626">💪 心理抗挫</text>
+      <text x="380" y="40" font-family="-apple-system,sans-serif" font-size="14" font-weight="800" fill="#F59E0B">🔍 思辨解谜</text>
+
+      <!-- 交集示例 -->
+      <text x="285" y="155" font-size="10" fill="#1A1A2E" text-anchor="middle">火星生存</text>
+      <text x="305" y="218" font-size="10" fill="#1A1A2E" text-anchor="middle">命运手斧 / 勇敢者</text>
+      <text x="305" y="95" font-size="10" fill="#1A1A2E" text-anchor="middle">搞笑诺贝尔</text>
+    </svg>
+  </div>
+
+  <h2>⑤ 全 25 卡 × 10 标签矩阵</h2>
+  <div class="matrix" style="grid-template-columns: 200px repeat(10, minmax(60px, 1fr));">
+    <div class="cell head"></div>
+    <div class="cell head" style="color: var(--t-xy);">🎓<br>学院</div>
+    <div class="cell head" style="color: var(--t-xl);">🧠<br>学习力</div>
+    <div class="cell head" style="color: var(--t-kx);">🌍<br>跨学科</div>
+    <div class="cell head" style="color: var(--t-xk);">💪<br>心理</div>
+    <div class="cell head" style="color: var(--t-hw);">🏕️<br>户外</div>
+    <div class="cell head" style="color: var(--t-sb);">🔍<br>思辨</div>
+    <div class="cell head" style="color: var(--t-ai);">🤖<br>AI</div>
+    <div class="cell head" style="color: var(--t-ys);">🎭<br>艺术</div>
+    <div class="cell head" style="color: var(--t-cs);">💰<br>财商</div>
+    <div class="cell head" style="color: var(--t-zy);">🚀<br>职业</div>
+
+    <!-- 25 rows generated -->
+    <div class="cell name-cell">六艺通识营</div>           <div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-xl);"></span></div><div class="cell"><span class="dot" style="--dc:var(--t-kx);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">头脑特工队</div>           <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-xk);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">勇敢者游戏</div>           <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-xk);"></span></div><div class="cell"><span class="dot" style="--dc:var(--t-hw);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">世界重启</div>             <div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-kx);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">少年大富翁创业营</div>     <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-cs);"></span></div><div class="cell"></div>
+    <div class="cell name-cell">学院制夏令营 2.0</div>     <div class="cell"><span class="dot" style="--dc:var(--t-xy);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">重走人类创造之路</div>     <div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-kx);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">命运手斧</div>             <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-xk);"></span></div><div class="cell"><span class="dot" style="--dc:var(--t-hw);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">火星生存指南</div>         <div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-kx);"></span></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-hw);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">数学战争</div>             <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-sb);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">水形物语</div>             <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-ys);"></span></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">时间玩家</div>             <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-sb);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">搞笑诺贝尔</div>           <div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-kx);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-sb);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">造船 PBL</div>             <div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-kx);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-ai);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">定向越野 + AI</div>        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-hw);"></span></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-ai);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">招牌学院制 6.0</div>       <div class="cell"><span class="dot" style="--dc:var(--t-xy);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">名侦探学院 2.0</div>       <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-sb);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">运气秘籍</div>             <div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-xl);"></span></div><div class="cell"><span class="dot" style="--dc:var(--t-kx);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-cs);"></span></div><div class="cell"></div>
+    <div class="cell name-cell">玩笑盲盒营</div>           <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-xk);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">第一桶金</div>             <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-cs);"></span></div><div class="cell"></div>
+    <div class="cell name-cell">饥饿游戏</div>             <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-hw);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">职业探索学院制 3.0</div>   <div class="cell"><span class="dot" style="--dc:var(--t-xy);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-zy);"></span></div>
+    <div class="cell name-cell">学习方法升级营</div>       <div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-xl);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">AI 游戏设计营</div>        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-ai);"></span></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell name-cell">龙与地下城跑团营</div>     <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><span class="dot" style="--dc:var(--t-ys);"></span></div><div class="cell"></div><div class="cell"></div>
+  </div>
+
+  <footer>
+    🔑 钥匙玩校 · 2026 夏令营 · 主题分类提案稿 v1 · <a href="https://xing0325.github.io/kiidschool/">线上预览</a><br>
+    甲方反馈 → 调整 → 落到筛选 UI · 当前 commit d5019de
+  </footer>
+
+</div>
+</body>
+</html>
