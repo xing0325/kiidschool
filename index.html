@@ -130,6 +130,9 @@
       cursor: pointer; transition: all 0.15s; user-select: none;
     }
     .chip.active { border-color: #FF6B35; color: #FF6B35; background: #FFF6F3; }
+    .chip.with-icon { display: inline-flex; align-items: center; gap: 5px; padding-left: 10px; }
+    .chip.with-icon svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .chip:active { transform: scale(0.95); }
 
     .clear-row { padding: 10px 0 4px; display: flex; justify-content: flex-end; }
     .clear-btn {
@@ -248,10 +251,14 @@
     .bottom-bar-btn.cta {
       background: linear-gradient(135deg, #FF6B35, #FF9233);
       color: #fff;
-      box-shadow: 0 4px 14px rgba(255,107,53,0.35);
-      margin: -4px 0;
+      box-shadow: 0 6px 18px rgba(255,107,53,0.45);
+      margin: -10px 6px;
+      border-radius: 14px;
+      transform: translateY(-2px);
     }
-    .bottom-bar-btn.cta:active { background: linear-gradient(135deg, #E85A29, #FF7E18); }
+    .bottom-bar-btn.cta .bb-icon { font-size: 20px; }
+    .bottom-bar-btn.cta .bb-label { font-weight: 800; }
+    .bottom-bar-btn.cta:active { background: linear-gradient(135deg, #E85A29, #FF7E18); transform: translateY(-1px) scale(0.97); }
     .filter-count-badge {
       position: absolute;
       top: -4px; right: -4px;
@@ -322,28 +329,6 @@
       font-size: 15px; font-weight: 800;
       cursor: pointer;
     }
-
-    /* ── 4 panel 横滑容器 ── */
-    .panel-swiper {
-      overflow: hidden;
-      position: relative;
-      touch-action: pan-y;
-    }
-    .panel-track {
-      display: flex;
-      align-items: flex-start; /* panels 各自顶对齐，不再被拉伸 */
-      width: 400%;
-      transform: translateX(0);
-      transition: transform 280ms cubic-bezier(.2,.7,.2,1);
-      will-change: transform;
-    }
-    .panel-track.dragging { transition: none; }
-    .panel {
-      flex: 0 0 25%;
-      box-sizing: border-box;
-    }
-    /* 其他 panel 默认无 age-group-divider（直接是子集卡片） */
-    .panel:not([data-panel="all"]) .camps-list { padding-top: 8px; }
 
     /* ── 一级页面 view（与首页 home-view 互斥）── */
     .view-page {
@@ -685,6 +670,32 @@
       cursor: pointer; transition: background 0.15s;
     }
     .card-qr-toggle:hover { background: #FFF0E8; }
+    /* R2 简化：内嵌 QR 改为"咨询/报名"按钮 */
+    .card-contact-btn {
+      width: 100%;
+      padding: 11px 16px;
+      background: linear-gradient(135deg, #FF6B35, #FF9233);
+      border: none;
+      font-size: 13.5px; font-weight: 800; color: #fff;
+      letter-spacing: 0.5px;
+      cursor: pointer; transition: filter 0.15s, transform 0.1s;
+    }
+    .card-contact-btn:active { transform: scale(0.985); filter: brightness(0.95); }
+    /* 列表顶部统一一次免责说明 */
+    .list-disclaimer {
+      margin: 4px 16px 12px;
+      padding: 8px 14px;
+      background: #FAFAF6;
+      border-radius: 8px;
+      font-size: 11.5px; color: #888; line-height: 1.55;
+      text-align: center;
+    }
+    /* 卡片入场轻动画（依赖原 .camp-card.hidden { display: none } 行 543） */
+    .camp-card:not(.hidden) { animation: cardFadeIn 320ms cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes cardFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     .card-qr-toggle .arrow { font-size: 10px; transition: transform 0.2s; }
     .card-qr-toggle.open .arrow { transform: rotate(180deg); }
 
@@ -1690,6 +1701,51 @@
       flex-shrink: 0;
       padding-left: 8px;
     }
+
+    /* ───────── R2-no-panel polish ───────── */
+    :root {
+      --ink-dark: #2a2520;    /* 暖深色，做标题/正文 */
+      --ink-soft: #6b6258;    /* 副标题灰 */
+    }
+    /* 字体层级 */
+    .card-name { font-size: 18px !important; letter-spacing: -0.2px; color: var(--ink-dark) !important; line-height: 1.25 !important; }
+    .card-subtitle { font-size: 12.5px; color: var(--ink-soft); margin-top: 3px; line-height: 1.45; }
+    .card-price { font-size: 19px !important; letter-spacing: -0.3px; }
+    /* 卡片留白扩大 */
+    .camp-card { margin-bottom: 14px !important; box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 14px rgba(0,0,0,0.03); }
+    .camp-card .card-body { padding: 14px 14px 12px !important; }
+    /* 状态图标降级 */
+    .card-status { font-size: 11px !important; padding: 2px 6px !important; opacity: 0.7; }
+    /* 价格行单行布局 */
+    .card-price-row { gap: 8px; align-items: baseline; }
+    .card-orig-price { font-size: 12px !important; color: #aaa !important; }
+    .card-save { font-size: 11px !important; }
+    /* 通用 active 反馈 */
+    button:not(.bottom-bar-btn):not(.filter-sheet-cancel):active,
+    .camp-card:active,
+    .age-nav-tab:active { transform: scale(0.98); opacity: 0.92; transition: transform 120ms, opacity 120ms; }
+    /* 图片 lazy 之前的 placeholder（米色块） */
+    img.poster-img, video.poster-img { background: #EDE7DE; }
+    /* 列表底部 padding 防底栏遮 */
+    .camps-list { padding-bottom: 96px; }
+    /* 顶部条 sticky 阴影区分 */
+    .home-top-bar { box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02); }
+    /* 年龄 tab 切换平滑下划线 */
+    .age-nav-tab.active::after { transition: all 250ms cubic-bezier(.2,.8,.2,1); }
+    /* 卡片 hover 微动效（仅桌面） */
+    @media (hover: hover) { .camp-card:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.06), 0 12px 28px rgba(0,0,0,0.05); transition: all 200ms; } }
+    /* 详情页打开动画 */
+    body.detail-open .detail-main { animation: detailSlideIn 280ms cubic-bezier(.2,.8,.2,1); }
+    @keyframes detailSlideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    /* sheet 弹性 */
+    .filter-sheet.open .filter-sheet-content,
+    .contact-modal.open .contact-modal-content {
+      animation: sheetSpringIn 360ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes sheetSpringIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body class="view-home">
@@ -1749,10 +1805,8 @@
   <span>共 <strong id="result-count">13</strong> 个营期</span>
 </div>
 
-<!-- CAMP CARDS（4 panel 横滑：全部 / 9-12 / 12-16 / 14-18） -->
-<div class="panel-swiper" id="panel-swiper">
-<div class="panel-track" id="panel-track">
-<section class="panel" data-panel="all" data-age="all">
+<!-- CAMP CARDS（单列表，年龄段通过 hide/show 筛选；R2-no-panel） -->
+<div class="list-disclaimer">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
 <div class="camps-list" id="camps-list">
 
   <!-- ── 🌟 推荐 ── -->
@@ -1798,7 +1852,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -1812,17 +1865,8 @@
         <h5>适合人群</h5>
         <ul><li>家长希望培养孩子综合素质、不局限于单一技能的全面发展型孩子</li><li>喜欢动手制作、参与集体游戏，乐于探究问题原因的孩子</li><li>需要提升自控力、表达力和社交信心的低年级学生</li></ul>
       </div>
-      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
-    <button class="card-qr-toggle" onclick="toggleQR(this)">
-      扫码报名 <span class="arrow">▼</span>
-    </button>
-    <div class="card-qr-panel">
-      <img decoding="async" loading="lazy" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr-01.png" alt="六艺通识营报名二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="qr-placeholder" style="display:none"><span>📱</span><span>二维码加载中</span></div>
-      <div class="qr-label">微信扫码 · 钥匙君客服报名</div>
-    </div>
-  </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 头脑特工队 -->
   <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="心理抗挫" data-dates="7.4-7.10,7.11-7.17,7.18-7.24,7.25-7.31" data-group="9-12" data-slug="emotion-team">
@@ -1853,7 +1897,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -1867,15 +1910,8 @@
         <h5>适合人群</h5>
         <ul><li>情绪波动较大，或家长希望提升其情绪调节能力的青少年</li><li>性格偏内向、害羞，需要在安全环境下练习社交突破的孩子</li><li>渴望被理解，需要建立内心安全感和自信心的孩子</li></ul>
       </div>
-      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
-    <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
-    <div class="card-qr-panel">
-      <img decoding="async" loading="lazy" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr-02.png" alt="报名二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="qr-placeholder" style="display:none"><span>📱</span><span>二维码加载中</span></div>
-      <div class="qr-label">微信扫码 · 钥匙君客服报名</div>
-    </div>
-  </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 勇敢者游戏 -->
   <div class="camp-card" data-status="todo" data-age-min="9" data-age-max="12" data-themes="心理抗挫,户外冒险" data-dates="7.18-7.24" data-group="9-12">
@@ -1906,7 +1942,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -1920,15 +1955,8 @@
         <h5>适合人群</h5>
         <ul><li>在生活中比较谨慎、害怕犯错，需要勇气突破的"乖孩子"</li><li>热爱神话故事、剧本冒险，喜欢沉浸式角色体验的孩子</li><li>家长希望其在 AI 时代保持"敢于提问、敢于尝试"特质的孩子</li></ul>
       </div>
-      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
-    <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
-    <div class="card-qr-panel">
-      <img decoding="async" loading="lazy" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr-03.png" alt="报名二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="qr-placeholder" style="display:none"><span>📱</span><span>二维码加载中</span></div>
-      <div class="qr-label">微信扫码 · 钥匙君客服报名</div>
-    </div>
-  </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 招牌通识营·世界重启 -->
   <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="跨学科" data-dates="7.11-7.17,7.25-7.31" data-group="9-12" data-slug="world-restart">
@@ -1959,7 +1987,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -1973,15 +2000,8 @@
         <h5>适合人群</h5>
         <ul><li>对科学、历史、生存技能有浓厚兴趣的"创造者"</li><li>脑洞大开，对社会运行机制和文明演化充满好奇的少年</li></ul>
       </div>
-      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
-    <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
-    <div class="card-qr-panel">
-      <img decoding="async" loading="lazy" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr-04.png" alt="报名二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="qr-placeholder" style="display:none"><span>📱</span><span>二维码加载中</span></div>
-      <div class="qr-label">微信扫码 · 钥匙君客服报名</div>
-    </div>
-  </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 少年大富翁创业营 -->
   <div class="camp-card" data-status="todo" data-age-min="9" data-age-max="12" data-themes="财商" data-dates="7.4-7.10" data-group="9-12">
@@ -2012,7 +2032,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2026,15 +2045,8 @@
         <h5>适合人群</h5>
         <ul><li>对金钱、买卖、商业世界表现出浓厚兴趣的小"创业者"</li><li>家长希望引导孩子建立正确财富观，告别盲目消费或功利心态</li><li>善于头脑风暴，乐于将创意转化为实际产品的行动派</li></ul>
       </div>
-      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
-    <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
-    <div class="card-qr-panel">
-      <img decoding="async" loading="lazy" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr-05.png" alt="报名二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="qr-placeholder" style="display:none"><span>📱</span><span>二维码加载中</span></div>
-      <div class="qr-label">微信扫码 · 钥匙君客服报名</div>
-    </div>
-  </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 学院制夏令营2.0 -->
   <div class="camp-card featured" data-status="todo" data-age-min="9" data-age-max="12" data-themes="学院制" data-dates="8.8-8.17" data-group="recommend" data-rank="2">
@@ -2066,7 +2078,6 @@
           <span class="card-price">10800</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥12800</span>
           <span class="card-save">省2000</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2080,15 +2091,8 @@
         <h5>适合人群</h5>
         <ul><li>正处于自我意识萌芽期，需要独立空间和正面引导的孩子</li><li>好奇心旺盛，喜欢在玩耍中学习和发现世界的探索型少年</li><li>家长希望其在快乐童年与未来挑战之间建立平稳过渡</li></ul>
       </div>
-      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
-    <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
-    <div class="card-qr-panel">
-      <img decoding="async" loading="lazy" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr-06.png" alt="报名二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="qr-placeholder" style="display:none"><span>📱</span><span>二维码加载中</span></div>
-      <div class="qr-label">微信扫码 · 钥匙君客服报名</div>
-    </div>
-  </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
   <!-- 招牌通识 · 重走人类创造之路 -->
   <div class="camp-card" data-slug="human-history" data-status="done" data-age-min="9" data-age-max="12" data-themes="跨学科" data-dates="7.4-7.10,7.18-7.24" data-group="9-12">
     <div class="card-main">
@@ -2117,7 +2121,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2151,7 +2154,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2185,7 +2187,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2218,7 +2219,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2251,7 +2251,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2284,7 +2283,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2318,7 +2316,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2351,7 +2348,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2385,7 +2381,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2429,7 +2424,6 @@
           <span class="card-price">10800</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥12800</span>
           <span class="card-save">省2000</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2443,15 +2437,8 @@
         <h5>适合人群</h5>
         <ul><li>无论"学霸"还是"贪玩"的孩子，只要渴望交友、渴望证明自己</li><li>性格鲜明、有主见，甚至在常规学校环境中显得"不太听话"的孩子</li><li>喜欢挑战、热爱团队合作，希望体验多元化技能学习的青少年</li></ul>
       </div>
-      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
-    <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
-    <div class="card-qr-panel">
-      <img decoding="async" loading="lazy" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr-07.png" alt="报名二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="qr-placeholder" style="display:none"><span>📱</span><span>二维码加载中</span></div>
-      <div class="qr-label">微信扫码 · 小钥匙客服报名</div>
-    </div>
-  </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 名侦探学院 -->
   <div class="camp-card" data-status="todo" data-age-min="12" data-age-max="16" data-themes="思辨解谜" data-dates="8.8-8.14" data-group="12-16">
@@ -2482,7 +2469,6 @@
           <span class="card-price">7280</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥8280</span>
           <span class="card-save">省1000</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2496,15 +2482,8 @@
         <h5>适合人群</h5>
         <ul><li>逻辑控、推理迷，对《名侦探柯南》等侦探题材感兴趣的孩子</li><li>思维活跃，不喜欢标准答案，喜欢追问"为什么"的学生</li><li>需要提升观察细致度、分析判断力的青少年</li></ul>
       </div>
-      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
-    <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
-    <div class="card-qr-panel">
-      <img decoding="async" loading="lazy" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr-08.png" alt="报名二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="qr-placeholder" style="display:none"><span>📱</span><span>二维码加载中</span></div>
-      <div class="qr-label">微信扫码 · 小钥匙客服报名</div>
-    </div>
-  </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
   <!-- 招牌跨学科 · 运气秘籍 -->
   <div class="camp-card" data-slug="luck-recipe" data-status="done" data-age-min="12" data-age-max="16" data-themes="跨学科,财商,学习力" data-dates="7.25-7.31" data-group="12-16">
     <div class="card-main">
@@ -2533,7 +2512,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2567,7 +2545,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2600,7 +2577,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2633,7 +2609,6 @@
           <span class="card-price">5980</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥6580</span>
           <span class="card-save">省600</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2676,7 +2651,6 @@
           <span class="card-price">12800</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥14800</span>
           <span class="card-save">省2000</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2690,15 +2664,8 @@
         <h5>适合人群</h5>
         <ul><li>处于职业迷茫期，渴望探索未来专业或就业方向的学生</li><li>希望提升沟通、决策、领导力等"软实力"的准大学生</li><li>对世界充满好奇，喜欢听取不同人生经验、乐于深度思考的孩子</li></ul>
       </div>
-      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
-    <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
-    <div class="card-qr-panel">
-      <img decoding="async" loading="lazy" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr-10.png" alt="报名二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="qr-placeholder" style="display:none"><span>📱</span><span>二维码加载中</span></div>
-      <div class="qr-label">微信扫码 · 小钥匙客服报名</div>
-    </div>
-  </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 学习方法升级营 -->
   <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="学习力" data-dates="7.23-7.25" data-group="14-18" data-slug="learning-method">
@@ -2729,7 +2696,6 @@
           <span class="card-price">4280</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥4580</span>
           <span class="card-save">省300</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2743,15 +2709,8 @@
         <h5>适合人群</h5>
         <ul><li>学习努力但方法欠缺，感到身心俱疲、无意义感的高中生</li><li>希望在假期复盘学习策略，提升自主学习效率的自我驱动型学生</li><li>对学习产生抵触情绪，需要重拾学习趣味和掌控感的孩子</li></ul>
       </div>
-      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
-    <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
-    <div class="card-qr-panel">
-      <img decoding="async" loading="lazy" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr-11.png" alt="报名二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="qr-placeholder" style="display:none"><span>📱</span><span>二维码加载中</span></div>
-      <div class="qr-label">微信扫码 · 小钥匙客服报名</div>
-    </div>
-  </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- AI游戏设计营 -->
   <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="AI科创" data-dates="7.25-7.31" data-group="14-18" data-slug="ai-game">
@@ -2783,7 +2742,6 @@
           <span class="card-price">10800</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥12800</span>
           <span class="card-save">省2000</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2797,15 +2755,8 @@
         <h5>适合人群</h5>
         <ul><li>深度游戏爱好者，对游戏背后的逻辑和设计感兴趣</li><li>对 AI 技术、科技趋势有浓厚兴趣，喜欢动手创作的孩子</li><li>具备逻辑思考潜力，未来有志于从事科技、设计或产品工作的学生</li></ul>
       </div>
-      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
-    <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
-    <div class="card-qr-panel">
-      <img decoding="async" loading="lazy" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr-12.png" alt="报名二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="qr-placeholder" style="display:none"><span>📱</span><span>二维码加载中</span></div>
-      <div class="qr-label">微信扫码 · 小钥匙客服报名</div>
-    </div>
-  </div>
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div>
 
   <!-- 龙与地下城跑团营 -->
   <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="艺术叙事" data-dates="8.1-8.7" data-group="14-18" data-slug="dnd">
@@ -2837,7 +2788,6 @@
           <span class="card-price">7280</span><span class="card-price-unit">元起</span>
           <span class="card-orig-price">¥8280</span>
           <span class="card-save">省1000</span>
-          <span class="card-price-hint">早鸟价 · 3人团购 / 老营员 / 荣誉营员另有优惠</span>
         </div>
       </div>
     </div>
@@ -2851,29 +2801,8 @@
         <h5>适合人群</h5>
         <ul><li>热爱文学想象、奇幻世界观或剧本杀的青少年</li><li>渴望高质量社交、希望在深度互动中寻找共鸣的孩子</li><li>喜欢策略思考，乐于通过语言沟通解决问题的表达型选手</li></ul>
       </div>
-      <div class="detail-tip">客服不做推荐 · 仅供家长参考 · 让孩子自己选感兴趣的主题 🌟</div>
     </div>
-    <button class="card-qr-toggle" onclick="toggleQR(this)">扫码报名 <span class="arrow">▼</span></button>
-    <div class="card-qr-panel">
-      <img decoding="async" loading="lazy" src="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr-13.png" alt="报名二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="qr-placeholder" style="display:none"><span>📱</span><span>二维码加载中</span></div>
-      <div class="qr-label">微信扫码 · 小钥匙客服报名</div>
-    </div>
-  </div>
-
-</div><!-- /camps-list -->
-</section><!-- /.panel[all] -->
-<section class="panel" data-panel="9-12" data-age="9-12">
-  <div class="camps-list" data-panel-list="9-12"></div>
-</section>
-<section class="panel" data-panel="12-16" data-age="12-16">
-  <div class="camps-list" data-panel-list="12-16"></div>
-</section>
-<section class="panel" data-panel="14-18" data-age="14-18">
-  <div class="camps-list" data-panel-list="14-18"></div>
-</section>
-</div><!-- /.panel-track -->
-</div><!-- /.panel-swiper -->
+    <button class="card-contact-btn" onclick="event.stopPropagation();goToContact();">咨询 / 报名</button></div><!-- /camps-list -->
 
 <!-- NO RESULTS -->
 <div class="no-results" id="no-results">
@@ -3052,6 +2981,16 @@
     </div>
 
     <div class="filter-section">
+      <div class="filter-label">年龄段 <span class="filter-hint">单选</span></div>
+      <div class="theme-chips" id="age-chips-wrap">
+        <span class="chip active" data-age="all" onclick="selectAgeTab('all')">全部</span>
+        <span class="chip" data-age="9-12" onclick="selectAgeTab('9-12')">9-12 岁</span>
+        <span class="chip" data-age="12-16" onclick="selectAgeTab('12-16')">12-16 岁</span>
+        <span class="chip" data-age="14-18" onclick="selectAgeTab('14-18')">14-18 岁</span>
+      </div>
+    </div>
+
+    <div class="filter-section">
       <div class="filter-label">营期周次 <span class="filter-hint">单选</span></div>
       <div class="week-tabs" id="week-tabs" style="padding:0;background:transparent;border:none"></div>
     </div>
@@ -3060,16 +2999,16 @@
       <div class="filter-label">主题 <span class="filter-hint">可多选</span></div>
       <div class="theme-chips" id="theme-chips-wrap">
         <span class="chip active" data-theme="all" onclick="toggleTheme(this)">全部</span>
-        <span class="chip" data-theme="学院制" onclick="toggleTheme(this)">🎓 招牌学院</span>
-        <span class="chip" data-theme="学习力" onclick="toggleTheme(this)">🧠 学习力</span>
-        <span class="chip" data-theme="跨学科" onclick="toggleTheme(this)">🌍 跨学科</span>
-        <span class="chip" data-theme="心理抗挫" onclick="toggleTheme(this)">💪 心理抗挫</span>
-        <span class="chip" data-theme="户外冒险" onclick="toggleTheme(this)">🏕️ 户外冒险</span>
-        <span class="chip" data-theme="思辨解谜" onclick="toggleTheme(this)">🔍 思辨解谜</span>
-        <span class="chip" data-theme="AI科创" onclick="toggleTheme(this)">🤖 AI科创</span>
-        <span class="chip" data-theme="艺术叙事" onclick="toggleTheme(this)">🎭 艺术叙事</span>
-        <span class="chip" data-theme="财商" onclick="toggleTheme(this)">💰 财商</span>
-        <span class="chip" data-theme="职业探索" onclick="toggleTheme(this)">🚀 职业探索</span>
+        <span class="chip with-icon" data-theme="学院制" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>招牌学院</span>
+        <span class="chip with-icon" data-theme="学习力" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3 2.5 2.5 0 0 1 2.46-2z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2z"/></svg>学习力</span>
+        <span class="chip with-icon" data-theme="跨学科" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>跨学科</span>
+        <span class="chip with-icon" data-theme="心理抗挫" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>心理抗挫</span>
+        <span class="chip with-icon" data-theme="户外冒险" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 21 14 3"/><path d="M20.5 21 10 3"/><path d="M15.5 21 12 15l-3.5 6"/><path d="M2 21h20"/></svg>户外冒险</span>
+        <span class="chip with-icon" data-theme="思辨解谜" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>思辨解谜</span>
+        <span class="chip with-icon" data-theme="AI科创" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>AI 科创</span>
+        <span class="chip with-icon" data-theme="艺术叙事" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>艺术叙事</span>
+        <span class="chip with-icon" data-theme="财商" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>财商</span>
+        <span class="chip with-icon" data-theme="职业探索" onclick="toggleTheme(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>职业探索</span>
       </div>
     </div>
 
@@ -3336,105 +3275,24 @@
     selectedDateRange: null,            // 如 "7.4-7.10" 或 null（全部）
   };
 
-  // ── 年龄 Tabs（小红书首页风） ──
-  // === 4 panel 横滑 ===
-  const PANEL_KEYS = ['all', '9-12', '12-16', '14-18'];
-  let _panelIndex = 0;
-  const _panelScroll = [0, 0, 0, 0];
-
-  // 把 track 高度对齐到「当前 panel 内容的实际高度」，省下方留白
-  // 注：要设在 track 上，设在 swiper 上不生效（Chrome flex+transform 怪异）
-  function syncSwiperHeight() {
-    const track = document.getElementById('panel-track');
-    if (!track) return;
-    const cur = track.querySelector(`.panel[data-panel="${PANEL_KEYS[_panelIndex]}"]`);
-    if (!cur) return;
-    const h = cur.scrollHeight;
-    if (h > 0) track.style.height = h + 'px';
-  }
-
-  function setPanel(idx) {
-    if (idx < 0 || idx >= PANEL_KEYS.length) return;
-    // 保存当前 panel 的 scroll
-    _panelScroll[_panelIndex] = window.scrollY;
-    _panelIndex = idx;
-    const track = document.getElementById('panel-track');
-    if (track) track.style.transform = `translateX(-${idx * 25}%)`;
-    // 顶部年龄 tab 高亮同步
-    document.querySelectorAll('.age-nav-tab').forEach(t => t.classList.remove('active'));
-    document.querySelector(`.age-nav-tab[data-age="${PANEL_KEYS[idx]}"]`)?.classList.add('active');
-    // swiper 高度跟随当前 panel
-    syncSwiperHeight();
-    // 恢复 scroll（同步；RAF 在 panel-track transition 期间会被吞）
-    window.scrollTo(0, _panelScroll[idx] || 0);
-    // 通知（IO 用）
-    window.dispatchEvent(new CustomEvent('panelchange', { detail: { idx, key: PANEL_KEYS[idx] } }));
-  }
+  // ── 年龄 Tabs（R2-no-panel：纯过滤，不切 DOM）──
+  // 当前选中的年龄段："all" | "9-12" | "12-16" | "14-18"
+  let _currentAge = 'all';
 
   function selectAgeTab(key) {
-    const i = PANEL_KEYS.indexOf(key);
-    if (i >= 0) setPanel(i);
-  }
-
-  // 横滑手势
-  (function attachSwipe() {
-    const swiper = document.getElementById('panel-swiper');
-    const track  = document.getElementById('panel-track');
-    if (!swiper || !track) return;
-    let startX = 0, startY = 0, startT = 0;
-    let dx = 0, dy = 0;
-    let locked = null;
-    let dragging = false;
-
-    swiper.addEventListener('touchstart', (e) => {
-      if (document.body.classList.contains('detail-open')) return;
-      if (!document.body.classList.contains('view-home')) return;
-      if (e.touches.length !== 1) return;
-      const t = e.touches[0];
-      startX = t.clientX; startY = t.clientY; startT = Date.now();
-      dx = dy = 0; locked = null; dragging = true;
-      track.classList.add('dragging');
-    }, { passive: true });
-
-    swiper.addEventListener('touchmove', (e) => {
-      if (!dragging) return;
-      const t = e.touches[0];
-      dx = t.clientX - startX;
-      dy = t.clientY - startY;
-      if (!locked) {
-        if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
-          locked = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
-        }
-      }
-      if (locked === 'h') {
-        if (e.cancelable) e.preventDefault();
-        const w = swiper.clientWidth || 1;
-        let pct = -(_panelIndex * 25) + (dx / w) * 25;
-        // 边界阻尼
-        if (_panelIndex === 0 && dx > 0) pct = -(_panelIndex * 25) + (dx / w) * 10;
-        if (_panelIndex === PANEL_KEYS.length - 1 && dx < 0) pct = -(_panelIndex * 25) + (dx / w) * 10;
-        track.style.transform = `translateX(${pct}%)`;
-      }
-    }, { passive: false });
-
-    swiper.addEventListener('touchend', () => {
-      if (!dragging) return;
-      dragging = false;
-      track.classList.remove('dragging');
-      if (locked !== 'h') {
-        track.style.transform = `translateX(-${_panelIndex * 25}%)`;
-        return;
-      }
-      const w = swiper.clientWidth || 1;
-      const dt = Math.max(1, Date.now() - startT);
-      const vx = dx / dt;
-      const threshold = w * 0.30;
-      let next = _panelIndex;
-      if (dx < -threshold || vx < -0.5) next = Math.min(_panelIndex + 1, PANEL_KEYS.length - 1);
-      else if (dx > threshold || vx > 0.5) next = Math.max(_panelIndex - 1, 0);
-      setPanel(next);
+    _currentAge = key;
+    document.querySelectorAll('.age-nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.age-nav-tab[data-age="${key}"]`)?.classList.add('active');
+    // 同步 filter sheet 里的年龄 chip（如有）
+    document.querySelectorAll('#age-chips-wrap .chip').forEach(c => {
+      c.classList.toggle('active', c.dataset.age === key);
     });
-  })();
+    // 同步到 state.ages（applyFilters 用）
+    state.ages.clear();
+    if (key !== 'all') state.ages.add(key);
+    // 触发卡片淡入淡出
+    if (typeof applyFilters === 'function') applyFilters();
+  }
 
   // ── 筛选抽屉 ──
   function openFilterSheet() {
@@ -3650,8 +3508,8 @@
         try { v.pause(); } catch (e) {}
         return;
       }
-      const panel = v.closest('.panel');
-      if (panel && panel.dataset.panel !== PANEL_KEYS[_panelIndex]) return;
+      // hidden 卡片不播
+      if (v.closest('.camp-card.hidden')) return;
       if (!v.getAttribute('src') && v.dataset.src) {
         v.src = v.dataset.src;
       }
@@ -3677,118 +3535,42 @@
     (scope || document).querySelectorAll('video[data-src]:not(.poster-img)').forEach(v => _detailVideoIO.observe(v));
   }
 
-  // 切 panel：把非当前 panel 的视频全部 pause，再立刻把当前 panel 视口内的挂 src + 播
-  function reevaluateVideos(currentKey) {
+  // 视口内卡片视频按需启播（IO 兜底，scroll 也评估一次）
+  function reevaluateVideos() {
     document.querySelectorAll('video.poster-img').forEach(v => {
-      const panel = v.closest('.panel');
-      if (!panel) return;
-      if (panel.dataset.panel !== currentKey) {
-        try { v.pause(); } catch (err) {}
-        return;
-      }
+      if (v.closest('.camp-card.hidden')) { try { v.pause(); } catch(e){} return; }
       const rect = v.getBoundingClientRect();
       const inViewport = rect.top < window.innerHeight && rect.bottom > 0;
       if (inViewport) {
         if (!v.getAttribute('src') && v.dataset.src) v.src = v.dataset.src;
         const p = v.play();
         if (p && p.catch) p.catch(() => {});
+      } else {
+        try { v.pause(); } catch(e) {}
       }
     });
   }
-  window.addEventListener('panelchange', (e) => {
-    reevaluateVideos(e.detail.key);
-    if (typeof applyFilters === 'function') applyFilters(); // 让 result-count 跟随当前 panel
-  });
-  // 滚动时也评估（同 panel 内新进入视口的视频，IO 一般够，但补一层兜底）
   let _scrollTick = false;
   window.addEventListener('scroll', () => {
     if (_scrollTick) return;
     _scrollTick = true;
     setTimeout(() => {
       _scrollTick = false;
-      reevaluateVideos(PANEL_KEYS[_panelIndex]);
+      reevaluateVideos();
     }, 250);
   }, { passive: true });
 
-  // === 卡片分发到 4 panel（克隆 + 卸 video src 防多倍加载） ===
-  function distributeCardsToPanels() {
-    const allList = document.getElementById('camps-list');
-    if (!allList) return;
-    const cards = Array.from(allList.querySelectorAll(':scope > .camp-card'));
-    const targets = {
-      '9-12':  document.querySelector('[data-panel-list="9-12"]'),
-      '12-16': document.querySelector('[data-panel-list="12-16"]'),
-      '14-18': document.querySelector('[data-panel-list="14-18"]'),
-    };
-    // 给原卡也打 panelKey=all，便于 openDetail 区分
-    cards.forEach(c => { if (!c.dataset.panelKey) c.dataset.panelKey = 'all'; });
-
-    cards.forEach(card => {
-      const key = cardPrimaryPanel(card);
-      if (!key || key === 'all') return;
-      const list = targets[key];
-      if (!list) return;
-      const clone = card.cloneNode(true);
-      clone.dataset.cloned = '1';
-      clone.dataset.panelKey = key;
-      // 卸掉 clone 内 video 的 src，防同图多倍加载（IO 会按需挂回）
-      clone.querySelectorAll('video').forEach(v => {
-        v.removeAttribute('autoplay');
-        if (v.src && !v.dataset.src) {
-          v.dataset.src = v.src;
-          v.removeAttribute('src');
-          v.setAttribute('preload', 'none');
-        } else if (v.getAttribute('src')) {
-          v.dataset.src = v.getAttribute('src');
-          v.removeAttribute('src');
-          v.setAttribute('preload', 'none');
-        }
-      });
-      list.appendChild(clone);
-    });
-  }
-
-  // 统一的「卡片归属哪个 panel」判定：每张卡只归属一个 panel（除 all）
-  function cardPrimaryPanel(card) {
-    const group = card.dataset.group || '';
-    if (group === '9-12' || group === '12-16' || group === '14-18') return group;
-    if (group === 'recommend') {
-      const min = parseInt(card.dataset.ageMin || '0', 10);
-      if (min === 9)  return '9-12';
-      if (min === 12) return '12-16';
-      if (min === 14) return '14-18';
-    }
-    return null;
-  }
-  function cardBelongsToPanel(card, panelKey) {
-    if (panelKey === 'all') return true;
-    return cardPrimaryPanel(card) === panelKey;
-  }
-
   // 显式跑一次 applyFilters，确保任何浏览器初始都全部可见
   window.addEventListener('DOMContentLoaded', () => {
-    // 先分发，再过滤——保证克隆卡也在 applyFilters 扫描范围内
-    distributeCardsToPanels();
     if (typeof applyFilters === 'function') applyFilters();
-    // 兜底：强制让所有 camp-card 取消 hidden（保险栓）
     document.querySelectorAll('.camp-card').forEach(c => c.classList.remove('hidden'));
     document.querySelectorAll('.age-group-divider').forEach(d => d.style.display = 'flex');
-    // 构建周次 chips
     if (typeof buildWeekTabs === 'function') buildWeekTabs();
-    // 默认进入首页 view
     if (typeof toggleView === 'function') toggleView('home');
-    // 视频懒挂载：IO 接管 + 立刻评估一次当前视口
     rebindVideoIO();
-    reevaluateVideos(PANEL_KEYS[_panelIndex]);
-    // bottom sheet 下滑收起
+    reevaluateVideos();
     attachDragDismiss(document.getElementById('filter-sheet'),  '.filter-sheet-content',  () => closeFilterSheet());
     attachDragDismiss(document.getElementById('contact-modal'), '.contact-modal-content', () => closeContactModal());
-    // 首屏卡片渲染完先同步一次 swiper 高度
-    syncSwiperHeight();
-    // 懒加载图片陆续到位会撑高 panel，3 次延时补救（避开 panel 切换时的 height transition）
-    [500, 1500, 3500].forEach(ms => setTimeout(syncSwiperHeight, ms));
-    // 窗口 resize 也重算
-    window.addEventListener('resize', syncSwiperHeight, { passive: true });
   });
 
   // ── 多选筛选辅助：通用「全部 + N 个具体值」逻辑 ──
@@ -3866,9 +3648,7 @@
   }
 
   function applyFilters() {
-    // 计数只数原始卡（克隆卡在其它 panel 里跟着同源被显示/隐藏，但不计数）
     const originalCards = document.querySelectorAll('#camps-list > .camp-card');
-    const allCards = document.querySelectorAll('.panel .camp-card'); // 含克隆，用来同步 hidden 状态
     const dividers = document.querySelectorAll('#camps-list > .age-group-divider');
     let count = 0;
     const visibleGroups = new Set();
@@ -3887,46 +3667,50 @@
       return ageOk && themeOk && locOk && dateOk;
     }
 
-    // 当前 panel 决定计数范围（all 数全部；其余 panel 只数本 panel 的原始卡）
-    const curPanel = (typeof PANEL_KEYS !== 'undefined' && PANEL_KEYS[_panelIndex]) || 'all';
-
-    // 先按原始卡统计 + 标记 visibleGroups
-    // count = 营期次数（一张卡 dates 有 N 个就算 N 期；若筛选了具体日期，只数那 1 期）
+    // 统计营期次数（一卡 dates 有 N 个就算 N 期；若筛选了具体日期只数 1 期）
     originalCards.forEach(card => {
       const visible = evalCard(card);
       if (visible) {
         card.classList.remove('hidden');
         card.style.animationDelay = (count * 0.04) + 's';
         visibleGroups.add(card.dataset.group);
-      } else {
-        card.classList.add('hidden');
-      }
-      // 计数：通过筛选 + 归属当前 panel
-      if (visible && cardBelongsToPanel(card, curPanel)) {
         const dates = (card.dataset.dates || '').split(',').map(s => s.trim()).filter(Boolean);
         if (state.selectedDateRange) {
           count += dates.includes(state.selectedDateRange) ? 1 : 0;
         } else {
           count += Math.max(1, dates.length);
         }
+      } else {
+        card.classList.add('hidden');
       }
-    });
-    // 同步克隆卡（不计数）
-    allCards.forEach(card => {
-      if (card.dataset.cloned !== '1') return;
-      if (evalCard(card)) card.classList.remove('hidden');
-      else card.classList.add('hidden');
     });
 
     dividers.forEach(d => {
       d.style.display = visibleGroups.has(d.dataset.group) ? 'flex' : 'none';
     });
 
-    document.getElementById('result-count').textContent = count;
+    // 计数动画
+    animateCount('result-count', count);
     document.getElementById('no-results').classList.toggle('show', count === 0);
+  }
 
-    // 筛选后 panel 内卡片数变了，高度跟随重算
-    if (typeof syncSwiperHeight === 'function') syncSwiperHeight();
+  // 数字滚动动画（300ms 内从当前值过渡到目标值；带 setTimeout 兜底）
+  function animateCount(elId, target) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    const start = parseInt(el.textContent || '0', 10);
+    if (start === target) { el.textContent = target; return; }
+    // 兜底：350ms 后强制到目标
+    setTimeout(() => { el.textContent = target; }, 350);
+    const dur = 320;
+    const t0 = performance.now();
+    function step(now) {
+      const p = Math.min(1, (now - t0) / dur);
+      const v = Math.round(start + (target - start) * (1 - Math.pow(1 - p, 3)));
+      el.textContent = v;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
   }
 
   function toggleQR(btn) {
@@ -4305,10 +4089,7 @@
     // 点到按钮/链接/视频内不算"打开卡片"
     if (e.target.closest('button, a, input, video, .card-qr-panel, .card-detail-panel')) return;
     const card = e.target.closest('.camps-list .camp-card');
-    if (!card) return;
-    // 仅当前 panel 内的卡片可点（克隆卡分布在多个 panel）
-    const panel = card.closest('.panel');
-    if (panel && panel.dataset.panel !== PANEL_KEYS[_panelIndex]) return;
+    if (!card || card.classList.contains('hidden')) return;
     openDetail(card);
   });
 </script>

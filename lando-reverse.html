@@ -1,0 +1,2276 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<title>反向兰多·诺里斯官网 / OFF+BRAND 全站拆解</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root{
+  --bg:#0a0e07; --bg-2:#131811; --bg-3:#1c2218;
+  --fg:#e6e6dd; --fg-dim:#8a8d80; --fg-mute:#5a5d52;
+  --lime:#d2ff00; --lime-off:#a8c800;
+  --line:rgba(208,255,0,.18);
+  --line-soft:rgba(230,230,221,.08);
+  --cubic:cubic-bezier(0.65,0.05,0,1);
+  --dur:.75s;
+  /* OFF+BRAND-style 1728 fluid */
+  --min-width:992px; --max-width:1920px;
+  --design-width:1728; --design-unit:16;
+  --fluid-container:clamp(var(--min-width),100vw,var(--max-width));
+  --fluid-font:calc(var(--fluid-container) / var(--design-width) * var(--design-unit));
+}
+@media (max-width:991px){
+  :root{ --min-width:375px; --max-width:991px; --design-width:1728; --design-unit:20; }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--fg);font-family:'Mona Sans','Inter',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:var(--fluid-font);line-height:1.4;-webkit-font-smoothing:antialiased}
+body{overflow-x:hidden}
+::selection{background:var(--lime);color:#000}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+
+.mono{font-family:'JetBrains Mono','SF Mono','Cascadia Code',ui-monospace,monospace;font-feature-settings:"ss01","ss02"}
+
+/* ---------- preloader (Load Norris 仿) ---------- */
+.preloader{position:fixed;inset:0;background:var(--bg);z-index:100;display:grid;place-items:center;transition:opacity .6s var(--cubic),visibility 0s .6s}
+.preloader.gone{opacity:0;visibility:hidden;pointer-events:none}
+.pre-inner{text-align:center;max-width:36rem}
+.pre-eyebrow{font-size:.75rem;letter-spacing:.3em;text-transform:uppercase;color:var(--lime);margin-bottom:1.5rem;opacity:0;transform:translateY(8px);animation:fadeUp .8s var(--cubic) .1s forwards}
+.pre-title{font-size:clamp(2.2rem,5vw,3.6rem);font-weight:300;line-height:1.05;letter-spacing:-.02em;margin-bottom:2rem;opacity:0;transform:translateY(12px);animation:fadeUp 1s var(--cubic) .3s forwards}
+.pre-title em{font-style:normal;color:var(--lime);font-weight:500}
+.pre-btn{display:inline-flex;align-items:center;gap:.75rem;padding:1rem 2rem;border:1px solid var(--lime);color:var(--lime);font-size:.78rem;letter-spacing:.25em;text-transform:uppercase;border-radius:999px;transition:background .35s,color .35s,transform .35s;opacity:0;animation:fadeUp 1s var(--cubic) .55s forwards;cursor:pointer}
+.pre-btn:hover{background:var(--lime);color:#000;transform:translateY(-2px)}
+.pre-btn .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+/* ---------- top progress bar + sticky nav ---------- */
+.progress{position:fixed;top:0;left:0;right:0;height:2px;background:var(--lime);transform-origin:0 50%;transform:scaleX(0);z-index:50;transition:transform .1s linear}
+.nav{position:fixed;top:0;left:0;right:0;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;z-index:40;backdrop-filter:blur(10px);background:rgba(10,14,7,.6);border-bottom:1px solid var(--line-soft);transition:color .5s var(--cubic),background .5s var(--cubic)}
+.nav[data-theme="light"]{color:#0a0e07;background:rgba(230,230,221,.85);border-bottom-color:rgba(0,0,0,.08)}
+.nav-brand{font-weight:600;letter-spacing:.05em;display:flex;align-items:center;gap:.5rem;font-size:.85rem}
+.nav-brand .badge{width:8px;height:8px;background:var(--lime);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
+.nav-section{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--fg-dim)}
+.nav-section span{color:var(--lime);font-weight:600;transition:color .5s}
+.nav[data-theme="light"] .nav-section{color:rgba(10,14,7,.6)}
+.nav[data-theme="light"] .nav-section span{color:var(--lime-off)}
+
+/* ---------- shared layout ---------- */
+.shell{max-width:96rem;margin:0 auto;padding:0 clamp(1.25rem,4vw,4rem)}
+section{padding:8rem 0;border-bottom:1px solid var(--line-soft);position:relative}
+section:last-of-type{border-bottom:none}
+
+.eyebrow{font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:var(--lime);margin-bottom:1.5rem;display:flex;align-items:center;gap:.6rem}
+.eyebrow::before{content:"";width:2rem;height:1px;background:var(--lime)}
+.title-1{font-size:clamp(2.4rem,6vw,5rem);font-weight:300;line-height:1;letter-spacing:-.02em;margin-bottom:1.5rem}
+.title-1 em{font-style:normal;color:var(--lime);font-weight:500}
+.title-2{font-size:clamp(1.6rem,3.2vw,2.4rem);font-weight:400;line-height:1.1;letter-spacing:-.01em;margin-bottom:1rem}
+.title-3{font-size:clamp(1.1rem,1.8vw,1.4rem);font-weight:500;line-height:1.2;letter-spacing:-.005em;margin-bottom:.75rem}
+.lede{font-size:clamp(1rem,1.3vw,1.15rem);color:var(--fg-dim);max-width:48rem;line-height:1.55}
+
+/* ---------- HERO ---------- */
+.hero{min-height:100vh;display:grid;place-items:center;padding:6rem 0 4rem;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(208,255,0,.08),transparent 50%);pointer-events:none}
+.hero-inner{position:relative;text-align:center;max-width:80rem}
+.hero-tag{font-size:.75rem;letter-spacing:.3em;text-transform:uppercase;color:var(--lime);margin-bottom:2rem;opacity:.9}
+.hero-h1{font-size:clamp(2.8rem,8vw,7rem);font-weight:200;line-height:.95;letter-spacing:-.03em;margin-bottom:1.5rem}
+.hero-h1 .word{display:inline-block;overflow:hidden;vertical-align:top;margin-right:.18em}
+.hero-h1 .word:last-child{margin-right:0}
+.hero-h1 .char{display:inline-block;transform:translateY(110%);will-change:transform}
+.hero-h1 em{font-style:normal;color:var(--lime);font-weight:300}
+.hero-sub{font-size:clamp(.95rem,1.2vw,1.1rem);color:var(--fg-dim);max-width:42rem;margin:0 auto 3rem}
+.hero-scroll{position:absolute;bottom:3rem;left:50%;transform:translateX(-50%);font-size:.65rem;letter-spacing:.35em;text-transform:uppercase;color:var(--fg-mute);display:flex;flex-direction:column;align-items:center;gap:.8rem}
+.hero-scroll .line{width:1px;height:3rem;background:linear-gradient(to bottom,var(--lime),transparent);animation:scrollLine 2.4s var(--cubic) infinite}
+@keyframes scrollLine{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ---------- decorative SVG frame (like next-race outline) ---------- */
+.hud-frame{position:absolute;border:1px solid var(--line);pointer-events:none}
+.hud-frame.tl{top:1.5rem;left:1.5rem;width:120px;height:80px;border-right:none;border-bottom:none}
+.hud-frame.tr{top:1.5rem;right:1.5rem;width:120px;height:80px;border-left:none;border-bottom:none}
+.hud-frame.bl{bottom:1.5rem;left:1.5rem;width:120px;height:80px;border-right:none;border-top:none}
+.hud-frame.br{bottom:1.5rem;right:1.5rem;width:120px;height:80px;border-left:none;border-top:none}
+
+/* ---------- stack table ---------- */
+.stack-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);margin-top:3rem}
+.stack-card{background:var(--bg-2);padding:1.5rem 1.75rem;transition:background .35s}
+.stack-card:hover{background:var(--bg-3)}
+.stack-card .lbl{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--lime);margin-bottom:.5rem}
+.stack-card .name{font-size:1.1rem;font-weight:500;margin-bottom:.35rem}
+.stack-card .desc{font-size:.85rem;color:var(--fg-dim);line-height:1.45}
+
+/* ---------- demo blocks ---------- */
+.demo{margin:3rem 0;background:var(--bg-2);border:1px solid var(--line-soft);border-radius:4px;overflow:hidden}
+.demo-head{display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.5rem;border-bottom:1px solid var(--line-soft);gap:1rem;flex-wrap:wrap}
+.demo-head .num{font-size:.7rem;letter-spacing:.3em;color:var(--lime)}
+.demo-head .name{font-size:1rem;font-weight:500;flex:1;min-width:200px}
+.demo-head .tags{font-size:.65rem;color:var(--fg-mute);letter-spacing:.15em;text-transform:uppercase}
+.demo-body{padding:2rem 1.5rem;min-height:200px;position:relative}
+.demo-foot{padding:1rem 1.5rem;border-top:1px solid var(--line-soft);background:#070a05;font-size:.78rem;color:var(--fg-dim);line-height:1.55}
+.demo-foot code{background:rgba(208,255,0,.08);color:var(--lime);padding:.1em .35em;border-radius:2px;font-size:.85em}
+
+.btn{display:inline-flex;align-items:center;gap:.6rem;padding:.7rem 1.5rem;border:1px solid var(--lime);color:var(--lime);font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;border-radius:999px;transition:background .35s,color .35s;cursor:pointer}
+.btn:hover{background:var(--lime);color:#000}
+.btn.is-on{background:var(--lime);color:#000}
+
+/* ---------- demo 1: char stagger ---------- */
+.d1-stage{text-align:center;padding:3rem 0}
+.d1-line{font-size:clamp(1.8rem,4vw,3rem);font-weight:300;letter-spacing:-.02em;margin-bottom:2rem;line-height:1}
+.d1-line .word{display:inline-block;overflow:hidden;vertical-align:bottom;margin-right:.15em}
+.d1-line .char{display:inline-block;will-change:transform}
+.d1-mob{display:inline-block;clip-path:ellipse(110% 110% at 50% 0%);will-change:clip-path}
+
+/* ---------- demo 2: sentinels theme ---------- */
+.d2-stage{height:300px;overflow-y:auto;border:1px solid var(--line-soft);border-radius:4px;position:relative;background:var(--bg-3);scroll-behavior:smooth}
+.d2-scroll{padding:1rem}
+.d2-zone{height:200px;padding:1rem;border-radius:4px;margin-bottom:1rem;font-size:.85rem;display:grid;place-items:center;position:relative}
+.d2-zone.dark{background:#0a1208;color:var(--lime)}
+.d2-zone.light{background:#f0f0e8;color:#0a0e07}
+.d2-zone.lime{background:var(--lime);color:#0a0e07}
+.d2-sentinel{height:1px;background:rgba(255,0,0,.4);position:relative}
+.d2-sentinel::after{content:attr(data-label);position:absolute;left:.5rem;top:-.85rem;font-size:.55rem;color:#ff5252;letter-spacing:.2em;text-transform:uppercase}
+.d2-readout{margin-top:1rem;padding:1rem;background:#070a05;border:1px solid var(--line-soft);border-radius:4px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.78rem;color:var(--fg-dim)}
+.d2-readout .v{color:var(--lime);font-weight:600}
+
+/* ---------- demo 3: scroll-driven 3D ---------- */
+.d3-stage{position:relative;height:160vh;background:linear-gradient(to bottom,var(--bg-2),var(--bg-3))}
+.d3-pin{position:sticky;top:0;height:100vh;display:grid;place-items:center;overflow:hidden}
+.d3-helmet{width:240px;height:240px;position:relative;transform-style:preserve-3d;will-change:transform}
+.d3-helmet .face{position:absolute;inset:0;border:1px solid var(--lime);background:linear-gradient(135deg,rgba(208,255,0,.05),rgba(208,255,0,.18));backdrop-filter:blur(2px)}
+.d3-helmet .face::before{content:"";position:absolute;inset:8px;border:1px dashed rgba(208,255,0,.3)}
+.d3-helmet .f1{transform:translateZ(120px)}
+.d3-helmet .f2{transform:rotateY(90deg) translateZ(120px)}
+.d3-helmet .f3{transform:rotateY(180deg) translateZ(120px)}
+.d3-helmet .f4{transform:rotateY(-90deg) translateZ(120px)}
+.d3-helmet .f5{transform:rotateX(90deg) translateZ(120px)}
+.d3-helmet .f6{transform:rotateX(-90deg) translateZ(120px)}
+.d3-helmet .face .lbl{position:absolute;bottom:1rem;left:1rem;font-size:.6rem;letter-spacing:.3em;color:var(--lime);font-family:'JetBrains Mono',ui-monospace,monospace}
+.d3-perspective{perspective:1000px;perspective-origin:center}
+.d3-progress{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.75rem;color:var(--fg-dim)}
+.d3-progress .v{color:var(--lime)}
+
+/* ---------- demo 4: horizontal pin ---------- */
+.d4-wrap{position:relative;height:300vh}
+.d4-pin{position:sticky;top:0;height:100vh;display:flex;align-items:center;overflow:hidden}
+.d4-track{display:flex;gap:1.5rem;padding:0 4rem;will-change:transform}
+.d4-card{flex:0 0 320px;height:60vh;background:var(--bg-3);border:1px solid var(--line-soft);border-radius:4px;padding:2rem;display:flex;flex-direction:column;justify-content:space-between;transition:border-color .35s}
+.d4-card:hover{border-color:var(--lime)}
+.d4-card .num{font-size:3rem;font-weight:200;color:var(--lime);line-height:1;margin-bottom:1rem}
+.d4-card .t{font-size:1.05rem;font-weight:500;margin-bottom:.5rem}
+.d4-card .d{font-size:.8rem;color:var(--fg-dim);line-height:1.5}
+.d4-card .pill{display:inline-block;font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;padding:.35rem .8rem;border:1px solid var(--line);border-radius:999px;color:var(--lime);align-self:flex-start}
+
+/* ---------- demo 5: velocity marquee ---------- */
+.d5-stage{padding:3rem 0;overflow:hidden;display:flex;flex-direction:column;gap:1rem}
+.d5-row{display:flex;gap:3rem;white-space:nowrap;font-size:clamp(1.4rem,3vw,2.2rem);font-weight:300;letter-spacing:-.01em;will-change:transform}
+.d5-row .item{display:inline-flex;align-items:center;gap:1rem;color:var(--fg-dim);transition:color .3s}
+.d5-row .item:hover{color:var(--lime)}
+.d5-row .item::after{content:"⟶";color:var(--lime);font-size:.7em}
+.d5-stage .label{font-size:.7rem;letter-spacing:.25em;color:var(--fg-mute);font-family:'JetBrains Mono',ui-monospace,monospace}
+
+/* ---------- demo 6: rive state machine ---------- */
+.d6-stage{display:grid;grid-template-columns:1fr 1fr;gap:2rem;padding:2rem 0;align-items:center}
+.d6-canvas{aspect-ratio:1;background:var(--bg-3);border:1px solid var(--line-soft);border-radius:4px;display:grid;place-items:center;position:relative;overflow:hidden}
+.d6-svg{width:60%;height:60%;color:var(--lime);transition:color .5s var(--cubic)}
+.d6-svg svg{width:100%;height:100%;display:block}
+.d6-svg path,.d6-svg circle{transition:stroke-dashoffset 1s var(--cubic),fill 1s var(--cubic),opacity .5s,transform .8s var(--cubic);transform-origin:center;transform-box:fill-box}
+.d6-controls{display:flex;flex-direction:column;gap:.75rem}
+.d6-btn{text-align:left;padding:.85rem 1.2rem;border:1px solid var(--line-soft);background:var(--bg-3);color:var(--fg-dim);font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;border-radius:4px;transition:all .35s;cursor:pointer}
+.d6-btn:hover,.d6-btn.is-active{border-color:var(--lime);color:var(--lime);background:rgba(208,255,0,.05)}
+@media(max-width:700px){.d6-stage{grid-template-columns:1fr}}
+
+/* ---------- demo 7: fluid 1728 ---------- */
+.d7-stage{padding:2rem 0}
+.d7-readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem}
+.d7-cell{background:var(--bg-3);border:1px solid var(--line-soft);padding:1rem;border-radius:4px;font-family:'JetBrains Mono',ui-monospace,monospace}
+.d7-cell .k{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--fg-mute);margin-bottom:.4rem}
+.d7-cell .v{font-size:1.1rem;color:var(--lime);font-weight:500}
+.d7-demo-text{font-size:clamp(2rem,calc(var(--fluid-container) / var(--design-width) * 48px),3rem);font-weight:300;color:var(--fg);line-height:1.1;margin-top:1rem}
+
+/* ---------- demo 8: mobile lock ---------- */
+.d8-stage{position:relative;height:400px;background:var(--bg-3);border:1px solid var(--line-soft);border-radius:4px;overflow:hidden;touch-action:auto;transition:border-color .35s}
+.d8-stage.locked{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.d8-toggle{position:absolute;top:1rem;right:1rem;z-index:3}
+.d8-canvas{position:absolute;inset:0;display:grid;place-items:center;touch-action:auto}
+.d8-stage.locked .d8-canvas{touch-action:none}
+.d8-orb{width:160px;height:160px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(208,255,0,.9),rgba(208,255,0,.2) 60%,rgba(20,30,10,.95));box-shadow:0 0 60px rgba(208,255,0,.25),inset 0 0 40px rgba(0,0,0,.4);cursor:grab;user-select:none;-webkit-user-select:none}
+.d8-stage.locked .d8-orb{cursor:grabbing}
+.d8-hint{position:absolute;left:1rem;bottom:1rem;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--fg-mute);max-width:60%}
+.d8-hint .v{color:var(--lime)}
+
+/* ---------- demo 9: cursor reveal ---------- */
+.d9-stage{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:1rem;height:380px;cursor:none}
+.d9-stage .d9-zone{position:relative;overflow:hidden;border:1px solid var(--line-soft);border-radius:4px;background:var(--bg-3)}
+.d9-zone-bg{position:absolute;inset:0;background:linear-gradient(135deg,#1c2218,#131811)}
+.d9-zone-label{position:absolute;left:1rem;bottom:1rem;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.65rem;color:var(--fg-mute);letter-spacing:.15em;z-index:2}
+.d9-zone-reveal{position:absolute;inset:0;clip-path:circle(0px at 50% 50%);transition:clip-path .15s ease-out;will-change:clip-path}
+.d9-zone-reveal img{width:100%;height:100%;object-fit:cover;display:block}
+.d9-zone:hover .d9-zone-reveal{}
+.d9-cursor{position:fixed;width:96px;height:96px;border-radius:50%;background:var(--lime);color:#0a0e07;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;display:grid;place-items:center;pointer-events:none;mix-blend-mode:difference;z-index:9999;transform:translate(-50%,-50%) scale(.4);transition:transform .35s var(--cubic),background .35s;opacity:0;font-weight:600}
+.d9-cursor.visible{opacity:1}
+.d9-cursor.over{transform:translate(-50%,-50%) scale(1)}
+@media(max-width:700px){.d9-stage{grid-template-columns:1fr;height:auto}.d9-stage .d9-zone{height:220px}.d9-cursor{display:none}}
+
+/* ---------- demo 10: hover video ---------- */
+.d10-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;padding:1rem 0}
+.d10-card{position:relative;aspect-ratio:4/3;overflow:hidden;border:1px solid var(--line-soft);border-radius:4px;cursor:pointer;background:var(--bg-3)}
+.d10-placeholder{position:absolute;inset:0;background:linear-gradient(135deg,#1c2218,#0a1208);display:grid;place-items:center;color:var(--lime);transition:opacity .4s var(--cubic),transform .4s var(--cubic);z-index:2}
+.d10-placeholder svg{width:42px;height:42px}
+.d10-placeholder .lbl{position:absolute;bottom:.5rem;left:.6rem;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.55rem;color:var(--fg-mute);letter-spacing:.15em}
+.d10-card:hover .d10-placeholder{opacity:0;transform:scale(1.05)}
+.d10-stream{position:absolute;inset:0;background:#070a05;display:grid;place-items:center;opacity:0;transition:opacity .4s var(--cubic);z-index:1;color:var(--lime)}
+.d10-card:hover .d10-stream{opacity:1}
+.d10-bars{display:flex;gap:6px;align-items:flex-end;height:64px;margin-bottom:1rem}
+.d10-bars span{width:6px;height:30%;background:var(--lime);animation:bars 1.2s ease-in-out infinite;border-radius:1px}
+.d10-bars span:nth-child(2){animation-delay:.1s}
+.d10-bars span:nth-child(3){animation-delay:.2s}
+.d10-bars span:nth-child(4){animation-delay:.3s}
+.d10-bars span:nth-child(5){animation-delay:.4s}
+@keyframes bars{0%,100%{height:20%}50%{height:90%}}
+.d10-time{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.75rem;letter-spacing:.1em}
+
+/* ---------- demo 12: countdown digit ---------- */
+.d12-stage{padding:2rem 0;text-align:center}
+.d12-eyebrow{font-size:.7rem;letter-spacing:.3em;color:var(--lime);text-transform:uppercase;margin-bottom:1.5rem}
+.d12-row{display:flex;align-items:flex-start;justify-content:center;gap:1rem;flex-wrap:wrap}
+.d12-cell{display:flex;flex-direction:column;align-items:center}
+.d12-sep{font-size:clamp(2rem,5vw,3rem);font-weight:200;color:var(--fg-mute);line-height:1}
+.d12-num{display:flex;gap:.15rem;font-family:'JetBrains Mono',ui-monospace,monospace}
+.d12-num span{position:relative;display:inline-block;width:.8em;height:1.2em;overflow:hidden;font-size:clamp(2.2rem,6vw,3.6rem);font-weight:300;line-height:1.2em;color:var(--fg);background:linear-gradient(180deg,var(--bg-3),var(--bg-2));border:1px solid var(--line-soft);border-radius:6px;padding:0 .12em;box-sizing:content-box}
+.d12-num span::before,.d12-num span::after{content:attr(data-cur);position:absolute;left:.12em;top:0;color:var(--lime)}
+.d12-num span::after{content:attr(data-next);top:100%}
+.d12-num span.flip{animation:d12Flip .4s var(--cubic) forwards}
+@keyframes d12Flip{from{transform:translateY(0)}to{transform:translateY(-100%)}}
+.d12-num span.flip::before,.d12-num span.flip::after{animation:d12FlipChild .4s var(--cubic) forwards}
+@keyframes d12FlipChild{0%{transform:translateY(0)}100%{transform:translateY(0)}}
+.d12-lbl{font-size:.6rem;letter-spacing:.25em;color:var(--fg-mute);text-transform:uppercase;margin-top:.6rem}
+
+/* ---------- demo 13: oval-scroll arc ---------- */
+.d13-stage{padding:2rem 0;text-align:center;position:relative;min-height:300px}
+.d13-arc{position:relative;height:200px;display:flex;justify-content:center;align-items:flex-end}
+.d13-arc-char{position:absolute;font-size:clamp(2rem,4.5vw,3.4rem);font-weight:300;color:var(--lime);line-height:1;transform-origin:50% 280px;letter-spacing:.05em;transition:transform .35s var(--cubic),transform-origin .35s var(--cubic)}
+.d13-controls{margin-top:2rem;display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap}
+.d13-controls label{display:flex;align-items:center;gap:.5rem;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--fg-dim)}
+.d13-controls input{accent-color:var(--lime)}
+
+/* ---------- demo 14: GSAP FLIP ---------- */
+.d14-stage{padding:1rem 0}
+.d14-grid{display:grid;gap:.75rem;transition:none}
+.d14-grid[data-layout="grid"]{grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,120px)}
+.d14-grid[data-layout="row"]{grid-template-columns:repeat(6,1fr);grid-template-rows:160px}
+.d14-grid[data-layout="stack"]{grid-template-columns:1fr;grid-template-rows:repeat(6,52px)}
+.d14-grid[data-layout="scatter"]{grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,140px);transform:rotate(-2deg)}
+.d14-card{position:relative;background:var(--bg-3);border:1px solid var(--line-soft);border-radius:4px;display:flex;flex-direction:column;justify-content:space-between;padding:.85rem 1rem;will-change:transform;font-family:'JetBrains Mono',ui-monospace,monospace}
+.d14-card[data-color="lime"]{background:linear-gradient(135deg,rgba(208,255,0,.12),var(--bg-3));border-color:rgba(208,255,0,.3)}
+.d14-card[data-color="dark"]{background:linear-gradient(135deg,#0a1208,var(--bg-2))}
+.d14-card span{font-size:.65rem;letter-spacing:.25em;color:var(--lime)}
+.d14-card em{font-style:normal;font-size:.9rem;font-weight:500;color:var(--fg);letter-spacing:.05em}
+.d14-grid[data-layout="scatter"] .d14-card:nth-child(1){transform:rotate(2deg) translateY(-8px)}
+.d14-grid[data-layout="scatter"] .d14-card:nth-child(3){transform:rotate(-3deg) translateY(10px)}
+.d14-grid[data-layout="scatter"] .d14-card:nth-child(5){transform:rotate(4deg) translateY(-5px)}
+.d14-controls{display:flex;gap:.5rem;margin-top:1.5rem;flex-wrap:wrap}
+.d14-btn{font-size:.65rem;padding:.5rem 1rem}
+
+/* ---------- demo 15: scroll color interp ---------- */
+.d15-stage{position:relative;height:240vh}
+.d15-pin{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;gap:3rem;flex-wrap:wrap;padding:2rem}
+.d15-orb{width:200px;height:200px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#1a2410,#0a1208);box-shadow:0 0 80px rgba(208,255,0,.0),inset 0 0 50px rgba(0,0,0,.5);transition:none;flex-shrink:0}
+.d15-info{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.75rem;display:flex;flex-direction:column;gap:.5rem;min-width:260px}
+.d15-row{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px dashed var(--line-soft);padding-bottom:.4rem}
+.d15-k{color:var(--fg-mute);letter-spacing:.1em}
+.d15-v{color:var(--lime)}
+
+/* ---------- demo 16: SVG mask shapes ---------- */
+.d16-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;padding:1rem 0}
+.d16-card{position:relative}
+.d16-mask{aspect-ratio:1;background:linear-gradient(135deg,#0a1208,var(--bg-3));border:1px solid var(--line-soft)}
+.d16-card[data-mask="a"] .d16-mask{-webkit-mask:radial-gradient(circle 28px at 0% 50%,transparent 27px,#000 28px);mask:radial-gradient(circle 28px at 0% 50%,transparent 27px,#000 28px)}
+.d16-card[data-mask="b"] .d16-mask{-webkit-mask:radial-gradient(circle 28px at 100% 50%,transparent 27px,#000 28px);mask:radial-gradient(circle 28px at 100% 50%,transparent 27px,#000 28px)}
+.d16-card[data-mask="c"] .d16-mask{-webkit-mask:linear-gradient(135deg,transparent 40px,#000 41px);mask:linear-gradient(135deg,transparent 40px,#000 41px)}
+.d16-card[data-mask="d"] .d16-mask{-webkit-mask:linear-gradient(-135deg,transparent 40px,#000 41px);mask:linear-gradient(-135deg,transparent 40px,#000 41px)}
+.d16-card{background:none}
+.d16-content{position:absolute;inset:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:1.25rem;color:var(--lime);font-weight:500;letter-spacing:.05em}
+.d16-content span{font-size:.65rem;letter-spacing:.3em;color:var(--fg-mute);margin-bottom:.35rem;font-family:'JetBrains Mono',ui-monospace,monospace}
+.d16-tag{position:absolute;top:.5rem;left:.5rem;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--fg-mute);font-family:'JetBrains Mono',ui-monospace,monospace;background:rgba(0,0,0,.5);padding:.2rem .5rem;border-radius:3px}
+
+/* ---------- demo 17: menu image blend ---------- */
+.d17-stage{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;height:280px}
+.d17-col{position:relative;overflow:hidden;border-radius:3px;cursor:none;transition:transform .35s var(--cubic)}
+.d17-col:hover{transform:translateY(-8px)}
+.d17-img{position:absolute;inset:0;background-size:cover;background-position:center}
+.d17-img.i1{background:linear-gradient(135deg,#d2ff00,#5a7d00)}
+.d17-img.i2{background:linear-gradient(135deg,#7a9100,#1c2a04)}
+.d17-img.i3{background:linear-gradient(45deg,#a8c800,#3a4500)}
+.d17-img.i4{background:linear-gradient(225deg,#e8ff66,#7a9100)}
+.d17-img.i5{background:linear-gradient(315deg,#bdf039,#465800)}
+.d17-blend{position:absolute;inset:0;background:linear-gradient(135deg,#d2ff00,#101400);mix-blend-mode:difference;opacity:0;transition:opacity .45s var(--cubic)}
+.d17-col:hover .d17-blend{opacity:1}
+.d17-col::after{content:attr(data-nav-img);position:absolute;bottom:.5rem;left:.6rem;font-size:.7rem;letter-spacing:.2em;color:#0a0e07;font-weight:600;font-family:'JetBrains Mono',ui-monospace,monospace}
+
+/* ---------- demo 18: char hover flip ---------- */
+.d18-stage{display:flex;flex-direction:column;gap:1rem;padding:1.5rem 0}
+.d18-link{display:inline-block;font-size:clamp(1.4rem,3vw,2.2rem);font-weight:300;letter-spacing:-.005em;color:var(--fg);text-decoration:none;width:fit-content}
+.d18-clip{display:inline-block;overflow:hidden;line-height:1.1;position:relative;height:1.1em}
+.d18-row{display:block;transition:transform .55s var(--cubic);will-change:transform}
+.d18-row span{display:inline-block;transition:transform .55s var(--cubic),color .35s;will-change:transform}
+.d18-row-2{position:absolute;top:100%;left:0;color:var(--lime)}
+.d18-link:hover .d18-row{transform:translateY(-100%)}
+.d18-link:hover .d18-row-2 span,.d18-link:hover .d18-row span{transition-delay:calc(var(--i,0) * 30ms)}
+.d18-link:hover .d18-row span:nth-child(1){--i:0}
+.d18-link:hover .d18-row span:nth-child(2){--i:1}
+.d18-link:hover .d18-row span:nth-child(3){--i:2}
+.d18-link:hover .d18-row span:nth-child(4){--i:3}
+.d18-link:hover .d18-row span:nth-child(5){--i:4}
+
+/* ---------- demo 19: cms calendar ---------- */
+.d19-stage{padding:1rem 0;max-width:520px;margin:0 auto}
+.d19-card{background:var(--bg-3);border:1px solid var(--line-soft);border-radius:4px;padding:1.5rem;transition:opacity .35s var(--cubic),transform .35s var(--cubic)}
+.d19-card.swap{opacity:0;transform:translateY(8px)}
+.d19-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.d19-flag{font-size:1.6rem;line-height:1}
+.d19-id{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.7rem;letter-spacing:.2em;color:var(--lime)}
+.d19-name{font-size:1.6rem;font-weight:300;letter-spacing:-.01em;line-height:1;margin-bottom:1.25rem}
+.d19-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-bottom:1.5rem;border-top:1px solid var(--line-soft);padding-top:1rem}
+.d19-cell .d19-k{font-size:.55rem;letter-spacing:.25em;color:var(--fg-mute);text-transform:uppercase;margin-bottom:.2rem;font-family:'JetBrains Mono',ui-monospace,monospace}
+.d19-cell .d19-v{font-size:.95rem;color:var(--fg);font-weight:500}
+.d19-schedule{border-top:1px solid var(--line-soft);padding-top:1rem;display:flex;flex-direction:column;gap:.4rem}
+.d19-srow{display:flex;justify-content:space-between;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.78rem}
+.d19-srow-k{color:var(--fg-mute);letter-spacing:.15em}
+.d19-srow-v{color:var(--fg)}
+.d19-srow-race{margin-top:.4rem;padding-top:.4rem;border-top:1px dashed var(--line-soft)}
+.d19-srow-race .d19-srow-k{color:var(--lime);font-weight:600}
+.d19-srow-race .d19-srow-v{color:var(--lime);font-weight:600}
+.d19-controls{display:flex;justify-content:space-between;gap:.5rem;margin-top:1.25rem}
+.d19-btn{flex:1;font-size:.7rem}
+
+/* ---------- Mona Sans Variable (the real one OFF+BRAND uses) ---------- */
+@font-face{
+  font-family:"Mona Sans";
+  src:url("https://cdn.prod.website-files.com/67b5a02dc5d338960b17a7e9/67bc6274c5b4108b123aa4d5_MonaSans-VariableFont_wdth%2Cwght.woff2") format("woff2-variations");
+  font-weight:200 900; font-stretch:75% 125%; font-display:swap;
+}
+
+/* ---------- category TOC + pills ---------- */
+.cat-toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.5rem;margin:2rem 0 3rem;background:var(--bg-2);border:1px solid var(--line-soft);border-radius:6px;padding:1.25rem;position:relative}
+.cat-toc-head{grid-column:1/-1;font-size:.65rem;letter-spacing:.3em;color:var(--fg-mute);text-transform:uppercase;margin-bottom:.25rem;font-family:'JetBrains Mono',ui-monospace,monospace}
+.cat-row{display:flex;flex-direction:column;gap:.4rem;padding:.6rem .75rem;border-radius:4px;background:var(--bg-3);border:1px solid transparent;transition:border-color .25s}
+.cat-row:hover{border-color:var(--line)}
+.cat-row .cat-name{font-size:.85rem;font-weight:500;color:var(--fg);display:flex;align-items:center;gap:.5rem}
+.cat-row .cat-key{display:inline-grid;place-items:center;width:1.4rem;height:1.4rem;border-radius:50%;background:var(--lime);color:#0a0e07;font-weight:700;font-size:.65rem;font-family:'JetBrains Mono',ui-monospace,monospace}
+.cat-row .cat-nums{display:flex;flex-wrap:wrap;gap:.25rem;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.7rem}
+.cat-row .cat-nums a{padding:.18rem .45rem;background:rgba(208,255,0,.08);border:1px solid var(--line-soft);border-radius:3px;color:var(--lime);transition:background .2s}
+.cat-row .cat-nums a:hover{background:var(--lime);color:#0a0e07}
+
+.cat-pill{display:inline-flex;align-items:center;gap:.4rem;padding:.25rem .6rem;border:1px solid var(--line);border-radius:999px;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--lime);font-family:'JetBrains Mono',ui-monospace,monospace;flex-shrink:0;background:rgba(208,255,0,.05)}
+.cat-pill::before{content:"";width:.5rem;height:.5rem;background:var(--lime);border-radius:50%}
+
+/* ---------- demo 19 (Rive scrub SVG draw) · d20- ---------- */
+.d20-stage{position:relative;height:200vh;background:linear-gradient(to bottom,var(--bg-2),var(--bg-3))}
+.d20-pin{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2rem;padding:2rem}
+.d20-svg{width:min(600px,90%);height:auto;display:block}
+.d20-info{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.75rem;display:flex;flex-direction:column;gap:.4rem;min-width:300px;max-width:90%}
+
+/* ---------- demo 20 (Variable Font) · d21- ---------- */
+.d21-stage{padding:2rem 0;text-align:center}
+.d21-preview{font-family:"Mona Sans","Inter",sans-serif;font-size:clamp(2.8rem,8vw,6rem);line-height:1;letter-spacing:-.01em;color:var(--lime);transition:font-variation-settings .15s linear,letter-spacing .2s;margin-bottom:2rem}
+.d21-controls{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem}
+.d21-controls label{display:flex;flex-direction:column;gap:.5rem;font-size:.65rem;letter-spacing:.25em;color:var(--fg-dim);text-transform:uppercase;font-family:'JetBrains Mono',ui-monospace,monospace;min-width:200px}
+.d21-controls label span{color:var(--lime);font-weight:600}
+.d21-controls input{accent-color:var(--lime);width:100%}
+.d21-readout{font-size:.78rem;color:var(--fg-dim);padding:.75rem;background:#070a05;border:1px solid var(--line-soft);border-radius:4px;display:inline-block}
+.d21-readout span{color:var(--lime)}
+
+/* ---------- demo 21 (Footer theme) · d22- ---------- */
+.d22-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:1.25rem 1.5rem;gap:1rem;border-radius:4px;transition:background .45s var(--cubic),color .45s var(--cubic);font-family:'JetBrains Mono',ui-monospace,monospace}
+.d22-footer[data-footer-theme="green"]{background:#101400;color:#d2ff00}
+.d22-footer[data-footer-theme="black"]{background:#000;color:#d2ff00}
+.d22-footer[data-footer-theme="white"]{background:#f0f0e8;color:#101400}
+.d22-logo{font-weight:600;letter-spacing:.1em;font-size:.85rem}
+.d22-links{display:flex;gap:1.25rem;font-size:.7rem;letter-spacing:.2em}
+.d22-state{font-size:.65rem;opacity:.7}
+.d22-state span{font-weight:600}
+.d22-controls{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
+.d22-btn{font-size:.65rem;padding:.5rem 1rem}
+
+/* ---------- demo 22 (Rive buttons) · d23- ---------- */
+.d23-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;padding:1rem 0}
+.d23-btn{position:relative;display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:1.1rem 1.25rem;border:1px solid var(--lime);background:transparent;color:var(--lime);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;font-weight:500;border-radius:999px;cursor:pointer;overflow:hidden;font-family:'JetBrains Mono',ui-monospace,monospace;transition:transform .35s var(--cubic),background .35s var(--cubic),color .35s var(--cubic)}
+.d23-icon{width:1.4rem;height:1.4rem;display:grid;place-items:center;border:1px solid currentColor;border-radius:50%;flex-shrink:0;transition:transform .45s var(--cubic),background .35s,color .35s}
+.d23-icon svg{width:.7rem;height:.7rem}
+.d23-rotate:hover .d23-icon{transform:rotate(-90deg);background:var(--lime);color:#0a0e07}
+.d23-invert:hover{background:var(--lime);color:#0a0e07}
+.d23-invert:hover .d23-icon{background:#0a0e07;color:var(--lime)}
+.d23-scale:hover{transform:scale(1.06)}
+.d23-scale:hover .d23-icon{transform:scale(1.3);background:var(--lime);color:#0a0e07}
+.d23-shake:hover .d23-icon{animation:d23Shake .45s linear infinite}
+@keyframes d23Shake{0%,100%{transform:translateX(0) rotate(0deg)}25%{transform:translateX(-2px) rotate(-8deg)}75%{transform:translateX(2px) rotate(8deg)}}
+
+/* ---------- demo 23 (Stat hover img) · d24- ---------- */
+.d24-stage{position:relative;border-radius:4px;overflow:hidden;border:1px solid var(--line-soft);background:var(--bg-3)}
+.d24-bg{position:absolute;inset:0;background:transparent;opacity:0;transition:opacity .55s var(--cubic),background .55s var(--cubic);z-index:0}
+.d24-stage.is-hot .d24-bg{opacity:.85}
+.d24-grid{position:relative;display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-soft);z-index:1}
+.d24-stat{padding:2rem 1.5rem;background:var(--bg-3);cursor:pointer;transition:background .35s,color .35s}
+.d24-stat:hover{background:rgba(0,0,0,.4)}
+.d24-num{font-size:clamp(2rem,5vw,3.5rem);font-weight:200;color:var(--lime);line-height:1;margin-bottom:.5rem;letter-spacing:-.02em}
+.d24-lbl{font-size:.65rem;letter-spacing:.25em;color:var(--fg-dim);text-transform:uppercase;font-family:'JetBrains Mono',ui-monospace,monospace}
+@media(max-width:600px){.d24-grid{grid-template-columns:1fr}}
+
+/* ---------- demo 24 (per-section scroll progress) · d25- ---------- */
+.d25-stage{position:relative;height:200vh;background:linear-gradient(to bottom,var(--bg-2),var(--bg-3))}
+.d25-bar{position:sticky;top:0;left:0;right:0;height:3px;background:var(--bg);z-index:5;overflow:hidden}
+.d25-bar-fill{width:100%;height:100%;background:var(--lime);transform-origin:0 50%;transform:scaleX(0);transition:transform .1s linear}
+.d25-content{padding:25vh 2rem;display:flex;flex-direction:column;gap:30vh}
+.d25-block{max-width:50rem;margin:0 auto;padding:2rem;background:var(--bg-3);border:1px solid var(--line-soft);border-radius:4px}
+.d25-block .d25-eyebrow{font-size:.65rem;letter-spacing:.25em;color:var(--lime);text-transform:uppercase;margin-bottom:1rem}
+.d25-block p{color:var(--fg-dim);font-size:.95rem;line-height:1.6}
+
+/* ---------- demo 11: lime page-transition curtain ---------- */
+.d11-viewport{position:relative;height:380px;border:1px solid var(--line-soft);border-radius:4px;overflow:hidden;background:var(--bg-3)}
+.d11-page{position:absolute;inset:0;padding:2rem;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:.6rem}
+.d11-page[data-page="a"]{background:radial-gradient(circle at 80% 20%,rgba(208,255,0,.06),transparent 50%),var(--bg-3)}
+.d11-page[data-page="b"]{background:radial-gradient(circle at 20% 80%,rgba(208,255,0,.04),transparent 50%),#0d1109}
+.d11-tag{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--fg-mute);font-family:'JetBrains Mono',ui-monospace,monospace}
+.d11-headline{font-size:clamp(2rem,5vw,3.6rem);font-weight:200;letter-spacing:-.02em;line-height:1;color:var(--fg)}
+.d11-sub{font-size:.95rem;color:var(--fg-dim)}
+.d11-link{margin-top:1rem;font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:var(--lime);border-bottom:1px solid var(--lime);padding-bottom:.15rem}
+.d11-curtain{position:absolute;inset:0;transform:translateY(100%);pointer-events:none;z-index:10;will-change:transform}
+.d11-curtain.in{animation:d11Cover .55s var(--cubic) forwards}
+.d11-curtain.out{animation:d11Reveal .55s var(--cubic) forwards}
+@keyframes d11Cover{from{transform:translateY(100%)}to{transform:translateY(0%)}}
+@keyframes d11Reveal{from{transform:translateY(0%)}to{transform:translateY(-100%)}}
+.d11-curtain-shape{position:absolute;inset:0}
+.d11-curtain-shape svg{width:100%;height:100%;display:block}
+.d11-curtain-shape svg path:first-child{transform:translateY(-2%)}
+.d11-curtain-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:.5rem;color:#0a0e07;font-size:.9rem;letter-spacing:.35em;text-transform:uppercase;font-weight:600;font-family:'JetBrains Mono',ui-monospace,monospace}
+.d11-curtain-text em{font-style:normal;font-size:1.2rem;animation:d11Dot 1s infinite}
+@keyframes d11Dot{0%,100%{opacity:0}50%{opacity:1}}
+.d11-controls{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:1.5rem}
+.d11-state{font-size:.7rem;color:var(--fg-mute);letter-spacing:.1em;margin-left:auto}
+.d11-state .v{color:var(--lime)}
+
+/* ---------- page-by-page table ---------- */
+.page-block{margin:3rem 0;padding:2rem;background:var(--bg-2);border:1px solid var(--line-soft);border-radius:4px}
+.page-block h3{font-size:1.4rem;margin-bottom:.5rem;font-weight:500}
+.page-block h3 .path{color:var(--lime);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.8em;margin-left:.5rem}
+.page-block .sub{font-size:.85rem;color:var(--fg-dim);margin-bottom:1.5rem}
+.feat-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.feat-table th,.feat-table td{padding:.7rem 1rem;text-align:left;border-bottom:1px solid var(--line-soft);vertical-align:top}
+.feat-table th{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--lime);font-weight:500;background:#070a05}
+.feat-table td:first-child{font-family:'JetBrains Mono',ui-monospace,monospace;color:var(--lime);font-size:.78rem;white-space:nowrap}
+.feat-table td:nth-child(2){color:var(--fg)}
+.feat-table td:nth-child(3){color:var(--fg-dim)}
+
+/* ---------- assets list ---------- */
+.asset-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem;margin-top:1.5rem}
+.asset-cat{background:var(--bg-2);border:1px solid var(--line-soft);padding:1.25rem;border-radius:4px}
+.asset-cat h4{font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:var(--lime);margin-bottom:.75rem}
+.asset-cat li{list-style:none;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.72rem;color:var(--fg-dim);padding:.35rem 0;border-bottom:1px dashed var(--line-soft);line-height:1.4;word-break:break-all}
+.asset-cat li:last-child{border-bottom:none}
+
+/* ---------- recipes (copy-paste snippets) ---------- */
+.recipe{margin:2rem 0;background:var(--bg-2);border:1px solid var(--line-soft);border-radius:4px;overflow:hidden}
+.recipe-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--line-soft);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.recipe-head .name{font-size:1rem;font-weight:500;flex:1}
+.recipe-head .roi{font-size:.65rem;letter-spacing:.25em;color:var(--lime)}
+.recipe pre{margin:0;padding:1.5rem;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.78rem;color:var(--fg-dim);line-height:1.65;overflow-x:auto;background:#070a05}
+.recipe code .kw{color:#ff7eb6}
+.recipe code .str{color:#a3ffb8}
+.recipe code .com{color:#5a5d52;font-style:italic}
+.recipe code .num{color:#ffce6a}
+.recipe code .fn{color:var(--lime)}
+
+/* ---------- footer ---------- */
+footer{padding:4rem 0 3rem;text-align:center;color:var(--fg-mute);font-size:.8rem}
+footer a{color:var(--lime);text-decoration:underline;text-underline-offset:.25em}
+
+/* ---------- reveal-on-scroll ---------- */
+.reveal{opacity:0;transform:translateY(2rem);transition:opacity 1s var(--cubic),transform 1s var(--cubic)}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* ---------- helmet "tap to lock" badge ---------- */
+.touch-badge{position:absolute;top:.75rem;right:.75rem;font-size:.55rem;letter-spacing:.25em;text-transform:uppercase;padding:.4rem .75rem;border:1px solid var(--line);border-radius:999px;color:var(--lime);background:rgba(0,0,0,.4)}
+
+/* responsive niceties */
+@media(max-width:760px){
+  section{padding:5rem 0}
+  .nav{padding:.75rem 1rem}
+  .nav-section{display:none}
+  .d6-stage{grid-template-columns:1fr}
+  .d3-helmet{width:180px;height:180px}
+  .d3-helmet .f1{transform:translateZ(90px)}
+  .d3-helmet .f2{transform:rotateY(90deg) translateZ(90px)}
+  .d3-helmet .f3{transform:rotateY(180deg) translateZ(90px)}
+  .d3-helmet .f4{transform:rotateY(-90deg) translateZ(90px)}
+  .d3-helmet .f5{transform:rotateX(90deg) translateZ(90px)}
+  .d3-helmet .f6{transform:rotateX(-90deg) translateZ(90px)}
+}
+</style>
+</head>
+<body>
+
+<!-- ============== preloader ============== -->
+<div class="preloader" id="preloader">
+  <div class="pre-inner">
+    <div class="pre-eyebrow">OFF+BRAND × LANDO NORRIS · Reverse-Engineered</div>
+    <h1 class="pre-title">这是一份关于<em>"网页是被你操控的剧场"</em>的拆解报告</h1>
+    <button class="pre-btn" id="loadBtn">
+      <span class="dot"></span>
+      <span>Load Report</span>
+    </button>
+  </div>
+</div>
+
+<!-- ============== progress + nav ============== -->
+<div class="progress" id="progress"></div>
+<nav class="nav" id="nav">
+  <div class="nav-brand"><span class="badge"></span> LN · OFF+BRAND Teardown</div>
+  <div class="nav-section">当前章节 · <span id="navSection">入场</span></div>
+</nav>
+
+<!-- ============== HERO ============== -->
+<section class="hero" data-section="入场">
+  <div class="hud-frame tl"></div>
+  <div class="hud-frame tr"></div>
+  <div class="hud-frame bl"></div>
+  <div class="hud-frame br"></div>
+  <div class="hero-inner shell">
+    <div class="hero-tag">Reverse-engineering report · 2026.05</div>
+    <h1 class="hero-h1" id="heroH1">
+      <span class="word"><span class="char">把</span></span>
+      <span class="word"><span class="char">l</span><span class="char">a</span><span class="char">n</span><span class="char">d</span><span class="char">o</span><span class="char">n</span><span class="char">o</span><span class="char">r</span><span class="char">r</span><span class="char">i</span><span class="char">s</span><span class="char">.</span><span class="char">c</span><span class="char">o</span><span class="char">m</span></span>
+      <br>
+      <span class="word"><span class="char">拆</span></span>
+      <span class="word"><span class="char">到</span></span>
+      <span class="word"><em><span class="char">露</span><span class="char">出</span><span class="char">钢</span><span class="char">筋</span></em></span>
+    </h1>
+    <p class="hero-sub">一份逐页、逐组件、逐 data-attribute 的复盘。8 个可玩 demo 直接拽给你看每个交互是怎么造出来的。每页都写明"它做了什么"和"你想抄走需要几行代码"。</p>
+  </div>
+  <div class="hero-scroll">
+    <div>scroll to disassemble</div>
+    <div class="line"></div>
+  </div>
+</section>
+
+<!-- ============== STACK ============== -->
+<section data-section="技术栈">
+  <div class="shell">
+    <div class="eyebrow reveal">01 · 底牌一览</div>
+    <h2 class="title-1 reveal">他们靠这 <em>9 个</em> 库 + 1 张图。</h2>
+    <p class="lede reveal">这不是 Three.js Demo，也不是 GSAP 模板。Off+Brand 把 9 个工业级库塞在一起组成一条流水线：内容（Webflow CMS）→ 路由（Taxi.js）→ 滚动（Lenis）→ 时间线（GSAP）→ 文字（SplitText）→ 矢量交互（Rive）→ 3D（Three.js + Draco + KTX2 + HDRI）→ 后期（EffectComposer + UnrealBloom + FXAA）→ 字体（Mona Sans Variable）。</p>
+    <div class="stack-grid">
+      <div class="stack-card"><div class="lbl">CMS / 托管</div><div class="name">Webflow</div><div class="desc">data-wf-* / w-dyn-list。所有赛程、合作品牌都从 CMS 拉。</div></div>
+      <div class="stack-card"><div class="lbl">路由</div><div class="name">Taxi.js</div><div class="desc">data-taxi + data-taxi-view。无刷新切页，配合 page-transition.riv 做转场。</div></div>
+      <div class="stack-card"><div class="lbl">平滑滚动</div><div class="name">Lenis</div><div class="desc">所有 scrub:true 时间线的"惯性引擎"。</div></div>
+      <div class="stack-card"><div class="lbl">动画</div><div class="name">GSAP · ScrollTrigger · SplitText</div><div class="desc">字符级 stagger 0.02s · ease power3.out · clip-path 椭圆收缩。</div></div>
+      <div class="stack-card"><div class="lbl">矢量交互</div><div class="name">Rive (@rive-app)</div><div class="desc">11 个 .riv 文件做状态机；circuits.riv 一个文件装所有赛道。</div></div>
+      <div class="stack-card"><div class="lbl">3D 渲染</div><div class="name">Three.js</div><div class="desc">GLTF + DRACO + KTX2 + 3 套 HDRI 切打光 · MeshStandardMaterial PBR。</div></div>
+      <div class="stack-card"><div class="lbl">后期</div><div class="name">EffectComposer</div><div class="desc">UnrealBloom + FXAA · 头盔的"霓虹反光"是 bloom，不是贴图。</div></div>
+      <div class="stack-card"><div class="lbl">字体</div><div class="name">Mona Sans Variable</div><div class="desc">wght + wdth 两轴。可随滚动慢慢"变胖"。</div></div>
+      <div class="stack-card"><div class="lbl">设计系统</div><div class="name">1728 流体 clamp</div><div class="desc">基于 1728 设计稿 · clamp(992, 100vw, 1920) 整站字号自动伸缩。</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== DEMOS ============== -->
+<section data-section="可玩 demo">
+  <div class="shell">
+    <div class="eyebrow reveal">02 · 25 个能动手的 demo</div>
+    <h2 class="title-1 reveal">读到这里，先停下来 <em>玩一会儿</em>。</h2>
+    <p class="lede reveal">每一个 demo 都对应原站的一个真实交互。点按钮、滚滚轮、拖鼠标，自己感受一遍。下面有源码片段说"它怎么做出来的"。</p>
+
+    <!-- category TOC -->
+    <div class="cat-toc reveal">
+      <div class="cat-toc-head">分类导航 · 点编号跳到对应 demo</div>
+      <div class="cat-row" data-cat="entrance"><div class="cat-name"><span class="cat-key">A</span>入场 &amp; 转场</div><div class="cat-nums"><a href="#demo1">01</a><a href="#demo11">25</a></div></div>
+      <div class="cat-row" data-cat="scroll"><div class="cat-name"><span class="cat-key">B</span>滚动驱动</div><div class="cat-nums"><a href="#demo3">03</a><a href="#demo4">04</a><a href="#demo5">05</a><a href="#demo15">14</a><a href="#demo19svg">19</a><a href="#demo24">24</a></div></div>
+      <div class="cat-row" data-cat="nav"><div class="cat-name"><span class="cat-key">C</span>导航 &amp; 主题</div><div class="cat-nums"><a href="#demo2">02</a><a href="#demo21">21</a></div></div>
+      <div class="cat-row" data-cat="micro"><div class="cat-name"><span class="cat-key">D</span>微动效</div><div class="cat-nums"><a href="#demo6">06</a><a href="#demo18">17</a><a href="#demo22">22</a></div></div>
+      <div class="cat-row" data-cat="data"><div class="cat-name"><span class="cat-key">E</span>数据驱动</div><div class="cat-nums"><a href="#demo12">11</a><a href="#demo19">18</a></div></div>
+      <div class="cat-row" data-cat="gesture"><div class="cat-name"><span class="cat-key">F</span>手势 &amp; 光标</div><div class="cat-nums"><a href="#demo8">08</a><a href="#demo9">09</a><a href="#demo17">16</a></div></div>
+      <div class="cat-row" data-cat="visual"><div class="cat-name"><span class="cat-key">G</span>视觉系统</div><div class="cat-nums"><a href="#demo7">07</a><a href="#demo13">12</a><a href="#demo14">13</a><a href="#demo16">15</a><a href="#demo20">20</a></div></div>
+      <div class="cat-row" data-cat="media"><div class="cat-name"><span class="cat-key">H</span>媒体</div><div class="cat-nums"><a href="#demo10">10</a><a href="#demo23">23</a></div></div>
+    </div>
+
+    <!-- DEMO 1 -->
+    <div class="demo" id="demo1">
+      <div class="demo-head">
+        <div class="num">01 / 25</div>
+        <div class="name">字符级 stagger 入场 + 椭圆 clip 收缩</div>
+        <div class="tags">GSAP · SplitText · power3.out</div>
+      </div>
+      <div class="demo-body">
+        <div class="d1-stage">
+          <div class="d1-line" id="d1Line">
+            <span class="word"><span class="char">M</span><span class="char">e</span><span class="char">s</span><span class="char">s</span><span class="char">a</span><span class="char">g</span><span class="char">e</span></span>
+            <span class="word"><span class="char">f</span><span class="char">r</span><span class="char">o</span><span class="char">m</span></span>
+            <span class="word"><span class="char">l</span><span class="char">a</span><span class="char">n</span><span class="char">d</span><span class="char">o</span></span>
+          </div>
+          <div class="d1-mob" id="d1Mob" style="font-size:clamp(1.2rem,2.5vw,1.8rem);color:var(--lime);letter-spacing:.2em;text-transform:uppercase">·  L A N D O   N O R R I S  ·</div>
+          <div style="margin-top:2rem"><button class="btn" id="d1Btn">↻ Replay</button></div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        他的原版用 <code>gsap.set(.char, {y:'100%'})</code> 把所有字符压到行外，再 <code>.to(.char, {y:0, stagger:0.02, ease:'power3.out'})</code> 一个个抽上来。<code>clipPath: ellipse(110% 110% at 50% 0%) → ellipse(100% 0% at 50% 0%)</code> 是椭圆从满盖→收成一条线的揭示动画。整段绑 <code>scrub:true</code>，所以**速度不是动画决定的，是滚轮决定的**。
+      </div>
+    </div>
+
+    <!-- DEMO 2 -->
+    <div class="demo" id="demo2">
+      <div class="demo-head">
+        <div class="num">02 / 25</div>
+        <div class="name">隐形哨兵 div 切换导航主题（dark / light / lime）</div>
+        <div class="tags">ScrollTrigger.onToggle · data-nav-theme-target</div>
+      </div>
+      <div class="demo-body">
+        <div class="d2-stage" id="d2Stage">
+          <div class="d2-scroll">
+            <div class="d2-zone dark">↓ 这是深绿区，导航是浅灰</div>
+            <div class="d2-sentinel" data-label="sentinel: light" data-theme="light"></div>
+            <div class="d2-zone light">↓ 这是浅色区，导航翻成深绿</div>
+            <div class="d2-sentinel" data-label="sentinel: lime" data-theme="lime"></div>
+            <div class="d2-zone lime">↓ 这是柠檬绿区，导航整体反白</div>
+            <div class="d2-sentinel" data-label="sentinel: dark" data-theme="dark"></div>
+            <div class="d2-zone dark">↓ 回到深绿区</div>
+          </div>
+        </div>
+        <div class="d2-readout">页面顶部导航的 <span class="v" id="d2ReadOut">data-theme="dark"</span> 正在被这个滚动容器控制。在容器里滚动，看顶部 nav。</div>
+      </div>
+      <div class="demo-foot">
+        原站把哨兵做成"零高度"div：<code>&lt;div data-nav-theme-target="light"&gt;&lt;/div&gt;</code>。ScrollTrigger 监听它何时穿过视口顶部，翻 nav 的属性，CSS 用 <code>[data-nav-theme="light"] .nav-brand path { fill: ... }</code> 把样式接管。**section 怎么改都不会破，因为色不是从 section 抽的**。
+      </div>
+    </div>
+
+    <!-- DEMO 3 -->
+    <div class="demo" id="demo3">
+      <div class="demo-head">
+        <div class="num">03 / 25</div>
+        <div class="name">scrub:true · 滚轮直接拽 3D 头盔</div>
+        <div class="tags">ScrollTrigger.scrub · transform3d · 没有"自动播放"</div>
+      </div>
+      <div class="demo-body">
+        <div class="d3-stage" id="d3Stage">
+          <div class="d3-pin">
+            <div class="d3-perspective">
+              <div class="d3-helmet" id="d3Helmet">
+                <div class="face f1"><span class="lbl">helmet · front</span></div>
+                <div class="face f2"><span class="lbl">side · L</span></div>
+                <div class="face f3"><span class="lbl">rear</span></div>
+                <div class="face f4"><span class="lbl">side · R</span></div>
+                <div class="face f5"><span class="lbl">crown</span></div>
+                <div class="face f6"><span class="lbl">chin</span></div>
+              </div>
+            </div>
+            <div class="d3-progress">scroll progress · <span class="v" id="d3Pct">0%</span> · helmet.rotate <span class="v" id="d3Deg">0deg</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        往下滚 1 屏看头盔自转。这不是 setInterval、不是 CSS animation，是滚动条本身在驱动 <code>rotateY()</code>。原站用 Three.js + GLTF 真 3D，我这个 demo 用 CSS 3D 立方体演示同样的 "scroll = playhead" 设计哲学。
+      </div>
+    </div>
+
+    <!-- DEMO 4 -->
+    <div class="demo" id="demo4">
+      <div class="demo-head">
+        <div class="num">04 / 25</div>
+        <div class="name">横向 pin 滚动（on-track 页的 horizontal-pin-wrap）</div>
+        <div class="tags">ScrollTrigger.pin · translateX · 1 屏吃 3 屏</div>
+      </div>
+      <div class="demo-body" style="padding:0">
+        <div class="d4-wrap" id="d4Wrap">
+          <div class="d4-pin">
+            <div class="d4-track" id="d4Track">
+              <div class="d4-card"><div class="pill">01 · Brazil GP</div><div class="num">+2.1s</div><div><div class="t">São Paulo · Wet</div><div class="d">湿地起步，雨胎换中性胎窗口卡在第 27 圈。同段他超了 4 个人。</div></div></div>
+              <div class="d4-card"><div class="pill">02 · Vegas GP</div><div class="num">P1</div><div><div class="t">Las Vegas · Night</div><div class="d">夜战拿杆位起步守到最后一圈。冷胎温窗口比预期短 0.4 圈。</div></div></div>
+              <div class="d4-card"><div class="pill">03 · Imola</div><div class="num">+0.8s</div><div><div class="t">Imola · Wet→Dry</div><div class="d">天气变化 3 次，pit 策略走的最反直觉那条。</div></div></div>
+              <div class="d4-card"><div class="pill">04 · Monaco</div><div class="num">P3</div><div><div class="t">Monaco · Street</div><div class="d">街道赛，超不动只能等。但起步那一脚刹车是赛季最稳的一次。</div></div></div>
+              <div class="d4-card"><div class="pill">05 · Silverstone</div><div class="num">P2</div><div><div class="t">Home race</div><div class="d">主场，万人看台一起站起来。最后 5 圈胎差用尽。</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        滚动条往下走，卡片往左走。这是 GSAP 教科书写法：<code>pin: true</code> 把容器钉在视口里，<code>scrub: true</code> 让滚轮的纵向距离变成卡片轨道的横向 <code>translateX</code>。一屏纵向 = 多屏横向，让水平内容能装进竖屏滚动。
+      </div>
+    </div>
+
+    <!-- DEMO 5 -->
+    <div class="demo" id="demo5">
+      <div class="demo-head">
+        <div class="num">05 / 25</div>
+        <div class="name">速度敏感 marquee（往下滚加速，往上滚反向）</div>
+        <div class="tags">ScrollTrigger.velocity · CSS keyframe play-state</div>
+      </div>
+      <div class="demo-body">
+        <div class="d5-stage" id="d5Stage">
+          <div class="label">scroll velocity · <span id="d5VelOut">0</span> · direction <span id="d5Dir">→</span></div>
+          <div class="d5-row" id="d5R1">
+            <span class="item">2025 WDC</span><span class="item">McLaren MCL39</span><span class="item">L4ndo N0rris</span><span class="item">From Bristol</span><span class="item">Since 2019</span><span class="item">2025 WDC</span><span class="item">McLaren MCL39</span><span class="item">L4ndo N0rris</span><span class="item">From Bristol</span><span class="item">Since 2019</span>
+          </div>
+          <div class="d5-row" id="d5R2">
+            <span class="item">Reverse Lane</span><span class="item">Pole Position</span><span class="item">P1</span><span class="item">Quattro Stagioni</span><span class="item">Lap of Honour</span><span class="item">Reverse Lane</span><span class="item">Pole Position</span><span class="item">P1</span><span class="item">Quattro Stagioni</span><span class="item">Lap of Honour</span>
+          </div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        滚得越快，文字跑得越快；反向滚动，文字反向。Off+Brand 的 <code>data-marquee-scroll-direction-target</code> + <code>data-marquee-scroll-speed</code> 就是这个机制。**让滚动行为本身变成内容的一部分**——你滚得快文字也急，相当于让用户给页面"配 BGM"。
+      </div>
+    </div>
+
+    <!-- DEMO 6 -->
+    <div class="demo" id="demo6">
+      <div class="demo-head">
+        <div class="num">06 / 25</div>
+        <div class="name">Rive 状态机的"一个文件 = 一台状态切换机"</div>
+        <div class="tags">circuits.riv · data-rive-input-track</div>
+      </div>
+      <div class="demo-body">
+        <div class="d6-stage">
+          <div class="d6-canvas">
+            <div class="d6-svg" id="d6Svg">
+              <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path id="d6Path" d="M40 100 Q40 40 100 40 T160 100 Q160 160 100 160 T40 100" stroke-dasharray="500" stroke-dashoffset="0" />
+                <circle id="d6Dot" cx="40" cy="100" r="6" fill="currentColor" stroke="none"/>
+                <text id="d6Label" x="100" y="190" text-anchor="middle" fill="currentColor" stroke="none" font-size="10" letter-spacing="3" font-family="monospace">MONTRÉAL</text>
+              </svg>
+            </div>
+          </div>
+          <div class="d6-controls">
+            <div style="font-size:.7rem;letter-spacing:.25em;color:var(--fg-mute);text-transform:uppercase;margin-bottom:.5rem">hover 切换 input "track"</div>
+            <button class="d6-btn is-active" data-track="MONTRÉAL" data-d="M40 100 Q40 40 100 40 T160 100 Q160 160 100 160 T40 100">CA · Montréal</button>
+            <button class="d6-btn" data-track="MONACO" data-d="M30 120 L60 60 Q100 30 140 60 L170 120 Q160 170 100 170 Q40 170 30 120 Z">MC · Monaco</button>
+            <button class="d6-btn" data-track="SILVERSTONE" data-d="M20 100 L50 50 L120 50 L180 80 L160 130 L100 150 L40 140 Z">UK · Silverstone</button>
+            <button class="d6-btn" data-track="SUZUKA" data-d="M40 60 L120 40 Q170 70 140 110 Q90 130 60 100 Q30 130 80 170 L150 160">JP · Suzuka</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        点按钮看 SVG 路径插值。原站的 <code>data-rive-file="circuits"</code> 是 <strong>1 个</strong> Rive 文件装了全部 24 条赛道，外部只发 <code>state.track = "monaco"</code> 一句话就切。如果用 Lottie 你需要 24 个 .json 文件 + 24 次切换的过渡动画。<strong>Rive 比 Lottie 强在状态机</strong>——这是核心区别。
+      </div>
+    </div>
+
+    <!-- DEMO 7 -->
+    <div class="demo" id="demo7">
+      <div class="demo-head">
+        <div class="num">07 / 25</div>
+        <div class="name">1728 设计稿基准 · clamp 流体缩放</div>
+        <div class="tags">clamp() · CSS custom property · 设计师友好</div>
+      </div>
+      <div class="demo-body">
+        <div class="d7-stage">
+          <div class="d7-readout">
+            <div class="d7-cell"><div class="k">viewport 宽</div><div class="v" id="d7Vw">— px</div></div>
+            <div class="d7-cell"><div class="k">fluid-container</div><div class="v" id="d7Fc">— px</div></div>
+            <div class="d7-cell"><div class="k">设计基准</div><div class="v">1728</div></div>
+            <div class="d7-cell"><div class="k">当前 root fz</div><div class="v" id="d7Fz">— px</div></div>
+          </div>
+          <div class="d7-demo-text">这段字号 = (clamp(992, 100vw, 1920) / 1728) × 48px</div>
+          <p style="margin-top:1rem;color:var(--fg-dim);font-size:.85rem">缩放浏览器宽度，看上面四个数字怎么联动。这就是 OFF+BRAND 整站字号"会呼吸"的秘密。</p>
+        </div>
+      </div>
+      <div class="demo-foot">
+        把设计稿里的 px 直接换算成 fluid-font 倍数：<code>font-size: calc(var(--fluid-container) / var(--design-width) * 48px)</code>。**设计师在 1728 画的标题，工程师不用算移动端 28、平板 36、桌面 48**——一个公式解决。
+      </div>
+    </div>
+
+    <!-- DEMO 8 -->
+    <div class="demo" id="demo8">
+      <div class="demo-head">
+        <div class="num">08 / 25</div>
+        <div class="name">"tap to lock" · 模态手势把页面让出来</div>
+        <div class="tags">data-home-swipe-toggle · touch-action · 移动端神技</div>
+      </div>
+      <div class="demo-body">
+        <div class="d8-stage" id="d8Stage">
+          <div class="d8-toggle"><button class="btn" id="d8Btn">tap to lock</button></div>
+          <div class="d8-canvas" id="d8Canvas">
+            <div class="d8-orb" id="d8Orb"></div>
+          </div>
+          <div class="d8-hint" id="d8Hint">未锁 · 在这里滑动 = 翻页面</div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        移动端最大痛点：单指滑屏 = 滚页面，于是没法转 3D 模型。Off+Brand 给了一个开关："tap to lock"——锁住后，<code>touch-action: none</code> 把页面滚动禁了，单指拖只控这个画布。<strong>把手势模态化</strong>，工程不难，产品 IQ 极高。
+      </div>
+    </div>
+
+    <!-- DEMO 9 -->
+    <div class="demo" id="demo9">
+      <div class="demo-head">
+        <div class="num">09 / 25</div>
+        <div class="name">自定义光标 + 悬停区域 reveal（on-track 页 highlights/schedule）</div>
+        <div class="tags">data-mouse-area · data-mouse-reveal · clip-path tracking</div>
+      </div>
+      <div class="demo-body">
+        <div class="d9-stage" id="d9Stage">
+          <div class="d9-cursor" id="d9Cursor"><span>scroll</span></div>
+          <div class="d9-zone" data-mouse-area="highlights" data-cursor-text="highlights ↗">
+            <div class="d9-zone-bg"></div>
+            <div class="d9-zone-label">data-mouse-area="highlights"</div>
+            <div class="d9-zone-reveal" data-mouse-reveal>
+              <img alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'><defs><linearGradient id='g' x1='0' x2='1'><stop offset='0' stop-color='%23d2ff00'/><stop offset='1' stop-color='%23a8c800'/></linearGradient></defs><rect width='400' height='240' fill='url(%23g)'/><text x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle' font-family='monospace' font-size='28' fill='%23101400' letter-spacing='8'>HIGHLIGHTS</text></svg>"/>
+            </div>
+          </div>
+          <div class="d9-zone" data-mouse-area="schedule" data-cursor-text="schedule ↗">
+            <div class="d9-zone-bg" style="background:linear-gradient(135deg,#1c2218,#0a1208)"></div>
+            <div class="d9-zone-label">data-mouse-area="schedule"</div>
+            <div class="d9-zone-reveal" data-mouse-reveal>
+              <img alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'><rect width='400' height='240' fill='%23101400'/><text x='50%25' y='40%25' text-anchor='middle' font-family='monospace' font-size='22' fill='%23d2ff00' letter-spacing='6'>NEXT RACE</text><text x='50%25' y='70%25' text-anchor='middle' font-family='sans-serif' font-size='42' fill='%23d2ff00'>Montréal</text></svg>"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        把鼠标移到上面两个色块上。光标变大变色 + 显示文案 + 色块里 reveal 一张图（用 <code>clip-path: circle(80px at cursorX cursorY)</code>跟踪）。原站的 <code>data-mouse-area / -reveal / -track</code> 三件套就是这个机制——把"鼠标位置"变成"可写入的设计变量"。
+      </div>
+    </div>
+
+    <!-- DEMO 10 -->
+    <div class="demo" id="demo10">
+      <div class="demo-head">
+        <div class="num">10 / 25</div>
+        <div class="name">hover 自动播放视频（data-video-stream + Vimeo lazy load）</div>
+        <div class="tags">data-stream-hover · IntersectionObserver · placeholder→stream</div>
+      </div>
+      <div class="demo-body">
+        <div class="d10-grid">
+          <div class="d10-card" data-stream-hover>
+            <div class="d10-placeholder">
+              <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width=".5"/><polygon points="42,32 42,68 70,50" fill="currentColor"/></svg>
+              <span class="lbl">vimeo · 824804225</span>
+            </div>
+            <div class="d10-stream" data-stream-content>
+              <div class="d10-bars"><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="d10-time">▶ 00:0<span data-tsec>0</span> / 00:18</div>
+            </div>
+          </div>
+          <div class="d10-card" data-stream-hover>
+            <div class="d10-placeholder" style="background:linear-gradient(135deg,#2a3024,#0a1208)">
+              <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width=".5"/><polygon points="42,32 42,68 70,50" fill="currentColor"/></svg>
+              <span class="lbl">vimeo · 824804226</span>
+            </div>
+            <div class="d10-stream" data-stream-content>
+              <div class="d10-bars"><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="d10-time">▶ 00:0<span data-tsec>0</span> / 00:32</div>
+            </div>
+          </div>
+          <div class="d10-card" data-stream-hover>
+            <div class="d10-placeholder" style="background:linear-gradient(135deg,#1c2218,#131811)">
+              <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width=".5"/><polygon points="42,32 42,68 70,50" fill="currentColor"/></svg>
+              <span class="lbl">vimeo · 824804227</span>
+            </div>
+            <div class="d10-stream" data-stream-content>
+              <div class="d10-bars"><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="d10-time">▶ 00:0<span data-tsec>0</span> / 00:24</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        鼠标悬停到卡片上，placeholder 退场，"视频流"接管（这里我用 CSS 条带模拟，原站是 Vimeo iframe 用 <code>data-stream-url</code> 拉流）。Off+Brand 用 IntersectionObserver 决定何时加载视频，hover 决定何时播放——<strong>不让视频在视野外烧带宽</strong>。on-track 页底的 social 卡片墙就是这套。
+      </div>
+    </div>
+
+    <!-- DEMO 12 · flip-digit countdown -->
+    <div class="demo" id="demo12">
+      <div class="demo-head">
+        <div class="num">11 / 25</div>
+        <div class="name">倒计时翻页数字（on-track / calendar 页都用）</div>
+        <div class="tags">data-countdown-digit · yPercent flip · 每秒更新</div>
+      </div>
+      <div class="demo-body">
+        <div class="d12-stage">
+          <div class="d12-eyebrow">下一场比赛 · MONTRÉAL GP</div>
+          <div class="d12-row">
+            <div class="d12-cell"><div class="d12-num" data-countdown-digit="day"><span></span><span></span></div><div class="d12-lbl">days</div></div>
+            <div class="d12-sep">:</div>
+            <div class="d12-cell"><div class="d12-num" data-countdown-digit="hour"><span></span><span></span></div><div class="d12-lbl">hours</div></div>
+            <div class="d12-sep">:</div>
+            <div class="d12-cell"><div class="d12-num" data-countdown-digit="min"><span></span><span></span></div><div class="d12-lbl">mins</div></div>
+            <div class="d12-sep">:</div>
+            <div class="d12-cell"><div class="d12-num" data-countdown-digit="sec"><span></span><span></span></div><div class="d12-lbl">secs</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        每个数字位是一个上下两层的容器，新数字克隆到下沿、旧数字 <code>yPercent: -100</code> 滚出。<code>data-countdown-digit="day|hour|min|sec"</code> 让 JS 知道往哪个位置写。原站这个组件复用率极高——首页、on-track、calendar、partnerships 都用同一套。
+      </div>
+    </div>
+
+    <!-- DEMO 13 · oval-scroll arc text -->
+    <div class="demo" id="demo13">
+      <div class="demo-head">
+        <div class="num">12 / 25</div>
+        <div class="name">椭圆轨迹大字 · TRACK / OFFTRACK 那种弧形排版</div>
+        <div class="tags">data-oval-scroll · 字符 rotate · transform-origin 在弧心</div>
+      </div>
+      <div class="demo-body">
+        <div class="d13-stage">
+          <div class="d13-arc" id="d13Arc">
+            <div class="d13-arc-char" data-oval-scroll>O</div><div class="d13-arc-char" data-oval-scroll>F</div><div class="d13-arc-char" data-oval-scroll>F</div><div class="d13-arc-char" data-oval-scroll>T</div><div class="d13-arc-char" data-oval-scroll>R</div><div class="d13-arc-char" data-oval-scroll>A</div><div class="d13-arc-char" data-oval-scroll>C</div><div class="d13-arc-char" data-oval-scroll>K</div>
+          </div>
+          <div class="d13-controls">
+            <label>弧度 <input type="range" id="d13Curve" min="20" max="160" value="80"></label>
+            <label>半径 <input type="range" id="d13Radius" min="180" max="420" value="280"></label>
+          </div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        每个字符独立 <code>rotate()</code> + 同一个 <code>transform-origin</code>（弧心），形成一段弧。<code>[split-text]:not[data-oval-scroll]</code> 这种反选选择器在原站 CSS 里出现——告诉我们标了 <code>data-oval-scroll</code> 的会走"另一条排版路径"。拽上面两个滑块调弧度和半径，看大字怎么弯。
+      </div>
+    </div>
+
+    <!-- DEMO 14 · GSAP FLIP layout morph -->
+    <div class="demo" id="demo14">
+      <div class="demo-head">
+        <div class="num">13 / 25</div>
+        <div class="name">布局变形（FLIP）· off-track 页的 data-heroflip="pos1/pos2/pos3"</div>
+        <div class="tags">First-Last-Invert-Play · 记录前后 rect · GSAP fromTo</div>
+      </div>
+      <div class="demo-body">
+        <div class="d14-stage">
+          <div class="d14-grid" id="d14Grid" data-layout="grid">
+            <div class="d14-card" data-color="lime"><span>01</span><em>HOME</em></div>
+            <div class="d14-card" data-color="dark"><span>02</span><em>HELMET</em></div>
+            <div class="d14-card" data-color="lime"><span>03</span><em>RACE</em></div>
+            <div class="d14-card" data-color="dark"><span>04</span><em>WIN</em></div>
+            <div class="d14-card" data-color="lime"><span>05</span><em>PODIUM</em></div>
+            <div class="d14-card" data-color="dark"><span>06</span><em>CHAMPION</em></div>
+          </div>
+          <div class="d14-controls">
+            <button class="btn d14-btn is-on" data-flip="grid">grid 3×2</button>
+            <button class="btn d14-btn" data-flip="row">row · 横排</button>
+            <button class="btn d14-btn" data-flip="stack">stack · 叠</button>
+            <button class="btn d14-btn" data-flip="scatter">scatter · 散开</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        点按钮看 6 张卡片"飞"到新位置。FLIP 是经典技术：<strong>F</strong>irst 记录前位置 → 应用新布局 <strong>L</strong>ast 记录后位置 → <strong>I</strong>nvert 用 transform 把卡片"反推"回前位置（视觉无变化）→ <strong>P</strong>lay 把 transform tween 到 0。所有人看到的是元素"飞过去"，但其实 DOM 早换了位置。原站的 <code>data-heroflip="pos1/pos2/pos3"</code> 让同一张图在 off-track 页不同章节"飞"过去。
+      </div>
+    </div>
+
+    <!-- DEMO 15 · scroll-driven color interpolation -->
+    <div class="demo" id="demo15">
+      <div class="demo-head">
+        <div class="num">14 / 25</div>
+        <div class="name">滚动驱动头盔色彩补间（on-track 页 data-gl-change-from/to）</div>
+        <div class="tags">scroll progress · hex 插值 · 同步 UI 文本</div>
+      </div>
+      <div class="demo-body" style="padding:0">
+        <div class="d15-stage" id="d15Stage">
+          <div class="d15-pin">
+            <div class="d15-orb" id="d15Orb"></div>
+            <div class="d15-info">
+              <div class="d15-row"><span class="d15-k">progress</span><span class="d15-v" id="d15Prog">0%</span></div>
+              <div class="d15-row"><span class="d15-k">color</span><span class="d15-v" id="d15Hex">#0a0e07</span></div>
+              <div class="d15-row"><span class="d15-k">data-gl-change-from</span><span class="d15-v">"dark-green"</span></div>
+              <div class="d15-row"><span class="d15-k">data-gl-change-to</span><span class="d15-v">"lime"</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        往下滚一屏，看圆球（"头盔"）颜色从暗绿 <code>#0a1208</code> 渐变到柠檬绿 <code>#d2ff00</code>。每帧根据 ScrollTrigger 的 progress（0→1）做 R/G/B 三通道线性插值，写回 CSS。原站把这写到 Three.js 的 uniform 里同时改 PBR 材质 baseColor，连**头盔反光的色温**也跟着变。
+      </div>
+    </div>
+
+    <!-- DEMO 16 · SVG mask container shapes -->
+    <div class="demo" id="demo16">
+      <div class="demo-head">
+        <div class="num">15 / 25</div>
+        <div class="name">SVG 异形容器 · data-helmet-item / mask-callout / mask-case</div>
+        <div class="tags">-webkit-mask-image · 不规则切角圆缺 · 不是 clip-path</div>
+      </div>
+      <div class="demo-body">
+        <div class="d16-grid">
+          <div class="d16-card" data-mask="a"><div class="d16-mask"><div class="d16-content"><span>01</span>NEXT RACE</div></div><div class="d16-tag">callout-left</div></div>
+          <div class="d16-card" data-mask="b"><div class="d16-mask"><div class="d16-content"><span>02</span>LAST LAP</div></div><div class="d16-tag">callout-right</div></div>
+          <div class="d16-card" data-mask="c"><div class="d16-mask"><div class="d16-content"><span>03</span>FASTEST</div></div><div class="d16-tag">case-left</div></div>
+          <div class="d16-card" data-mask="d"><div class="d16-mask"><div class="d16-content"><span>04</span>POINTS</div></div><div class="d16-tag">case-right</div></div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        4 张卡片用 4 个不同形状的 SVG 当容器外形——左凹缺、右凹缺、左切角、右切角。<code>-webkit-mask-image: url("...svg")</code> 把卡片"剪"成 SVG 的形状。CSS clip-path 也能做简单形状但**带凹缺/弧形组合就只能 SVG mask**。原站 off-track 页的卡片墙就是这套，对称的左右开口看上去像 HUD 仪表盘。
+      </div>
+    </div>
+
+    <!-- DEMO 17 · menu image blend-mode columns -->
+    <div class="demo" id="demo17">
+      <div class="demo-head">
+        <div class="num">16 / 25</div>
+        <div class="name">菜单图片轨道 + 鼠标穿过 blend-mode（nav-menu 神技）</div>
+        <div class="tags">data-nav-img · menu-img-blends · mix-blend-mode</div>
+      </div>
+      <div class="demo-body">
+        <div class="d17-stage" id="d17Stage">
+          <div class="d17-col" data-nav-img="1"><div class="d17-img i1"></div><div class="d17-blend"></div></div>
+          <div class="d17-col" data-nav-img="2"><div class="d17-img i2"></div><div class="d17-blend"></div></div>
+          <div class="d17-col" data-nav-img="3"><div class="d17-img i3"></div><div class="d17-blend"></div></div>
+          <div class="d17-col" data-nav-img="4"><div class="d17-img i4"></div><div class="d17-blend"></div></div>
+          <div class="d17-col" data-nav-img="5"><div class="d17-img i5"></div><div class="d17-blend"></div></div>
+        </div>
+        <p style="margin-top:1rem;font-size:.8rem;color:var(--fg-dim)">鼠标在色块间扫过，每列上盖一层 mix-blend-mode 的图层，色彩相互重叠。</p>
+      </div>
+      <div class="demo-foot">
+        nav 菜单展开时，主图轨道下盖了 3 层 <code>.menu-img-blend-1/2/3</code>，分别是 <code>mix-blend-mode: difference / multiply / screen</code>。鼠标 hover 时调每层 opacity，产生"图片之间相互染色"的效果——比单纯的滤镜更复杂、更"叠层"。
+      </div>
+    </div>
+
+    <!-- DEMO 18 · char-level hover link flip -->
+    <div class="demo" id="demo18">
+      <div class="demo-head">
+        <div class="num">17 / 25</div>
+        <div class="name">链接字符级 hover 翻页（整站每个 nav-link 都用）</div>
+        <div class="tags">data-anim="text-hover" · 上下两层字符 · stagger</div>
+      </div>
+      <div class="demo-body">
+        <div class="d18-stage">
+          <a class="d18-link" data-anim="text-hover" href="#"><span class="d18-clip"><span class="d18-row">H<span>o</span>m<span>e</span></span><span class="d18-row d18-row-2">H<span>o</span>m<span>e</span></span></span></a>
+          <a class="d18-link" data-anim="text-hover" href="#"><span class="d18-clip"><span class="d18-row">O<span>n</span>&nbsp;<span>T</span>r<span>a</span>c<span>k</span></span><span class="d18-row d18-row-2">O<span>n</span>&nbsp;<span>T</span>r<span>a</span>c<span>k</span></span></span></a>
+          <a class="d18-link" data-anim="text-hover" href="#"><span class="d18-clip"><span class="d18-row">O<span>f</span>f<span>&nbsp;</span>T<span>r</span>a<span>c</span>k</span><span class="d18-row d18-row-2">O<span>f</span>f<span>&nbsp;</span>T<span>r</span>a<span>c</span>k</span></span></a>
+          <a class="d18-link" data-anim="text-hover" href="#"><span class="d18-clip"><span class="d18-row">C<span>a</span>l<span>e</span>n<span>d</span>a<span>r</span></span><span class="d18-row d18-row-2">C<span>a</span>l<span>e</span>n<span>d</span>a<span>r</span></span></span></a>
+        </div>
+      </div>
+      <div class="demo-foot">
+        鼠标移到链接上，每个字符上滚一行高，下面藏着同一个字符的副本顶上来——看起来像"在原地翻面"。原站每个 nav link、social link、cta 按钮都套这个动作。字符级 stagger 让每个字母错峰翻面，比一整个单词一起滑出去优雅得多。
+      </div>
+    </div>
+
+    <!-- DEMO 19 · CMS-driven race calendar -->
+    <div class="demo" id="demo19">
+      <div class="demo-head">
+        <div class="num">18 / 25</div>
+        <div class="name">CMS 驱动的赛季日历 · prev/next 切换（calendar 页核心）</div>
+        <div class="tags">data-cal-list · data-cal-control · 字段填充</div>
+      </div>
+      <div class="demo-body">
+        <div class="d19-stage">
+          <div class="d19-card" id="d19Card">
+            <div class="d19-head">
+              <div class="d19-flag" id="d19Flag">🇲🇨</div>
+              <div class="d19-id" id="d19Id">04 / 24</div>
+            </div>
+            <div class="d19-name" id="d19Name" data-cal-list="circuit-name">Monaco GP</div>
+            <div class="d19-meta">
+              <div class="d19-cell"><div class="d19-k">circuit</div><div class="d19-v" id="d19Circuit" data-cal-list="circuit-id">Circuit de Monaco</div></div>
+              <div class="d19-cell"><div class="d19-k">length</div><div class="d19-v" id="d19Len" data-cal-list="circuit-lap-length">3.337 km</div></div>
+              <div class="d19-cell"><div class="d19-k">laps</div><div class="d19-v" id="d19Laps" data-cal-list="circuit-lap-amount">78</div></div>
+              <div class="d19-cell"><div class="d19-k">distance</div><div class="d19-v" id="d19Dist" data-cal-list="circuit-distance">260 km</div></div>
+            </div>
+            <div class="d19-schedule">
+              <div class="d19-srow"><span class="d19-srow-k">PRAC 1</span><span class="d19-srow-v" id="d19P1">Fri 13:30</span></div>
+              <div class="d19-srow"><span class="d19-srow-k">PRAC 2</span><span class="d19-srow-v" id="d19P2">Fri 17:00</span></div>
+              <div class="d19-srow"><span class="d19-srow-k">PRAC 3</span><span class="d19-srow-v" id="d19P3">Sat 12:30</span></div>
+              <div class="d19-srow"><span class="d19-srow-k">QUAL</span><span class="d19-srow-v" id="d19Q">Sat 16:00</span></div>
+              <div class="d19-srow d19-srow-race"><span class="d19-srow-k">RACE</span><span class="d19-srow-v" id="d19R">Sun 15:00</span></div>
+            </div>
+          </div>
+          <div class="d19-controls">
+            <button class="btn d19-btn" data-cal-control="previous-item">← prev</button>
+            <button class="btn d19-btn" data-cal-control="next-item">next →</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        点 prev / next 切换 6 场比赛。每场都有赛道名、长度、圈数、距离、4 个 session 时间——这些字段在原站全部来自 Webflow CMS Collection，<code>data-cal-list="circuit-name"</code> 等属性让 JS 知道哪个 DOM 节点对应哪个字段。<strong>整张赛季日历只是一个组件，数据从 CMS 拉</strong>，赛后还能动态同步成绩到 <code>-time-result</code> 字段里。
+      </div>
+    </div>
+
+    <!-- DEMO 19 · Rive scroll scrub (SVG path draw) -->
+    <div class="demo" id="demo19svg">
+      <div class="demo-head">
+        <div class="num">19 / 25</div>
+        <div class="name">Rive 滚动 scrub · 滚动条 = 播放头</div>
+        <div class="tags">data-rive-scrolltrigger-start/-end · stroke-dashoffset · 声明式</div>
+      </div>
+      <div class="demo-body" style="padding:0">
+        <div class="d20-stage" id="d20Stage">
+          <div class="d20-pin">
+            <svg class="d20-svg" viewBox="0 0 600 320">
+              <path id="d20Path" d="M30 280 Q60 80 200 160 Q340 240 380 120 Q420 20 500 100 Q560 160 570 60" fill="none" stroke="#d2ff00" stroke-width="3" stroke-linecap="round" stroke-dasharray="900" stroke-dashoffset="900"/>
+              <circle id="d20Dot" cx="30" cy="280" r="8" fill="#d2ff00"/>
+            </svg>
+            <div class="d20-info">
+              <div class="d15-row"><span class="d15-k">progress</span><span class="d15-v" id="d20Prog">0%</span></div>
+              <div class="d15-row"><span class="d15-k">stroke-dashoffset</span><span class="d15-v" id="d20Off">900</span></div>
+              <div class="d15-row"><span class="d15-k">data-rive-scrolltrigger-start</span><span class="d15-v">"top bottom"</span></div>
+              <div class="d15-row"><span class="d15-k">data-rive-scrolltrigger-end</span><span class="d15-v">"bottom center"</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        滚到这里，曲线被滚轮拉着画出来——这就是把滚动条变成 Rive 时间线播放头的核心机制。原站只需在标签上写 <code>data-rive-scrolltrigger-start="top bottom"</code> 和 <code>data-rive-scrolltrigger-end="bottom center"</code>，运行时自动配对 ScrollTrigger 把 progress 写到 Rive state machine 的 mix input 上。<strong>零 JS、声明式</strong>。
+      </div>
+    </div>
+
+    <!-- DEMO 20 · Variable Font 双轴 -->
+    <div class="demo" id="demo20">
+      <div class="demo-head">
+        <div class="num">20 / 25</div>
+        <div class="name">Variable Font 双轴 · Mona Sans wdth + wght</div>
+        <div class="tags">font-variation-settings · 一个 woff2 = 无数粗细 × 宽度</div>
+      </div>
+      <div class="demo-body">
+        <div class="d21-stage">
+          <div class="d21-preview" id="d21Preview" style="font-variation-settings:'wght' 400,'wdth' 100">LANDO NORRIS</div>
+          <div class="d21-controls">
+            <label>weight <span id="d21WghtVal">400</span><input type="range" id="d21Wght" min="200" max="900" value="400"></label>
+            <label>width <span id="d21WdthVal">100</span><input type="range" id="d21Wdth" min="75" max="125" value="100"></label>
+          </div>
+          <div class="d21-readout mono">font-variation-settings: 'wght' <span id="d21Out1">400</span>, 'wdth' <span id="d21Out2">100</span></div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        拽下面两个滑块，看 LANDO NORRIS 实时变粗 / 变窄。这是一个 woff2 文件能做到的——可变字体的 <strong>wght</strong>（粗细）和 <strong>wdth</strong>（字宽）两个轴可以独立调。原站用的就是 GitHub 开源的 Mona Sans，每个标题在不同 section 的字宽都微调过——这种"字宽呼吸"靠静态字体根本做不到。
+      </div>
+    </div>
+
+    <!-- DEMO 21 · Footer 三色主题 -->
+    <div class="demo" id="demo21">
+      <div class="demo-head">
+        <div class="num">21 / 25</div>
+        <div class="name">Footer 三色主题 · data-footer-theme="black|green|white"</div>
+        <div class="tags">同 nav 哨兵思路 · footer-theme 由 section 决定</div>
+      </div>
+      <div class="demo-body">
+        <div class="d22-footer" id="d22Footer" data-footer-theme="green">
+          <div class="d22-logo">LN · OFF+BRAND</div>
+          <div class="d22-links">
+            <span>HOME</span><span>ON TRACK</span><span>OFF TRACK</span><span>CALENDAR</span>
+          </div>
+          <div class="d22-state mono">data-footer-theme="<span id="d22ThemeOut">green</span>"</div>
+        </div>
+        <div class="d22-controls">
+          <button class="btn d22-btn" data-ft="green">green</button>
+          <button class="btn d22-btn" data-ft="black">black</button>
+          <button class="btn d22-btn" data-ft="white">white</button>
+        </div>
+      </div>
+      <div class="demo-foot">
+        Footer 跟 nav 的主题切换机制一样——CSS 用 <code>[data-footer-theme="black"] { ... }</code> 接管。但<strong>触发源不同</strong>：nav 用全站散布的隐形哨兵 div，footer 是绑定到具体 section（不同 section 落到 footer 的颜色不同）。off-track 页有黑底章节，footer 就 black；on-track 是深绿，footer 就 green。
+      </div>
+    </div>
+
+    <!-- DEMO 22 · Rive button micro-interactions -->
+    <div class="demo" id="demo22">
+      <div class="demo-head">
+        <div class="num">22 / 25</div>
+        <div class="name">按钮 hover 微动效合集 · data-btn-rive-rotate / -hover / -invert</div>
+        <div class="tags">btn-ui.riv · rotate / invert / scale / shake</div>
+      </div>
+      <div class="demo-body">
+        <div class="d23-grid">
+          <button class="d23-btn d23-rotate" data-btn-rive-rotate="90">
+            <span class="d23-txt">Send Mail</span>
+            <span class="d23-icon"><svg viewBox="0 0 16 16"><path d="M2 8h12M10 4l4 4-4 4" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+          </button>
+          <button class="d23-btn d23-invert" data-btn-rive-invert="true">
+            <span class="d23-txt">Read Story</span>
+            <span class="d23-icon"><svg viewBox="0 0 16 16"><path d="M3 13L13 3M5 3h8v8" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+          </button>
+          <button class="d23-btn d23-scale" data-btn-rive-hover="scale">
+            <span class="d23-txt">Race In</span>
+            <span class="d23-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" stroke="currentColor" fill="none" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg></span>
+          </button>
+          <button class="d23-btn d23-shake" data-btn-rive-hover="shake">
+            <span class="d23-txt">Watch Live</span>
+            <span class="d23-icon"><svg viewBox="0 0 16 16"><polygon points="5,3 5,13 13,8" fill="currentColor"/></svg></span>
+          </button>
+        </div>
+      </div>
+      <div class="demo-foot">
+        OFF+BRAND 站上每个按钮都是 Rive 实例——hover 不是 CSS transition 那么简单，是状态机里的"图标自转 90deg / 内外反色 / scale 弹 / 抖动"。这 4 个按钮分别对应 <code>data-btn-rive-rotate="90"</code>、<code>data-btn-rive-invert="true"</code>、<code>data-btn-rive-hover="scale"</code>、<code>data-btn-rive-hover="shake"</code>。我这里用 CSS 仿了交互——原版每个图标也都是 Rive 矢量动画。
+      </div>
+    </div>
+
+    <!-- DEMO 23 · Stat hover image swap -->
+    <div class="demo" id="demo23">
+      <div class="demo-head">
+        <div class="num">23 / 25</div>
+        <div class="name">Stat hover 图替换 · data-stat-hover-img</div>
+        <div class="tags">on-track 页统计卡 · 鼠标进 → 大图淡入</div>
+      </div>
+      <div class="demo-body">
+        <div class="d24-stage" id="d24Stage">
+          <div class="d24-bg" id="d24Bg"></div>
+          <div class="d24-grid">
+            <div class="d24-stat" data-stat-hover-img="pole" data-bg="linear-gradient(135deg,#d2ff00 0%,#5a7d00 100%)"><div class="d24-num">28</div><div class="d24-lbl">POLE POSITIONS</div></div>
+            <div class="d24-stat" data-stat-hover-img="podiums" data-bg="linear-gradient(135deg,#7a9100,#0d1109)"><div class="d24-num">42</div><div class="d24-lbl">PODIUMS</div></div>
+            <div class="d24-stat" data-stat-hover-img="laps" data-bg="linear-gradient(135deg,#0a1208,#1c2218)"><div class="d24-num">8K+</div><div class="d24-lbl">FASTEST LAPS</div></div>
+            <div class="d24-stat" data-stat-hover-img="wins" data-bg="radial-gradient(circle at 30% 40%,#d2ff00,#3a4500)"><div class="d24-num">19</div><div class="d24-lbl">RACE WINS</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        鼠标移到任一统计上，背后大图淡入（这里用渐变代图）。原站 on-track 页用 <code>data-stat-hover-img</code> 把每个统计绑一张照片——hover 时整面墙的视觉切换成"这个数字对应的赛车场景"。一种"数字会讲故事"的设计。
+      </div>
+    </div>
+
+    <!-- DEMO 24 · per-section scroll progress -->
+    <div class="demo" id="demo24">
+      <div class="demo-head">
+        <div class="num">24 / 25</div>
+        <div class="name">章节滚动进度条 · 独立 demo 化（页面顶部那条线的局部版）</div>
+        <div class="tags">scroll-indicator-bar · transform: scaleX</div>
+      </div>
+      <div class="demo-body" style="padding:0">
+        <div class="d25-stage" id="d25Stage">
+          <div class="d25-bar"><div class="d25-bar-fill" id="d25Fill"></div></div>
+          <div class="d25-content">
+            <div class="d25-block">
+              <div class="d25-eyebrow mono">section · 01 / 03</div>
+              <p>滚动这个 section，看上方的细线随你的滚动百分比拉长。这是 <code>scroll-indicator-bar</code> 的局部版——原站把它装在全站顶端，整页进度可见。</p>
+            </div>
+            <div class="d25-block">
+              <div class="d25-eyebrow mono">section · 02 / 03</div>
+              <p>实现公式：<code>scaleX = (scrollY - sectionTop) / sectionHeight</code>。和顶部全局进度条一样，但 trigger 换成单个 section。</p>
+            </div>
+            <div class="d25-block">
+              <div class="d25-eyebrow mono">section · 03 / 03</div>
+              <p>到底了。看头部那条柠檬绿细线，应该已经 100%。<code>transform-origin: 0 50%</code> + <code>scaleX(progress)</code> 是最省 CPU 的写法——硬件加速 transform，不触发 reflow。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        全站顶部进度条是同一套机制的全局版，按整个文档的 <code>scrollHeight</code> 算。Off+Brand 这个 <code>.scroll-indicator</code> 是页面右下角的小元件——独立计算 + 独立 z-index。两层进度提示（全局 + 局部）让用户随时知道"我在哪 / 还有多少"。
+      </div>
+    </div>
+
+    <!-- DEMO 11 · the lime page-transition curtain -->
+    <div class="demo" id="demo11">
+      <div class="demo-head">
+        <div class="num">25 / 25</div>
+        <div class="name">全屏柠檬绿过场幕布 · page-transition.riv（点击链接时盖屏 → 揭屏）</div>
+        <div class="tags">.transition-w · data-rive-primary · Taxi.js 切页 · Rive state-machine 3 input</div>
+      </div>
+      <div class="demo-body">
+        <div class="d11-viewport" id="d11Viewport">
+          <div class="d11-page" data-page="a">
+            <div class="d11-tag">page · A</div>
+            <div class="d11-headline">HOME</div>
+            <div class="d11-sub">Lando Norris</div>
+            <a href="#" class="d11-link" data-go="b">→ Go to On Track</a>
+          </div>
+          <div class="d11-page" data-page="b" style="display:none">
+            <div class="d11-tag">page · B</div>
+            <div class="d11-headline" style="font-family:monospace;letter-spacing:.1em">ON TRACK</div>
+            <div class="d11-sub">2025 race highlights</div>
+            <a href="#" class="d11-link" data-go="a">← Back to Home</a>
+          </div>
+          <!-- the lime curtain (page-transition.riv 的纯 CSS 仿) -->
+          <div class="d11-curtain" id="d11Curtain">
+            <div class="d11-curtain-shape">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0,0 L100,0 L100,100 L0,100 Z" fill="#d2ff00"/>
+                <path d="M0,100 Q50,80 100,100 L100,100 L0,100 Z" fill="#a8c800"/>
+              </svg>
+            </div>
+            <div class="d11-curtain-text">
+              <span>LOADING</span>
+              <em id="d11Dot">·</em>
+            </div>
+          </div>
+        </div>
+        <div class="d11-controls">
+          <button class="btn" data-go="b">Trigger transition →</button>
+          <button class="btn" data-go="a">← Reverse</button>
+          <div class="d11-state mono" id="d11State">state · <span class="v">initial=true · out=false · in=false</span></div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        点按钮看柠檬绿幕布从下往上盖整屏 → DOM 切到下一页 → 幕布往上掀出去揭屏。原站的 <code>.transition-w</code> 容器里有一个 <code>canvas[data-rive-primary]</code> 跑 <strong>page-transition.riv</strong>，状态机三个 input：<code>initialInput</code>（首次进站 "Load Norris" 按钮态）/ <code>transitionOutInput</code>（盖屏）/ <code>transitionInInput</code>（揭屏）。Taxi.js 在 <code>onLeave</code> hook 里调 <code>EL()</code> 把 out=true 触发盖屏，然后替换 DOM，再调 <code>H$()</code> 把 in=true 触发揭屏。<strong>外接脚本 <code>transitions-rive-isolate.js</code></strong> 单独隔离这个 Rive 实例避免被其他逻辑误碰。柠檬绿用 Rive 而不是 CSS 是因为下沿不是直线——是有机的"波浪 / 头盔轮廓"曲线。
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============== PER-PAGE ============== -->
+<section data-section="逐页拆解">
+  <div class="shell">
+    <div class="eyebrow reveal">03 · 全站 4 个主页面 · 每页一个"招牌交互"</div>
+    <h2 class="title-1 reveal">不是首页好看而已。<em>每一页</em>都藏着不一样的招式。</h2>
+
+    <div class="page-block reveal">
+      <h3>① 首页 <span class="path">/</span></h3>
+      <p class="sub">招牌：3D 头盔 hero · "Load Norris" 预加载门 · sticky-hero scrub 时间线 · 移动端 tap-to-lock。</p>
+      <table class="feat-table">
+        <thead><tr><th>关键 data-attr / 类</th><th>它做什么</th><th>用什么实现</th></tr></thead>
+        <tbody>
+          <tr><td>data-sticky-hero="track" / "canvas"</td><td>外层做 sticky 轨道，里层 canvas 被钉住</td><td>position:sticky + ScrollTrigger</td></tr>
+          <tr><td>data-gl="head" / "carousel"</td><td>两块 Three.js 画布：头盔 + 滚动 marquee 的 3D 项</td><td>Three.js + 全局 window.landoGL</td></tr>
+          <tr><td>data-rive-file="reef"</td><td>头盔 2D 版（移动端 / 菜单里用）</td><td>Rive state-machine "helmet-reef_scroll"</td></tr>
+          <tr><td>data-rive-file="circuits"</td><td>赛道图，hover 切赛道</td><td>1 个 .riv + input "track"</td></tr>
+          <tr><td>data-hero-anim="msg" / "img" / "mob1" / "mob2"</td><td>多个元素的进场角色编号</td><td>GSAP timeline · power3.out · stagger 0.02</td></tr>
+          <tr><td>data-home-swipe-toggle</td><td>"tap to lock" 切换页面是否可滚</td><td>touch-action 切换 + button state</td></tr>
+          <tr><td>data-nav-theme-target="dark|light"</td><td>隐形哨兵 div 切 nav 主题</td><td>ScrollTrigger.onToggle</td></tr>
+          <tr><td>.transition-w · "Load Norris" 按钮</td><td>首次访问的入场仪式门</td><td>Rive + 点击释放 + GSAP 退场</td></tr>
+          <tr><td>data-mob-landscape</td><td>横屏强制竖屏文案 "This is a vertical drive"</td><td>CSS @media + Rive 提示动画</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="page-block reveal">
+      <h3>② On Track <span class="path">/on-track</span></h3>
+      <p class="sub">招牌：横向 pin 滚动展示赛季高光 · 倒计时数字翻页 · 数据柱状图带 SVG mask 蒙版容器。</p>
+      <table class="feat-table">
+        <thead><tr><th>关键 data-attr / 类</th><th>它做什么</th><th>用什么实现</th></tr></thead>
+        <tbody>
+          <tr><td>data-horizontal-section · .horizontal-pin-wrap</td><td>整个区域钉住，里面卡片向左走</td><td>ScrollTrigger pin + translateX(scrub)</td></tr>
+          <tr><td>.on-t-countdown-digits-item</td><td>下一场比赛的倒计时数字翻页（dd hh mm ss）</td><td>每秒更新 + GSAP yPercent flip</td></tr>
+          <tr><td>--mask-url: url('on-t-hero-stats-ui-box1-fill-c.svg')</td><td>数据卡片用 SVG 当容器形状</td><td>CSS -webkit-mask-image</td></tr>
+          <tr><td>.calendar-track-mask</td><td>赛季日历的赛道线条蒙版</td><td>mask-image + SVG</td></tr>
+          <tr><td>data-gl-change-from / -to / -track</td><td>滚动过程中头盔颜色 / HDRI 强度补间</td><td>ScrollTrigger.onUpdate + uniforms 插值</td></tr>
+          <tr><td>data-h-color-from / -to</td><td>头盔本体主色滚动渐变</td><td>同上，单独颜色通道</td></tr>
+          <tr><td>.impact-content-w</td><td>每个章节带一个大的圆形头盔脉冲图</td><td>Rive helmet-reef + 滚动 trigger</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="page-block reveal">
+      <h3>③ Off Track <span class="path">/off-track</span></h3>
+      <p class="sub">招牌：FLIP 布局转场 · 速度敏感 marquee · 滚动驱动颜色补间 · 多列瀑布流图。</p>
+      <table class="feat-table">
+        <thead><tr><th>关键 data-attr / 类</th><th>它做什么</th><th>用什么实现</th></tr></thead>
+        <tbody>
+          <tr><td>data-heroflip="track" / "img" / "pos1" / "pos2" / "pos3"</td><td>同一张图在不同章节间"飞"过去（位置/尺寸都变）</td><td>GSAP Flip 插件（FLIP 技术）</td></tr>
+          <tr><td>data-marquee-scroll-direction-target / -speed</td><td>滚动方向 + 速度反映到 marquee 上</td><td>ScrollTrigger.velocity 监听</td></tr>
+          <tr><td>data-marquee-direction="left" / "right"</td><td>跑动方向</td><td>CSS @keyframes translateXLeft/Right + play-state</td></tr>
+          <tr><td>data-marquee-duplicate="3"</td><td>克隆几份做无缝循环</td><td>JS clone children N 次</td></tr>
+          <tr><td>data-css-marquee-list="left"</td><td>纯 CSS 的 fallback marquee（无 JS 也能转）</td><td>30s linear infinite animation</td></tr>
+          <tr><td>data-footer-theme="black" / "green" / "white"</td><td>页脚主题色，按 section 切</td><td>同 nav 哨兵机制</td></tr>
+          <tr><td>data-components="true"</td><td>声明这是个 Webflow 组件容器</td><td>Webflow 内部</td></tr>
+          <tr><td>.marquee-offest-w + linear-gradient mask</td><td>marquee 两端淡出，避免硬切</td><td>mask-image: linear-gradient</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="page-block reveal">
+      <h3>④ Calendar <span class="path">/calendar</span></h3>
+      <p class="sub">招牌：CMS 驱动的赛季日历 · 24 站全部字段化 · 每条都能展开看练习 1/2/3 + 排位 + 正赛时间。</p>
+      <table class="feat-table">
+        <thead><tr><th>关键 data-attr / 类</th><th>它做什么</th><th>用什么实现</th></tr></thead>
+        <tbody>
+          <tr><td>data-cal-list="circuit-name" / "date-actual" / "prac1-time" / "qual-time" / "race-time"</td><td>每场比赛拆成 20+ 个数据点（赛道名、起止日期、PR1~Q~Race 时间、长度、圈数...）</td><td>Webflow CMS Collection + 自定义渲染</td></tr>
+          <tr><td>data-cal-list="circuit-flag" / "circuit-id" / "circuit-distance" / "circuit-lap-amount"</td><td>赛道元信息：国旗、ID、长度、总圈数</td><td>CMS 字段</td></tr>
+          <tr><td>data-cal-list="prac1-time-pos" / "-result"</td><td>每场练习的他自己的位置 + 结果</td><td>CMS + 实时同步（赛后更新）</td></tr>
+          <tr><td>data-cal-control="next-item" / "previous-item"</td><td>上/下一场赛事切换按钮</td><td>JS 控制 currentIndex + 重新填字段</td></tr>
+          <tr><td>data-cal-target-label="practice1|2|3|qualifying|race"</td><td>session 标签锚点</td><td>CMS 字段名</td></tr>
+          <tr><td>.calendar-hero-rive · .on-t-countdown-track-rive-w</td><td>当前赛道的 Rive 描线动画</td><td>Rive + data-rive-input-track 联动</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="page-block reveal">
+      <h3>⑤ <span class="path">/partnerships</span> （在导航里被 display-none 隐藏，HTTP 直连也被拒）</h3>
+      <p class="sub">导航 HTML 里有 <code>&lt;a href="/partnerships" class="nav-menu-link-w display-none"&gt;</code>，且服务端拒绝直连 —— 等签约公布才放出。Webflow 标准做法。坦白说：这页我没拆，因为我打不开。</p>
+    </div>
+
+    <div class="page-block reveal">
+      <h3>⑥ <span class="path">/legal/privacy-policy</span> + <span class="path">/legal/terms-conditions</span></h3>
+      <p class="sub">复用全局 nav/footer + 一个 <code>.legal-content-w</code> + <code>.rich-text</code> 富文本，正文来自 <strong>iubenda</strong> 合规嵌入（自动生成 + 多语言）。<code>data-page="legal"</code> 标识 Taxi 路由。<strong>没有独立交互</strong>——这页就是模板复用，所以也没单独 demo。</p>
+    </div>
+
+    <div class="page-block reveal">
+      <h3>⑦ 外接 · <span class="path">landonorris.store</span> （独立子域，跳出域）</h3>
+      <p class="sub">商店是单独域名 + 单独栈（疑似 Shopify），nav "Store" 链接 <code>target="_blank"</code> 跳出。不在本次反向范围内。</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============== GLOBAL SYSTEMS ============== -->
+<section data-section="全局系统">
+  <div class="shell">
+    <div class="eyebrow reveal">03.5 · 跨页通用机制 · 我之前漏拆的部分</div>
+    <h2 class="title-1 reveal">这 7 套系统 <em>每一页</em>都在跑。</h2>
+    <p class="lede reveal">站全 nav 切色 + 倒计时 + 光标系统 + Rive scrub + 视频懒加载 + 多层 mask + Lenis 局部禁用。它们不属于任何单独页，是 Off+Brand 的"基础设施层"。这部分我第一稿漏了，现在补齐。</p>
+
+    <div class="page-block reveal">
+      <h3>⓪ 全屏柠檬绿过场幕布 · <span class="path">.transition-w + canvas[data-rive-primary] + page-transition.riv</span></h3>
+      <p class="sub">这是站点最显眼的"招牌动作"。任何路由切换 (Taxi.js) 都会触发：柠檬绿幕布从下沿涌上盖满整屏 → 隐蔽 DOM 替换 → 幕布从上沿掀走揭新页。下沿不是直线、是有机曲线（疑似头盔轮廓变形），所以非走 Rive 不可，CSS 做不出。</p>
+      <table class="feat-table">
+        <thead><tr><th>组件</th><th>角色</th><th>实现细节</th></tr></thead>
+        <tbody>
+          <tr><td>.transition-w</td><td>整屏 overlay 容器</td><td>z-index 顶层 · pointer-events 切 auto/none</td></tr>
+          <tr><td>.transition-rive + canvas[data-rive-primary]</td><td>承载 page-transition.riv</td><td>Rive 实例独享 · 由 transitions-rive-isolate.js 隔离</td></tr>
+          <tr><td>.transition-btn "Load Norris"</td><td>首次访问的入场门</td><td>只在 initialInput=true 时显示</td></tr>
+          <tr><td>Rive 状态机 input · initialInput</td><td>首次访问态（按钮可见）</td><td>JS 命名空间 xJ.initialInput · 值=true 时第一屏</td></tr>
+          <tr><td>Rive 状态机 input · transitionOutInput</td><td>盖屏：幕布从下往上覆盖</td><td>函数 EL() 把它翻成 true · 同步 pointer-events:auto</td></tr>
+          <tr><td>Rive 状态机 input · transitionInInput</td><td>揭屏：幕布从下沿掀走</td><td>函数 H$() 翻成 true · setTimeout 后整体隐藏</td></tr>
+          <tr><td>window.transitionRiveInputs</td><td>全局暴露三个 input 引用</td><td>方便外部脚本 / Taxi 钩子直接读写</td></tr>
+          <tr><td>transitions-rive-isolate.js</td><td>独立外接脚本</td><td>把这个 Rive 实例从主线 RAF 隔离开，避免被 ScrollTrigger / Lenis 误调度</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:1rem;color:var(--fg-dim);font-size:.85rem">→ 上面 <strong>Demo 25</strong> 用纯 CSS 仿了曲线 SVG + 三态切换，时序跟原站 ~550ms 盖屏 + ~200ms 切换 + ~550ms 揭屏对齐。原站幕布形状更复杂，但**机制完全一样**。</p>
+    </div>
+
+    <div class="page-block reveal">
+      <h3>① 自定义光标 + 区域 reveal · <span class="path">data-mouse-area / -reveal / -track</span></h3>
+      <table class="feat-table">
+        <thead><tr><th>属性</th><th>意思</th><th>实现要点</th></tr></thead>
+        <tbody>
+          <tr><td>data-mouse-area="highlights"</td><td>这个区域有自己的光标文案</td><td>mouseenter/leave 换 cursor.text + scale</td></tr>
+          <tr><td>data-mouse-reveal</td><td>这个元素是 reveal 目标（用 clip-path 跟着光标揭开）</td><td>mousemove 写 clip-path: circle(R at X Y)</td></tr>
+          <tr><td>data-mouse-track</td><td>仅追踪光标但不揭示（用于位移/视差）</td><td>monitor pointerEvent, update CSS var</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:1rem;color:var(--fg-dim);font-size:.85rem">→ 上面 <strong>Demo 09</strong> 演示了这套。</p>
+    </div>
+
+    <div class="page-block reveal">
+      <h3>② 椭圆轨迹大字 · <span class="path">data-oval-scroll="top|bottom"</span></h3>
+      <p class="sub">on-track / off-track 页那个超大 "TRACK" / "OFFTRACK" 标题，文字沿一条<strong>弧线</strong>排列而不是直线。<code>[split-text]:not[data-oval-scroll]</code> 这种"反选"选择器透露了它走的是另一条排版分支——按角度分布每个字符。CSS 用 <code>transform-origin</code> + 每字一个 rotate 角度，让一行文字呈弧形。</p>
+    </div>
+
+    <div class="page-block reveal">
+      <h3>③ 全局倒计时 · <span class="path">data-countdown-date-target / -wrap / -digit="day|hour|min|sec"</span></h3>
+      <p class="sub">每 1s 更新数字，<strong>翻页效果</strong>用 GSAP <code>yPercent: -100</code> + 把新数字克隆到下方，旧数字从上滚出。日历页 + on-track 页都在用，目标日期从 CMS 字段抽。</p>
+    </div>
+
+    <div class="page-block reveal">
+      <h3>④ Rive 滚动 scrub · <span class="path">data-rive-scrolltrigger-start / -end / -target</span></h3>
+      <p class="sub">Rive 动画的 timeline 跟着滚动条进度跑（不是触发后自动播）。<code>data-rive-scrolltrigger-start="top bottom"</code> + <code>-end="bottom center"</code> 直接复用 ScrollTrigger 的语法。<strong>声明式，零 JS</strong>——把所有需要 scrub 的 Rive 都标好属性，运行时自动遍历挂钩。</p>
+    </div>
+
+    <div class="page-block reveal">
+      <h3>⑤ Hover 自动播放视频 · <span class="path">data-stream-hover / -url / -muted / -loop / -autoplay</span></h3>
+      <table class="feat-table">
+        <thead><tr><th>属性</th><th>意思</th><th>实现要点</th></tr></thead>
+        <tbody>
+          <tr><td>data-video-stream-wrap</td><td>外层容器（标记位置）</td><td>用于 IntersectionObserver 监听</td></tr>
+          <tr><td>data-video-stream-placeholder</td><td>视频未加载前的 webp 占位图</td><td>img with srcset (-p-500 / -p-800)</td></tr>
+          <tr><td>data-stream-url="824804225"</td><td>Vimeo 视频 ID</td><td>hover 时构造 player.vimeo.com 嵌入</td></tr>
+          <tr><td>data-stream-hover="true"</td><td>仅 hover 时播</td><td>对比"自动播" = 静默循环</td></tr>
+          <tr><td>data-stream-muted/-loop/-autoplay</td><td>Vimeo Player API 参数</td><td>透传给 iframe</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:1rem;color:var(--fg-dim);font-size:.85rem">→ 上面 <strong>Demo 10</strong> 演示了这套。最大价值：<strong>视频不进视野 / 没 hover 就不下载流</strong>。</p>
+    </div>
+
+    <div class="page-block reveal">
+      <h3>⑥ 多层 SVG mask · <span class="path">data-mask-callout-left / -right · data-mask-case-left / -right</span></h3>
+      <p class="sub">off-track 页的卡片不是矩形圆角，是带凹槽 / 切角 / 圆缺的不规则形状。Off+Brand 把每种形状画成单独 SVG（callout-left.svg, case-right.svg ...），CSS 用 <code>-webkit-mask-image: var(--mask-url)</code> 应用。<strong>左右两版分开</strong>是为了对称——同一张卡片在左列和右列用不同的开口方向。</p>
+    </div>
+
+    <div class="page-block reveal">
+      <h3>⑦ Lenis 局部禁用 · <span class="path">data-lenis-prevent</span></h3>
+      <p class="sub">Lenis 平滑滚动接管整个 body 的滚动事件，但有些容器（地图、嵌入 iframe、自己写的横向滑块）需要原生 wheel。打上 <code>data-lenis-prevent</code> 这个属性后，Lenis 监听到事件 target 是它的子元素就 skip。<strong>逃生舱口设计</strong>——任何重接管浏览器行为的库都该有这种属性。</p>
+    </div>
+
+    <div class="page-block reveal">
+      <h3>⑧ 响应式声明 · <span class="path">data-hide="d|m|ml|t"</span></h3>
+      <p class="sub">d=desktop、m=mobile、ml=mobile landscape、t=tablet。比 Tailwind 的 <code>hidden md:block</code> 更紧凑——一个属性多个值都行，CSS 用 <code>[data-hide~="m"]</code> 的属性选择器接管。</p>
+    </div>
+
+    <div class="page-block reveal">
+      <h3>⑨ Webflow 开关 · <span class="path">data-edit / -components / -designmode-white / -start="hidden"</span></h3>
+      <p class="sub"><code>data-edit="true"</code> 让 Webflow 编辑模式下绕过某些 JS 动画（避免在 CMS 里编辑时被动画干扰）。<code>data-start="hidden"</code> 让 page-w 进入页面时不闪烁。这是 Off+Brand 跟 Webflow 编辑器和谐共处的工程小动作。</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============== ASSETS ============== -->
+<section data-section="资源清单">
+  <div class="shell">
+    <div class="eyebrow reveal">04 · 完整资源清单</div>
+    <h2 class="title-1 reveal">他用了多少 <em>真东西</em>。</h2>
+    <p class="lede reveal">从 JS bundle 里挖出来的、能直接打开的资源路径。如果你想做类似项目，可以照着这份清单去估算资产工作量。</p>
+    <div class="asset-list">
+      <div class="asset-cat">
+        <h4>3D 模型 (Three.js · GLTF + Draco)</h4>
+        <ul>
+          <li>/models/helmet-21.glb · 主头盔（已迭代 21 版）</li>
+          <li>/models/disco-02.glb · 第二个物件</li>
+          <li>/models/sotd.glb · 可能是某个 "of the day" 展示物</li>
+          <li>/models/tracks/tracks-05.glb · 赛道线 3D 几何</li>
+        </ul>
+      </div>
+      <div class="asset-cat">
+        <h4>HDRI 环境光 (3 套)</h4>
+        <ul>
+          <li>/hdri/studio_small_08_1k--dark.hdr</li>
+          <li>/hdri/studio_small_08_1k--faded.hdr</li>
+          <li>/hdri/studio_small_08_1k--light.hdr</li>
+          <li>※ 滚到不同 section 切打光，让头盔反光"会变"</li>
+        </ul>
+      </div>
+      <div class="asset-cat">
+        <h4>Rive 矢量交互 (11 个 .riv)</h4>
+        <ul>
+          <li>reef.riv · 2D 头盔</li>
+          <li>circuits.riv · 全部 F1 赛道</li>
+          <li>ln4.riv · LN4 logo</li>
+          <li>phrases.riv · 动态文案</li>
+          <li>signature.riv · 签名</li>
+          <li>page-transition.riv · 转场</li>
+          <li>mob-landscape.riv · 横屏提示</li>
+          <li>btn-ui.riv · 按钮微动效</li>
+        </ul>
+      </div>
+      <div class="asset-cat">
+        <h4>字体</h4>
+        <ul>
+          <li>Mona Sans Variable (wdth + wght 两轴)</li>
+          <li>github 开源 · 可商用 · 免费</li>
+          <li>github.com/github/mona-sans</li>
+        </ul>
+      </div>
+      <div class="asset-cat">
+        <h4>核心库 (CDN)</h4>
+        <ul>
+          <li>GSAP 3.x + ScrollTrigger + SplitText</li>
+          <li>Lenis (smooth scroll)</li>
+          <li>Three.js (GLTFLoader / DRACOLoader / KTX2Loader)</li>
+          <li>EffectComposer / UnrealBloomPass / FXAA</li>
+          <li>@rive-app/canvas</li>
+          <li>Taxi.js (page transitions)</li>
+        </ul>
+      </div>
+      <div class="asset-cat">
+        <h4>色票</h4>
+        <ul>
+          <li>--color--lime ≈ #d2ff00</li>
+          <li>--color--dark-green ≈ #101400</li>
+          <li>--color--lime-off · --color--grey-1/2</li>
+          <li>--color--green-off-white-2 · --color--dark-green-tint-1/2</li>
+          <li>默认 ease: cubic-bezier(0.65, 0.05, 0, 1)</li>
+          <li>默认 dur: 0.75s</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== RECIPES ============== -->
+<section data-section="可抄配方">
+  <div class="shell">
+    <div class="eyebrow reveal">05 · 即抄即用的代码片段</div>
+    <h2 class="title-1 reveal">把这 5 段代码贴进你的网站，<em>一周内</em>升一档。</h2>
+
+    <div class="recipe reveal">
+      <div class="recipe-head"><div class="name">配方 1 · 字符 stagger 入场</div><div class="roi">ROI ★★★★★</div></div>
+<pre><code><span class="com">// 1. 用 SplitText（或自己手写）把每个 .line 拆字</span>
+<span class="kw">const</span> split = <span class="kw">new</span> <span class="fn">SplitText</span>(<span class="str">".line"</span>, { type: <span class="str">"chars,words"</span> });
+
+<span class="com">// 2. 初始状态：字符压到下一行</span>
+<span class="fn">gsap.set</span>(split.chars, { y: <span class="str">"110%"</span> });
+
+<span class="com">// 3. 滚动驱动 + 字符级 stagger</span>
+<span class="fn">gsap.to</span>(split.chars, {
+  y: <span class="num">0</span>,
+  stagger: <span class="num">0.02</span>,
+  ease: <span class="str">"power3.out"</span>,
+  scrollTrigger: { trigger: <span class="str">".line"</span>, start: <span class="str">"top bottom"</span>, end: <span class="str">"center center"</span>, scrub: <span class="kw">true</span> }
+});
+
+<span class="com">// 父元素加 overflow:hidden，字符就只在窗口里露脸</span></code></pre>
+    </div>
+
+    <div class="recipe reveal">
+      <div class="recipe-head"><div class="name">配方 2 · 隐形哨兵切换导航主题</div><div class="roi">ROI ★★★★★</div></div>
+<pre><code><span class="com">// HTML 里散布零高度哨兵 div</span>
+<span class="com">// &lt;div data-nav-theme-target="light"&gt;&lt;/div&gt;</span>
+
+<span class="kw">document</span>.<span class="fn">querySelectorAll</span>(<span class="str">"[data-nav-theme-target]"</span>).<span class="fn">forEach</span>(el =&gt; {
+  <span class="fn">ScrollTrigger.create</span>({
+    trigger: el,
+    start: <span class="str">"top top"</span>,
+    end: <span class="str">"bottom top"</span>,
+    onToggle: self =&gt; {
+      <span class="kw">if</span> (self.isActive) nav.<span class="fn">setAttribute</span>(<span class="str">"data-theme"</span>, el.dataset.navThemeTarget);
+    }
+  });
+});
+
+<span class="com">/* CSS 用属性选择器接管 */</span>
+<span class="com">/* .nav[data-theme="light"] { color: #0a0e07; background: #fff; } */</span></code></pre>
+    </div>
+
+    <div class="recipe reveal">
+      <div class="recipe-head"><div class="name">配方 3 · 1728 流体缩放</div><div class="roi">ROI ★★★★☆</div></div>
+<pre><code><span class="com">/* 抄进 :root，整站字号自动伸缩 */</span>
+<span class="fn">:root</span> {
+  --min-width: <span class="num">992</span>px;
+  --max-width: <span class="num">1920</span>px;
+  --design-width: <span class="num">1728</span>;     <span class="com">/* 你的 Figma 设计稿宽 */</span>
+  --design-unit: <span class="num">16</span>;        <span class="com">/* body 字号在设计稿里多少 px */</span>
+  --fluid-container: <span class="fn">clamp</span>(<span class="kw">var</span>(--min-width), <span class="num">100</span>vw, <span class="kw">var</span>(--max-width));
+  --fluid-font: <span class="fn">calc</span>(<span class="kw">var</span>(--fluid-container) / <span class="kw">var</span>(--design-width) * <span class="kw">var</span>(--design-unit));
+}
+<span class="fn">html</span> { font-size: <span class="kw">var</span>(--fluid-font); }
+
+<span class="com">/* 设计稿里写 48px 的标题，直接： */</span>
+<span class="fn">.title</span> { font-size: <span class="fn">calc</span>(<span class="kw">var</span>(--fluid-container) / <span class="kw">var</span>(--design-width) * <span class="num">48</span>px); }</code></pre>
+    </div>
+
+    <div class="recipe reveal">
+      <div class="recipe-head"><div class="name">配方 4 · "Load &lt;名字&gt;" 预加载门</div><div class="roi">ROI ★★★★☆</div></div>
+<pre><code><span class="com">// HTML</span>
+<span class="com">// &lt;div class="preloader"&gt;&lt;button id="enter"&gt;Load Norris&lt;/button&gt;&lt;/div&gt;</span>
+
+<span class="kw">const</span> enter = <span class="kw">document</span>.<span class="fn">getElementById</span>(<span class="str">"enter"</span>);
+enter.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, () =&gt; {
+  <span class="fn">gsap.to</span>(<span class="str">".preloader"</span>, {
+    autoAlpha: <span class="num">0</span>,
+    duration: <span class="num">0.8</span>,
+    ease: <span class="str">"power3.inOut"</span>,
+    onComplete: () =&gt; <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">".preloader"</span>).<span class="fn">remove</span>()
+  });
+  <span class="com">// 然后才启动主时间线 / 加载头盔模型</span>
+  <span class="fn">startHero</span>();
+});
+
+<span class="com">// 关键设计：把"等"包装成"操作"。用户点的不是 OK，是仪式。</span></code></pre>
+    </div>
+
+    <div class="recipe reveal">
+      <div class="recipe-head"><div class="name">配方 5 · "tap to lock" 移动端模态手势</div><div class="roi">ROI ★★★★☆</div></div>
+<pre><code><span class="kw">const</span> stage = <span class="kw">document</span>.<span class="fn">querySelector</span>(<span class="str">"[data-home-swipe-wrap]"</span>);
+<span class="kw">const</span> btn = <span class="kw">document</span>.<span class="fn">querySelector</span>(<span class="str">"[data-home-swipe-toggle]"</span>);
+
+<span class="kw">let</span> locked = <span class="kw">false</span>;
+btn.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, () =&gt; {
+  locked = !locked;
+  stage.style.touchAction = locked ? <span class="str">"none"</span> : <span class="str">"auto"</span>;
+  <span class="kw">document</span>.body.style.overflow = locked ? <span class="str">"hidden"</span> : <span class="str">""</span>;
+  btn.textContent = locked ? <span class="str">"Back to scroll"</span> : <span class="str">"tap to lock"</span>;
+});
+
+<span class="com">// 锁了之后，touch 事件改成控 3D 对象的旋转：</span>
+stage.<span class="fn">addEventListener</span>(<span class="str">"touchmove"</span>, e =&gt; {
+  <span class="kw">if</span> (!locked) <span class="kw">return</span>;
+  <span class="kw">const</span> t = e.touches[<span class="num">0</span>];
+  <span class="fn">rotateHelmet</span>(t.clientX, t.clientY);
+});</code></pre>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============== summary ============== -->
+<section data-section="收尾">
+  <div class="shell">
+    <div class="eyebrow reveal">06 · 我学到的一句话</div>
+    <h2 class="title-1 reveal" style="max-width:62rem">"页面不是给你看的电影，是<em>被你操控的剧场</em>。"</h2>
+    <p class="lede reveal" style="margin-top:1.5rem">所有 ScrollTrigger 都是 scrub:true（你不滚它就不动）。预加载要点 "Load Norris"（你不点它就不开始）。手机能 "tap to lock"（你不让权它就让权）。Off+Brand 把高级感的秘密压成一句话：<strong>让用户感觉自己在主控</strong>。视觉只是表层，背后的产品哲学是"用户拥有时间轴"。这条原则我现在打算搬进自己的网站。</p>
+  </div>
+</section>
+
+<footer>
+  <div class="shell">
+    Sources ·
+    <a href="https://landonorris.com/" target="_blank">landonorris.com</a> ·
+    <a href="https://www.itsoffbrand.com/our-work/lando-norris" target="_blank">OFF+BRAND case study</a> ·
+    <a href="https://github.com/github/mona-sans" target="_blank">Mona Sans</a><br>
+    Reverse-engineered on 2026-05-18 · 一次性 HTML 报告 · 无后端 · 离线可用
+  </div>
+</footer>
+
+<script>
+/* =================== preloader =================== */
+const preloader = document.getElementById("preloader");
+const loadBtn = document.getElementById("loadBtn");
+loadBtn.addEventListener("click", () => {
+  gsap.to(preloader, { autoAlpha: 0, duration: 0.6, ease: "power3.out", onComplete: () => preloader.style.display = "none" });
+  setTimeout(startHero, 200);
+});
+
+/* =================== HERO entrance =================== */
+function startHero() {
+  // animate the hero title chars from y:110% up
+  const chars = document.querySelectorAll("#heroH1 .char");
+  gsap.set(chars, { y: "110%" });
+  gsap.to(chars, { y: 0, duration: 1, stagger: 0.025, ease: "power3.out", delay: 0.1 });
+
+  // reveal-on-scroll for everything
+  document.querySelectorAll(".reveal, section > .shell > *").forEach(el => {
+    if (!el.classList.contains("reveal")) el.classList.add("reveal");
+    ScrollTrigger.create({
+      trigger: el,
+      start: "top 88%",
+      onEnter: () => el.classList.add("in"),
+      once: true
+    });
+  });
+}
+
+/* =================== progress bar + nav section ============= */
+const progressEl = document.getElementById("progress");
+const navSection = document.getElementById("navSection");
+const sectionNodes = document.querySelectorAll("section[data-section]");
+window.addEventListener("scroll", () => {
+  const max = document.body.scrollHeight - window.innerHeight;
+  const pct = window.scrollY / Math.max(1, max);
+  progressEl.style.transform = `scaleX(${pct})`;
+  // section detector
+  const y = window.scrollY + window.innerHeight * 0.3;
+  let current = sectionNodes[0];
+  sectionNodes.forEach(s => { if (s.offsetTop <= y) current = s; });
+  navSection.textContent = current.dataset.section;
+}, { passive: true });
+
+/* =================== DEMO 1 · char stagger =================== */
+const d1Line = document.getElementById("d1Line");
+const d1Mob = document.getElementById("d1Mob");
+const d1Btn = document.getElementById("d1Btn");
+function playD1() {
+  const chars = d1Line.querySelectorAll(".char");
+  gsap.fromTo(chars, { y: "110%" }, { y: 0, duration: .9, stagger: .025, ease: "power3.out" });
+  gsap.fromTo(d1Mob, { clipPath: "ellipse(110% 110% at 50% 0%)", opacity: 0 }, { clipPath: "ellipse(0% 0% at 50% 100%)", opacity: 1, duration: 1.2, ease: "power3.out", delay: .2 });
+}
+d1Btn.addEventListener("click", playD1);
+ScrollTrigger.create({
+  trigger: d1Line, start: "top 80%",
+  onEnter: playD1, once: false,
+  onEnterBack: playD1
+});
+
+/* =================== DEMO 2 · sentinels =================== */
+const d2Stage = document.getElementById("d2Stage");
+const d2ReadOut = document.getElementById("d2ReadOut");
+const nav = document.getElementById("nav");
+const sentinels = d2Stage.querySelectorAll(".d2-sentinel");
+function checkSentinels() {
+  const stageRect = d2Stage.getBoundingClientRect();
+  const triggerY = stageRect.top + 60; // somewhere near top of the d2 box
+  let theme = "dark";
+  sentinels.forEach(s => {
+    const r = s.getBoundingClientRect();
+    if (r.top <= triggerY) theme = s.dataset.theme;
+  });
+  nav.setAttribute("data-theme", theme === "dark" ? "" : theme);
+  d2ReadOut.textContent = `data-theme="${theme}"`;
+}
+d2Stage.addEventListener("scroll", checkSentinels);
+ScrollTrigger.create({
+  trigger: d2Stage, start: "top center", end: "bottom top",
+  onLeave: () => nav.setAttribute("data-theme", ""),
+  onLeaveBack: () => nav.setAttribute("data-theme", "")
+});
+
+/* =================== DEMO 3 · scroll-driven 3D =================== */
+const d3Stage = document.getElementById("d3Stage");
+const d3Helmet = document.getElementById("d3Helmet");
+const d3Pct = document.getElementById("d3Pct");
+const d3Deg = document.getElementById("d3Deg");
+ScrollTrigger.create({
+  trigger: d3Stage,
+  start: "top top",
+  end: "bottom bottom",
+  scrub: true,
+  onUpdate: self => {
+    const deg = self.progress * 720;
+    const tilt = -20 + self.progress * 40;
+    d3Helmet.style.transform = `rotateX(${tilt}deg) rotateY(${deg}deg)`;
+    d3Pct.textContent = (self.progress * 100).toFixed(0) + "%";
+    d3Deg.textContent = deg.toFixed(0) + "deg";
+  }
+});
+
+/* =================== DEMO 4 · horizontal pin =================== */
+const d4Wrap = document.getElementById("d4Wrap");
+const d4Track = document.getElementById("d4Track");
+function setupD4() {
+  const trackWidth = d4Track.scrollWidth;
+  const viewport = window.innerWidth;
+  const distance = Math.max(0, trackWidth - viewport + 64);
+  gsap.to(d4Track, {
+    x: -distance,
+    ease: "none",
+    scrollTrigger: {
+      trigger: d4Wrap,
+      start: "top top",
+      end: () => "+=" + distance,
+      scrub: true,
+      invalidateOnRefresh: true
+    }
+  });
+}
+setupD4();
+window.addEventListener("resize", () => { ScrollTrigger.refresh(); });
+
+/* =================== DEMO 5 · velocity marquee =================== */
+const r1 = document.getElementById("d5R1");
+const r2 = document.getElementById("d5R2");
+const d5VelOut = document.getElementById("d5VelOut");
+const d5Dir = document.getElementById("d5Dir");
+let x1 = 0, x2 = 0, baseV = 0.5;
+let lastScroll = window.scrollY, dir = 1, vel = 0;
+function tickMarquee() {
+  const cur = window.scrollY;
+  const delta = cur - lastScroll;
+  lastScroll = cur;
+  // smooth velocity
+  vel = vel * 0.85 + Math.abs(delta) * 0.15;
+  if (delta !== 0) dir = delta > 0 ? 1 : -1;
+  const speed = baseV + vel * 0.3;
+  x1 -= speed * dir;
+  x2 += speed * dir;
+  // wrap
+  const w1 = r1.scrollWidth / 2;
+  const w2 = r2.scrollWidth / 2;
+  if (x1 < -w1) x1 += w1;
+  if (x1 > 0) x1 -= w1;
+  if (x2 < -w2) x2 += w2;
+  if (x2 > 0) x2 -= w2;
+  r1.style.transform = `translateX(${x1}px)`;
+  r2.style.transform = `translateX(${x2}px)`;
+  d5VelOut.textContent = vel.toFixed(1);
+  d5Dir.textContent = dir > 0 ? "→ down" : "← up";
+  requestAnimationFrame(tickMarquee);
+}
+tickMarquee();
+
+/* =================== DEMO 6 · Rive state-machine sim =================== */
+const d6Path = document.getElementById("d6Path");
+const d6Label = document.getElementById("d6Label");
+const d6Dot = document.getElementById("d6Dot");
+const d6Btns = document.querySelectorAll(".d6-btn");
+let d6Anim;
+function setTrack(d, name) {
+  d6Btns.forEach(b => b.classList.remove("is-active"));
+  event && event.currentTarget && event.currentTarget.classList.add("is-active");
+  // animate path morph using GSAP attr plugin if available; otherwise just swap with transition
+  gsap.to(d6Path, { attr: { d }, duration: .8, ease: "power3.inOut" });
+  // travel a dot along the path roughly
+  if (d6Anim) d6Anim.kill();
+  const p = d6Path;
+  const total = p.getTotalLength();
+  d6Anim = gsap.to({ t: 0 }, {
+    t: 1, duration: 4, repeat: -1, ease: "none",
+    onUpdate() {
+      const pt = p.getPointAtLength(this.targets()[0].t * total);
+      d6Dot.setAttribute("cx", pt.x);
+      d6Dot.setAttribute("cy", pt.y);
+    }
+  });
+  d6Label.textContent = name;
+}
+d6Btns.forEach(b => b.addEventListener("click", e => setTrack(b.dataset.d, b.dataset.track)));
+// kick off the dot
+setTimeout(() => {
+  d6Btns[0].classList.add("is-active");
+  const p = d6Path;
+  const total = p.getTotalLength();
+  d6Anim = gsap.to({ t: 0 }, {
+    t: 1, duration: 4, repeat: -1, ease: "none",
+    onUpdate() {
+      const pt = p.getPointAtLength(this.targets()[0].t * total);
+      d6Dot.setAttribute("cx", pt.x);
+      d6Dot.setAttribute("cy", pt.y);
+    }
+  });
+}, 200);
+
+/* =================== DEMO 7 · fluid 1728 readout =================== */
+const d7Vw = document.getElementById("d7Vw");
+const d7Fc = document.getElementById("d7Fc");
+const d7Fz = document.getElementById("d7Fz");
+function updateD7() {
+  const vw = window.innerWidth;
+  const fc = Math.max(992, Math.min(vw, 1920));
+  const fz = (fc / 1728 * 16).toFixed(2);
+  d7Vw.textContent = vw + " px";
+  d7Fc.textContent = fc + " px";
+  d7Fz.textContent = fz + " px";
+}
+updateD7();
+window.addEventListener("resize", updateD7);
+
+/* =================== DEMO 8 · tap-to-lock =================== */
+const d8Stage = document.getElementById("d8Stage");
+const d8Btn = document.getElementById("d8Btn");
+const d8Orb = document.getElementById("d8Orb");
+const d8Hint = document.getElementById("d8Hint");
+let d8Locked = false;
+let d8Rot = { x: 0, y: 0 };
+d8Btn.addEventListener("click", () => {
+  d8Locked = !d8Locked;
+  d8Stage.classList.toggle("locked", d8Locked);
+  d8Btn.textContent = d8Locked ? "Back to scroll" : "tap to lock";
+  d8Btn.classList.toggle("is-on", d8Locked);
+  d8Hint.innerHTML = d8Locked
+    ? `<span class="v">已锁</span> · 拖动这里 = 转动球（不会滚页面）`
+    : `未锁 · 在这里滑动 = 翻页面`;
+});
+let d8Drag = null;
+function onDown(e) {
+  if (!d8Locked) return;
+  d8Drag = { x: (e.touches ? e.touches[0].clientX : e.clientX), y: (e.touches ? e.touches[0].clientY : e.clientY) };
+}
+function onMove(e) {
+  if (!d8Drag) return;
+  e.preventDefault();
+  const x = e.touches ? e.touches[0].clientX : e.clientX;
+  const y = e.touches ? e.touches[0].clientY : e.clientY;
+  d8Rot.y += (x - d8Drag.x) * 0.6;
+  d8Rot.x -= (y - d8Drag.y) * 0.6;
+  d8Drag = { x, y };
+  d8Orb.style.transform = `rotateX(${d8Rot.x}deg) rotateY(${d8Rot.y}deg)`;
+  d8Orb.style.background = `radial-gradient(circle at ${35 + Math.sin(d8Rot.y * Math.PI / 180) * 25}% 35%, rgba(208,255,0,.9), rgba(208,255,0,.2) 60%, rgba(20,30,10,.95))`;
+}
+function onUp() { d8Drag = null; }
+d8Stage.addEventListener("mousedown", onDown);
+d8Stage.addEventListener("touchstart", onDown, { passive: true });
+window.addEventListener("mousemove", onMove);
+window.addEventListener("touchmove", onMove, { passive: false });
+window.addEventListener("mouseup", onUp);
+window.addEventListener("touchend", onUp);
+
+/* =================== DEMO 9 · custom cursor + reveal === */
+const d9Stage = document.getElementById("d9Stage");
+const d9Cursor = document.getElementById("d9Cursor");
+const d9Zones = d9Stage.querySelectorAll(".d9-zone");
+d9Stage.addEventListener("mouseenter", () => d9Cursor.classList.add("visible"));
+d9Stage.addEventListener("mouseleave", () => { d9Cursor.classList.remove("visible","over"); d9Zones.forEach(z => z.querySelector(".d9-zone-reveal").style.clipPath="circle(0px at 50% 50%)"); });
+d9Stage.addEventListener("mousemove", e => {
+  d9Cursor.style.left = e.clientX + "px";
+  d9Cursor.style.top = e.clientY + "px";
+});
+d9Zones.forEach(z => {
+  const reveal = z.querySelector(".d9-zone-reveal");
+  const txtSpan = d9Cursor.querySelector("span");
+  z.addEventListener("mouseenter", () => { d9Cursor.classList.add("over"); txtSpan.textContent = z.dataset.cursorText || "see"; });
+  z.addEventListener("mouseleave", () => { d9Cursor.classList.remove("over"); txtSpan.textContent = "scroll"; reveal.style.clipPath="circle(0px at 50% 50%)"; });
+  z.addEventListener("mousemove", e => {
+    const r = z.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    reveal.style.clipPath = `circle(140px at ${x}px ${y}px)`;
+  });
+});
+
+/* =================== DEMO 10 · already pure-CSS hover (no JS needed) === */
+
+/* =================== DEMO 12 · countdown digit flip === */
+(function(){
+  const cells = document.querySelectorAll('.d12-num');
+  const target = new Date(Date.now() + (32*86400 + 5*3600 + 21*60 + 17)*1000); // 32d 5h ahead
+  function pad(n){ return String(Math.max(0,n)).padStart(2,"0"); }
+  function set(cell, val){
+    const cur = cell.dataset.cur, nxt = pad(val);
+    if (cur === nxt) return;
+    const spans = cell.querySelectorAll('span');
+    const a = nxt[0], b = nxt[1];
+    spans[0].textContent = a;
+    spans[1].textContent = b;
+    cell.dataset.cur = nxt;
+    spans.forEach(s => { s.classList.remove('flip'); void s.offsetWidth; s.classList.add('flip'); });
+  }
+  function tick(){
+    const diff = target - new Date();
+    const d = Math.floor(diff/86400000);
+    const h = Math.floor(diff%86400000/3600000);
+    const m = Math.floor(diff%3600000/60000);
+    const s = Math.floor(diff%60000/1000);
+    set(document.querySelector('[data-countdown-digit="day"]'), d);
+    set(document.querySelector('[data-countdown-digit="hour"]'), h);
+    set(document.querySelector('[data-countdown-digit="min"]'), m);
+    set(document.querySelector('[data-countdown-digit="sec"]'), s);
+  }
+  tick(); setInterval(tick, 1000);
+})();
+
+/* =================== DEMO 13 · oval arc layout === */
+(function(){
+  const arc = document.getElementById('d13Arc');
+  const chars = arc.querySelectorAll('.d13-arc-char');
+  const curveInput = document.getElementById('d13Curve');
+  const radiusInput = document.getElementById('d13Radius');
+  function layout(){
+    const totalDeg = parseFloat(curveInput.value);
+    const radius = parseFloat(radiusInput.value);
+    const n = chars.length;
+    const step = totalDeg / (n - 1);
+    chars.forEach((c,i) => {
+      const deg = -totalDeg/2 + step*i;
+      c.style.transformOrigin = `50% ${radius}px`;
+      c.style.transform = `translateX(-50%) rotate(${deg}deg)`;
+      c.style.left = "50%";
+      c.style.bottom = "0";
+    });
+  }
+  layout();
+  curveInput.addEventListener('input', layout);
+  radiusInput.addEventListener('input', layout);
+  window.addEventListener('resize', layout);
+})();
+
+/* =================== DEMO 14 · GSAP FLIP === */
+(function(){
+  const grid = document.getElementById('d14Grid');
+  const cards = grid.querySelectorAll('.d14-card');
+  const btns = document.querySelectorAll('.d14-btn');
+  function flipTo(layout){
+    const first = new Map();
+    cards.forEach(c => first.set(c, c.getBoundingClientRect()));
+    btns.forEach(b => b.classList.toggle('is-on', b.dataset.flip === layout));
+    grid.dataset.layout = layout;
+    cards.forEach(c => {
+      const last = c.getBoundingClientRect();
+      const f = first.get(c);
+      const dx = f.left - last.left;
+      const dy = f.top - last.top;
+      const sx = f.width / last.width;
+      const sy = f.height / last.height;
+      gsap.fromTo(c, { x: dx, y: dy, scaleX: sx, scaleY: sy }, { x:0, y:0, scaleX:1, scaleY:1, duration:.65, ease:"power3.inOut" });
+    });
+  }
+  btns.forEach(b => b.addEventListener('click', () => flipTo(b.dataset.flip)));
+})();
+
+/* =================== DEMO 15 · scroll color interp === */
+(function(){
+  const stage = document.getElementById('d15Stage');
+  const orb = document.getElementById('d15Orb');
+  const prog = document.getElementById('d15Prog');
+  const hex = document.getElementById('d15Hex');
+  const from = [10,18,8];   // #0a1208
+  const to   = [210,255,0]; // #d2ff00
+  function lerp(a,b,t){ return Math.round(a + (b-a)*t); }
+  function toHex(rgb){ return "#" + rgb.map(v => v.toString(16).padStart(2,"0")).join(""); }
+  ScrollTrigger.create({
+    trigger: stage, start: "top top", end: "bottom bottom", scrub: true,
+    onUpdate: self => {
+      const t = self.progress;
+      const r = lerp(from[0],to[0],t), g = lerp(from[1],to[1],t), b = lerp(from[2],to[2],t);
+      const c = toHex([r,g,b]);
+      orb.style.background = `radial-gradient(circle at 35% 35%, ${c}, ${toHex([Math.max(0,r-40),Math.max(0,g-40),Math.max(0,b-40)])})`;
+      orb.style.boxShadow = `0 0 ${20+t*80}px rgba(208,255,0,${t*.6}), inset 0 0 50px rgba(0,0,0,.5)`;
+      prog.textContent = (t*100).toFixed(0) + "%";
+      hex.textContent = c;
+    }
+  });
+})();
+
+/* =================== DEMO 17 · menu blend cursor === */
+(function(){
+  const cols = document.querySelectorAll('.d17-col');
+  cols.forEach(c => {
+    c.addEventListener('mousemove', e => {
+      const r = c.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width;
+      const y = (e.clientY - r.top) / r.height;
+      const blend = c.querySelector('.d17-blend');
+      blend.style.background = `radial-gradient(circle at ${x*100}% ${y*100}%, #d2ff00, #101400)`;
+    });
+  });
+})();
+
+/* =================== DEMO 19 · CMS calendar === */
+(function(){
+  const races = [
+    { id:"02 / 24", name:"Saudi Arabian GP", flag:"🇸🇦", circuit:"Jeddah Corniche", len:"6.174 km", laps:50, dist:"308 km", p1:"Thu 16:30", p2:"Thu 20:00", p3:"Fri 16:30", q:"Fri 20:00", r:"Sat 20:00" },
+    { id:"03 / 24", name:"Australian GP", flag:"🇦🇺", circuit:"Albert Park", len:"5.278 km", laps:58, dist:"306 km", p1:"Fri 12:30", p2:"Fri 16:00", p3:"Sat 12:30", q:"Sat 16:00", r:"Sun 15:00" },
+    { id:"04 / 24", name:"Monaco GP", flag:"🇲🇨", circuit:"Circuit de Monaco", len:"3.337 km", laps:78, dist:"260 km", p1:"Fri 13:30", p2:"Fri 17:00", p3:"Sat 12:30", q:"Sat 16:00", r:"Sun 15:00" },
+    { id:"05 / 24", name:"Canadian GP", flag:"🇨🇦", circuit:"Circuit Gilles Villeneuve", len:"4.361 km", laps:70, dist:"305 km", p1:"Fri 13:30", p2:"Fri 17:00", p3:"Sat 12:30", q:"Sat 16:00", r:"Sun 14:00" },
+    { id:"06 / 24", name:"British GP", flag:"🇬🇧", circuit:"Silverstone", len:"5.891 km", laps:52, dist:"306 km", p1:"Fri 12:30", p2:"Fri 16:00", p3:"Sat 11:30", q:"Sat 15:00", r:"Sun 15:00" },
+    { id:"07 / 24", name:"Japanese GP", flag:"🇯🇵", circuit:"Suzuka", len:"5.807 km", laps:53, dist:"307 km", p1:"Fri 11:30", p2:"Fri 15:00", p3:"Sat 11:30", q:"Sat 15:00", r:"Sun 14:00" },
+  ];
+  let i = 2; // monaco
+  const card = document.getElementById('d19Card');
+  function render(){
+    const r = races[i];
+    document.getElementById('d19Flag').textContent = r.flag;
+    document.getElementById('d19Id').textContent = r.id;
+    document.getElementById('d19Name').textContent = r.name;
+    document.getElementById('d19Circuit').textContent = r.circuit;
+    document.getElementById('d19Len').textContent = r.len;
+    document.getElementById('d19Laps').textContent = r.laps;
+    document.getElementById('d19Dist').textContent = r.dist;
+    document.getElementById('d19P1').textContent = r.p1;
+    document.getElementById('d19P2').textContent = r.p2;
+    document.getElementById('d19P3').textContent = r.p3;
+    document.getElementById('d19Q').textContent = r.q;
+    document.getElementById('d19R').textContent = r.r;
+  }
+  function go(delta){
+    card.classList.add('swap');
+    setTimeout(() => {
+      i = (i + delta + races.length) % races.length;
+      render();
+      card.classList.remove('swap');
+    }, 250);
+  }
+  document.querySelectorAll('[data-cal-control]').forEach(b => {
+    b.addEventListener('click', () => go(b.dataset.calControl === 'next-item' ? 1 : -1));
+  });
+})();
+
+/* =================== inject category pills into each demo head === */
+(function(){
+  const catMap = {
+    demo1:    ["A","入场"],
+    demo2:    ["C","导航主题"],
+    demo3:    ["B","滚动驱动"],
+    demo4:    ["B","滚动驱动"],
+    demo5:    ["B","滚动驱动"],
+    demo6:    ["D","微动效"],
+    demo7:    ["G","视觉系统"],
+    demo8:    ["F","手势光标"],
+    demo9:    ["F","手势光标"],
+    demo10:   ["H","媒体"],
+    demo12:   ["E","数据驱动"],
+    demo13:   ["G","视觉系统"],
+    demo14:   ["G","视觉系统"],
+    demo15:   ["B","滚动驱动"],
+    demo16:   ["G","视觉系统"],
+    demo17:   ["F","手势光标"],
+    demo18:   ["D","微动效"],
+    demo19:   ["E","数据驱动"],
+    demo19svg:["B","滚动驱动"],
+    demo20:   ["G","视觉系统"],
+    demo21:   ["C","导航主题"],
+    demo22:   ["D","微动效"],
+    demo23:   ["H","媒体"],
+    demo24:   ["B","滚动驱动"],
+    demo11:   ["A","入场"]
+  };
+  document.querySelectorAll('.demo').forEach(d => {
+    const m = catMap[d.id];
+    if (!m) return;
+    const pill = document.createElement('div');
+    pill.className = 'cat-pill';
+    pill.textContent = `${m[0]} · ${m[1]}`;
+    const head = d.querySelector('.demo-head');
+    const num = head && head.querySelector('.num');
+    if (num) num.after(pill); else head && head.prepend(pill);
+  });
+})();
+
+/* =================== DEMO 19 (svg scrub) · d20- ============ */
+(function(){
+  const stage = document.getElementById('d20Stage');
+  if (!stage) return;
+  const path = document.getElementById('d20Path');
+  const dot = document.getElementById('d20Dot');
+  const prog = document.getElementById('d20Prog');
+  const off = document.getElementById('d20Off');
+  const total = 900;
+  ScrollTrigger.create({
+    trigger: stage, start: "top top", end: "bottom bottom", scrub: true,
+    onUpdate: self => {
+      const t = self.progress;
+      const newOff = total * (1 - t);
+      path.setAttribute('stroke-dashoffset', newOff.toFixed(0));
+      const pt = path.getPointAtLength(total * t);
+      dot.setAttribute('cx', pt.x);
+      dot.setAttribute('cy', pt.y);
+      prog.textContent = (t * 100).toFixed(0) + "%";
+      off.textContent = newOff.toFixed(0);
+    }
+  });
+})();
+
+/* =================== DEMO 20 (Variable Font) · d21- ============ */
+(function(){
+  const wght = document.getElementById('d21Wght');
+  const wdth = document.getElementById('d21Wdth');
+  const wghtVal = document.getElementById('d21WghtVal');
+  const wdthVal = document.getElementById('d21WdthVal');
+  const out1 = document.getElementById('d21Out1');
+  const out2 = document.getElementById('d21Out2');
+  const preview = document.getElementById('d21Preview');
+  function update(){
+    const w = wght.value, d = wdth.value;
+    preview.style.fontVariationSettings = `'wght' ${w}, 'wdth' ${d}`;
+    wghtVal.textContent = w;
+    wdthVal.textContent = d;
+    out1.textContent = w;
+    out2.textContent = d;
+  }
+  wght.addEventListener('input', update);
+  wdth.addEventListener('input', update);
+})();
+
+/* =================== DEMO 21 (Footer theme) · d22- ============ */
+(function(){
+  const footer = document.getElementById('d22Footer');
+  const out = document.getElementById('d22ThemeOut');
+  document.querySelectorAll('.d22-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      const t = b.dataset.ft;
+      footer.setAttribute('data-footer-theme', t);
+      out.textContent = t;
+    });
+  });
+})();
+
+/* =================== DEMO 23 (Stat hover img) · d24- ============ */
+(function(){
+  const stage = document.getElementById('d24Stage');
+  if (!stage) return;
+  const bg = document.getElementById('d24Bg');
+  stage.querySelectorAll('.d24-stat').forEach(s => {
+    s.addEventListener('mouseenter', () => {
+      stage.classList.add('is-hot');
+      bg.style.background = s.dataset.bg;
+    });
+    s.addEventListener('mouseleave', () => {
+      stage.classList.remove('is-hot');
+    });
+  });
+})();
+
+/* =================== DEMO 24 (per-section scroll bar) · d25- ============ */
+(function(){
+  const stage = document.getElementById('d25Stage');
+  const fill = document.getElementById('d25Fill');
+  if (!stage || !fill) return;
+  ScrollTrigger.create({
+    trigger: stage, start: "top top", end: "bottom bottom", scrub: true,
+    onUpdate: self => { fill.style.transform = `scaleX(${self.progress})`; }
+  });
+})();
+
+/* =================== DEMO 11 · lime page-transition curtain === */
+const d11Viewport = document.getElementById("d11Viewport");
+const d11Curtain = document.getElementById("d11Curtain");
+const d11State = document.getElementById("d11State").querySelector(".v");
+const d11Pages = d11Viewport.querySelectorAll(".d11-page");
+let d11Busy = false;
+function d11Go(target) {
+  if (d11Busy) return;
+  d11Busy = true;
+  // 1. Out: curtain covers
+  d11State.textContent = "initial=false · OUT=true · in=false  → 盖屏";
+  d11Curtain.classList.remove("out");
+  // force reflow
+  void d11Curtain.offsetWidth;
+  d11Curtain.classList.add("in");
+  setTimeout(() => {
+    // 2. Swap pages while covered
+    d11Pages.forEach(p => p.style.display = p.dataset.page === target ? "flex" : "none");
+    d11State.textContent = "DOM swap · 切到 page " + target.toUpperCase();
+    // 3. In: curtain reveals
+    setTimeout(() => {
+      d11Curtain.classList.remove("in");
+      void d11Curtain.offsetWidth;
+      d11Curtain.classList.add("out");
+      d11State.textContent = "initial=false · out=false · IN=true  → 揭屏";
+      setTimeout(() => {
+        d11Curtain.classList.remove("out");
+        d11Busy = false;
+        d11State.textContent = "initial=true · out=false · in=false  (rest)";
+      }, 600);
+    }, 200);
+  }, 550);
+}
+document.querySelectorAll("[data-go]").forEach(b => {
+  b.addEventListener("click", e => { e.preventDefault(); d11Go(b.dataset.go); });
+});
+
+/* =================== reveal on scroll === */
+ScrollTrigger.batch(".reveal", {
+  start: "top 88%",
+  onEnter: els => els.forEach(el => el.classList.add("in"))
+});
+</script>
+</body>
+</html>
