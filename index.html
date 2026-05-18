@@ -3552,6 +3552,17 @@
     });
   })();
 
+  // 按 data-dates 重建 .card-dates-wrap，让 N 期都画出来（修：之前模板只渲染了首期）
+  (function renderAllDateRows() {
+    document.querySelectorAll('.camp-card').forEach(card => {
+      const dates = (card.dataset.dates || '').split(',').map(s => s.trim()).filter(Boolean);
+      if (dates.length === 0) return;
+      const wrap = card.querySelector('.card-dates-wrap');
+      if (!wrap) return;
+      wrap.innerHTML = dates.map(d => `<div class="card-date-row">📅 ${d}</div>`).join('');
+    });
+  })();
+
   // 推荐卡排序：将 data-group="recommend" 的卡片按 data-rank 升序移到推荐分组下方
   (function reorderRecommend() {
     const list = document.getElementById('camps-list');
@@ -3810,32 +3821,49 @@
   }
 
   function applyFilters() {
-    const cards = document.querySelectorAll('.camps-list .camp-card');
-    const dividers = document.querySelectorAll('.camps-list .age-group-divider');
+    // 计数只数原始卡（克隆卡在其它 panel 里跟着同源被显示/隐藏，但不计数）
+    const originalCards = document.querySelectorAll('#camps-list > .camp-card');
+    const allCards = document.querySelectorAll('.panel .camp-card'); // 含克隆，用来同步 hidden 状态
+    const dividers = document.querySelectorAll('#camps-list > .age-group-divider');
     let count = 0;
     const visibleGroups = new Set();
 
-    cards.forEach(card => {
+    function evalCard(card) {
       const ageMin = parseInt(card.dataset.ageMin);
       const ageMax = parseInt(card.dataset.ageMax);
       const ageGroupKey = `${ageMin}-${ageMax}`;
       const cardThemes = card.dataset.themes.split(',');
       const cardRanges = (card.dataset.dates || '').split(',').map(s => s.trim());
       const locText = (card.querySelector('.card-location')?.textContent) || '';
-
       const ageOk    = state.ages.size === 0    || state.ages.has(ageGroupKey);
       const themeOk  = state.themes.size === 0  || [...state.themes].some(t => cardThemes.includes(t));
       const locOk    = state.locs.size === 0    || [...state.locs].some(l => locText.includes(l));
       const dateOk   = !state.selectedDateRange || cardRanges.includes(state.selectedDateRange);
+      return ageOk && themeOk && locOk && dateOk;
+    }
 
-      if (ageOk && themeOk && locOk && dateOk) {
+    // 先按原始卡统计 + 标记 visibleGroups
+    // count = 营期次数（一张卡 dates 有 N 个就算 N 期；若筛选了具体日期，只数那 1 期）
+    originalCards.forEach(card => {
+      if (evalCard(card)) {
         card.classList.remove('hidden');
         card.style.animationDelay = (count * 0.04) + 's';
-        count++;
+        const dates = (card.dataset.dates || '').split(',').map(s => s.trim()).filter(Boolean);
+        if (state.selectedDateRange) {
+          count += dates.includes(state.selectedDateRange) ? 1 : 0;
+        } else {
+          count += Math.max(1, dates.length);
+        }
         visibleGroups.add(card.dataset.group);
       } else {
         card.classList.add('hidden');
       }
+    });
+    // 同步克隆卡（不计数）
+    allCards.forEach(card => {
+      if (card.dataset.cloned !== '1') return;
+      if (evalCard(card)) card.classList.remove('hidden');
+      else card.classList.add('hidden');
     });
 
     dividers.forEach(d => {
