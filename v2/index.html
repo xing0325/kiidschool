@@ -1819,8 +1819,9 @@
       50%     { box-shadow: inset 0 0 18px 0 rgba(255,217,61,0.28); }
     }
 
-    /* G · Ken Burns 仅在 .in-view 时跑（IO 控制，节省非视口的 paint） */
-    img.poster-img.in-view {
+    /* G · Ken Burns 已关闭（paint 太重，影响低端机移动加载体感）
+       要重新启用：把下面规则的 display:none 删掉即可 */
+    img.poster-img.in-view-DISABLED {
       animation: kenBurns 9s ease-in-out infinite alternate;
       will-change: transform;
     }
@@ -3910,32 +3911,7 @@
     }, { rootMargin: '60px 0px', threshold: 0.12 });
     document.querySelectorAll('.camp-card').forEach(c => cardIO.observe(c));
 
-    // 营地图片 scroll-driven 视差：纵向滚动驱动横向偏移
-    (function venueParallax() {
-      const scrolls = document.querySelectorAll('.venue-section .venue-scroll');
-      if (!scrolls.length) return;
-      let ticking = false;
-      function update() {
-        scrolls.forEach((box, idx) => {
-          const rect = box.getBoundingClientRect();
-          const vh = window.innerHeight;
-          // 视口高度内进出区间归一化到 -1 ~ 1
-          const progress = (vh - rect.top) / (vh + rect.height);
-          const clamped = Math.max(0, Math.min(1, progress));
-          // 第一行往左偏、第二行往右偏（错向）
-          const dir = idx % 2 === 0 ? -1 : 1;
-          const maxOffset = Math.max(0, box.scrollWidth - box.clientWidth);
-          box.scrollLeft = maxOffset * 0.5 + dir * maxOffset * 0.3 * (clamped - 0.5) * 2;
-        });
-        ticking = false;
-      }
-      window.addEventListener('scroll', () => {
-        if (!ticking) { requestAnimationFrame(update); ticking = true; }
-      }, { passive: true });
-      // 兜底：250ms 后再 update 一次（RAF 节流环境）
-      setTimeout(update, 250);
-      update();
-    })();
+    // 营地视差已关闭（scroll handler 在移动端低端机会拖累滚动流畅度）
   });
 
   // H · chip 选中弹簧（通用）
