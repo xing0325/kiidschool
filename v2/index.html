@@ -1123,12 +1123,15 @@
       gap: 2px;
     }
     .camp-card .card-name {
-      font-size: 13px;
+      font-size: 14.5px;
+      font-weight: 800;
       line-height: 1.3;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 1;
-      overflow: hidden;
+      color: #2a2520;
+      letter-spacing: -0.2px;
+      /* 不截断：标题完整显示，让卡片高度自适应 */
+      display: block;
+      overflow: visible;
+      word-break: break-word;
     }
     .camp-card .card-date-row { font-size: 10.5px; }
     .camp-card .card-location { font-size: 10.5px; }
@@ -1751,6 +1754,87 @@
       margin: 8px 12px 32px;
       border-radius: 18px;
       padding: 28px 18px 30px !important;
+    }
+
+    /* ═══════════════ 8 个微动效 ═══════════════ */
+
+    /* A · 卡片 stagger 入场：通过 JS 设 --i 给每张卡，CSS 用 calc 算 delay */
+    .camp-card:not(.hidden) {
+      animation: cardFadeIn 360ms cubic-bezier(.2,.8,.2,1) both;
+      animation-delay: calc(var(--i, 0) * 30ms);
+    }
+
+    /* B · 卡片点击「压下感」（150ms） */
+    .camp-card { transition: transform 150ms ease, opacity 150ms ease, box-shadow 200ms ease; }
+    .camp-card:active { transform: scale(0.97); opacity: 0.9; }
+
+    /* C · 年龄 tab 下划线滑动 —— 用容器上的 ::after 当移动指示器 */
+    .age-nav { position: relative; }
+    .age-nav::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      height: 2.5px;
+      background: #FF6B35; border-radius: 2px;
+      /* 默认 4 个 tab 均分；transform 由 JS 写 --age-idx (0..3) */
+      width: calc(25% / 2);   /* 占单 tab 宽度的一半 */
+      left: calc(var(--age-idx, 0) * 25% + 25% * 0.25);
+      transition: left 280ms cubic-bezier(.4,1.4,.5,1);
+    }
+    /* 把每个 tab 自己的 ::after 关掉，避免双线 */
+    .age-nav-tab.active::after { display: none !important; }
+
+    /* D · 漏斗按钮「扭动」提示，badge 出现时触发 */
+    .filter-fab.wiggle { animation: fabWiggle 500ms ease-in-out; }
+    @keyframes fabWiggle {
+      0%   { transform: rotate(0); }
+      20%  { transform: rotate(-12deg); }
+      40%  { transform: rotate(10deg); }
+      60%  { transform: rotate(-6deg); }
+      80%  { transform: rotate(4deg); }
+      100% { transform: rotate(0); }
+    }
+
+    /* E · 详情页 FLIP 放大：由 JS 计算并写入 --o-x/--o-y/--o-w/--o-h 起点 */
+    .detail-overlay.flip-in {
+      animation: detailFlipIn 420ms cubic-bezier(.22, 1, .36, 1);
+    }
+    @keyframes detailFlipIn {
+      from {
+        opacity: 0;
+        transform-origin: var(--o-x, 50%) var(--o-y, 50%);
+        transform: translate(0, 0) scale(0.35);
+      }
+      to {
+        opacity: 1;
+        transform-origin: var(--o-x, 50%) var(--o-y, 50%);
+        transform: translate(0, 0) scale(1);
+      }
+    }
+
+    /* F · 「报名进行中」横条呼吸 */
+    .presale-strip { animation: presaleBreath 2.4s ease-in-out infinite; }
+    @keyframes presaleBreath {
+      0%,100% { box-shadow: inset 0 0 0 0 rgba(255,217,61,0); }
+      50%     { box-shadow: inset 0 0 18px 0 rgba(255,217,61,0.28); }
+    }
+
+    /* G · 卡片图 Ken Burns 慢推（只作用静态图，video 不动） */
+    img.poster-img {
+      animation: kenBurns 9s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+    @keyframes kenBurns {
+      from { transform: scale(1.0) translate(0, 0); }
+      to   { transform: scale(1.07) translate(-1%, -1%); }
+    }
+
+    /* H · chip 选中弹簧 */
+    .chip.pop { animation: chipPop 380ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+    @keyframes chipPop {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.14); }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
@@ -3293,7 +3377,12 @@
   function selectAgeTab(key) {
     _currentAge = key;
     document.querySelectorAll('.age-nav-tab').forEach(t => t.classList.remove('active'));
-    document.querySelector(`.age-nav-tab[data-age="${key}"]`)?.classList.add('active');
+    const activeTab = document.querySelector(`.age-nav-tab[data-age="${key}"]`);
+    activeTab?.classList.add('active');
+    // C · 年龄 tab 下划线滑动指示器
+    const idx = AGE_KEYS.indexOf(key);
+    const nav = document.getElementById('age-nav');
+    if (nav && idx >= 0) nav.style.setProperty('--age-idx', idx);
     // 同步 filter sheet 里的年龄 chip（如有）
     document.querySelectorAll('#age-chips-wrap .chip').forEach(c => {
       c.classList.toggle('active', c.dataset.age === key);
@@ -3396,12 +3485,24 @@
     document.getElementById('contact-modal').classList.remove('open');
     document.body.style.overflow = '';
   }
+  let _lastBadgeCount = 0;
   function updateFilterBadge() {
     const n = state.themes.size + state.locs.size + (state.selectedDateRange ? 1 : 0);
     const badge = document.getElementById('filter-count-badge');
     if (!badge) return;
     badge.textContent = n;
     badge.classList.toggle('show', n > 0);
+    // D · 漏斗扭一下（badge 数量增加时）
+    if (n > _lastBadgeCount) {
+      const fab = document.querySelector('.filter-fab');
+      if (fab) {
+        fab.classList.remove('wiggle');
+        void fab.offsetWidth;  // 强制重排，重启动画
+        fab.classList.add('wiggle');
+        setTimeout(() => fab.classList.remove('wiggle'), 520);
+      }
+    }
+    _lastBadgeCount = n;
   }
 
   // ── 营地档期 Tabs（按卡片真实 data-dates 动态生成） ──
@@ -3622,6 +3723,14 @@
     attachDragDismiss(document.getElementById('contact-modal'), '.contact-modal-content', () => closeContactModal());
   });
 
+  // H · chip 选中弹簧（通用）
+  function popChip(el) {
+    if (!el) return;
+    el.classList.remove('pop');
+    void el.offsetWidth;
+    el.classList.add('pop');
+    setTimeout(() => el.classList.remove('pop'), 400);
+  }
   // ── 多选筛选辅助：通用「全部 + N 个具体值」逻辑 ──
   function _toggleChipSet(el, allSelector, dataKey, set) {
     const v = el.dataset[dataKey];
@@ -3638,6 +3747,7 @@
         if (allChip) allChip.classList.add('active');
       }
     }
+    popChip(el); // H 弹一下
   }
 
   function toggleAge(el) {
@@ -3717,11 +3827,18 @@
     }
 
     // 统计营期次数（一卡 dates 有 N 个就算 N 期；若筛选了具体日期只数 1 期）
+    let visibleIdx = 0; // A · stagger 用，可见卡的序号
     originalCards.forEach(card => {
       const visible = evalCard(card);
       if (visible) {
         card.classList.remove('hidden');
-        card.style.animationDelay = (count * 0.04) + 's';
+        // A · 用 CSS 变量 --i 控制 stagger delay；重置 animation 强制重播
+        card.style.setProperty('--i', Math.min(visibleIdx, 12));  // 封顶到 12 张，后面不再额外加 delay
+        card.style.animation = 'none';
+        // 强制重排让动画重启
+        void card.offsetWidth;
+        card.style.animation = '';
+        visibleIdx++;
         visibleGroups.add(card.dataset.group);
         const dates = (card.dataset.dates || '').split(',').map(s => s.trim()).filter(Boolean);
         if (state.selectedDateRange) {
@@ -3818,6 +3935,14 @@
     title.textContent = nameEl ? nameEl.textContent.trim() : '营期详情';
     meta.textContent = '';
 
+    // E · FLIP：用被点卡片的中心作为 transform-origin
+    const rect = card.getBoundingClientRect();
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const ox = ((rect.left + rect.width / 2) / vw * 100).toFixed(1) + '%';
+    const oy = ((rect.top + rect.height / 2) / vh * 100).toFixed(1) + '%';
+    overlay.style.setProperty('--o-x', ox);
+    overlay.style.setProperty('--o-y', oy);
+
     // 把卡片搬到 overlay 内
     body.innerHTML = '';
     body.appendChild(card);
@@ -3827,7 +3952,11 @@
     document.getElementById('toc-list').innerHTML = '';
     document.getElementById('toc-fab').style.display = 'none';
 
+    overlay.classList.remove('flip-in');
+    void overlay.offsetWidth;
     overlay.classList.add('open');
+    overlay.classList.add('flip-in');
+    setTimeout(() => overlay.classList.remove('flip-in'), 460);
     document.body.classList.add('detail-open');
     overlay.scrollTop = 0;
     history.pushState({ kiidDetail: true }, '');
