@@ -1756,6 +1756,14 @@
       padding: 28px 18px 30px !important;
     }
 
+    /* ═══════════════ Perf · 离屏卡片不渲染 ═══════════════ */
+    /* content-visibility: auto 让浏览器跳过非视口内 .camp-card 的布局/绘制，
+       大幅减少长列表的滚动开销。intrinsic-size 给出占位高度防止 scrollbar 跳。 */
+    .camp-card {
+      content-visibility: auto;
+      contain-intrinsic-size: 0 420px;
+    }
+
     /* ═══════════════ 8 个微动效 ═══════════════ */
 
     /* A · 卡片 stagger 入场：通过 JS 设 --i 给每张卡，CSS 用 calc 算 delay */
@@ -3794,17 +3802,28 @@
   }
 
   // 视口内卡片视频按需启播（IO 兜底，scroll 也评估一次）
+  // 同屏并发 video ≤ MAX_CONCURRENT_VIDEOS。按距屏幕中心的距离排序，最近 N 个 play，其余 pause。
+  const MAX_CONCURRENT_VIDEOS = 2;
   function reevaluateVideos() {
+    const vh = window.innerHeight;
+    const center = vh / 2;
+    const candidates = [];
     document.querySelectorAll('video.poster-img').forEach(v => {
       if (v.closest('.camp-card.hidden')) { try { v.pause(); } catch(e){} return; }
       const rect = v.getBoundingClientRect();
-      const inViewport = rect.top < window.innerHeight && rect.bottom > 0;
-      if (inViewport) {
+      const inViewport = rect.top < vh && rect.bottom > 0;
+      if (!inViewport) { try { v.pause(); } catch(e){} return; }
+      const dist = Math.abs((rect.top + rect.bottom) / 2 - center);
+      candidates.push({ v, dist });
+    });
+    candidates.sort((a, b) => a.dist - b.dist);
+    candidates.forEach(({ v }, idx) => {
+      if (idx < MAX_CONCURRENT_VIDEOS) {
         if (!v.getAttribute('src') && v.dataset.src) v.src = v.dataset.src;
         const p = v.play();
         if (p && p.catch) p.catch(() => {});
       } else {
-        try { v.pause(); } catch(e) {}
+        try { v.pause(); } catch(e){}
       }
     });
   }
@@ -3837,10 +3856,9 @@
     spawnRipple(target, e.clientX, e.clientY);
   }, { passive: true });
 
-  // #3 Skeleton：图片/视频未加载完时显示流光，加载完移除
+  // #3 Skeleton：图片/视频未加载完时显示流光，加载完移除（带 5s 兜底强移除）
   function attachSkeleton(media) {
     if (!media) return;
-    // 已经完成或已是 cached
     if (media.tagName === 'IMG' && media.complete && media.naturalWidth > 0) return;
     media.classList.add('skeleton-wave');
     const off = () => { media.classList.remove('skeleton-wave'); };
@@ -3850,8 +3868,9 @@
     } else if (media.tagName === 'VIDEO') {
       media.addEventListener('loadeddata', off, { once: true });
       media.addEventListener('error', off, { once: true });
-      // 视频懒挂载完 src 后会触发 loadeddata，所以这里只 attach 即可
     }
+    // 兜底：5s 后无论如何强移除，避免视频 data-src 未挂载导致 skeleton 永久转
+    setTimeout(off, 5000);
   }
 
   window.addEventListener('DOMContentLoaded', () => {
