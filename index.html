@@ -3690,7 +3690,10 @@
       }
     });
   }
-  window.addEventListener('panelchange', (e) => reevaluateVideos(e.detail.key));
+  window.addEventListener('panelchange', (e) => {
+    reevaluateVideos(e.detail.key);
+    if (typeof applyFilters === 'function') applyFilters(); // 让 result-count 跟随当前 panel
+  });
   // 滚动时也评估（同 panel 内新进入视口的视频，IO 一般够，但补一层兜底）
   let _scrollTick = false;
   window.addEventListener('scroll', () => {
@@ -3716,40 +3719,45 @@
     cards.forEach(c => { if (!c.dataset.panelKey) c.dataset.panelKey = 'all'; });
 
     cards.forEach(card => {
-      const group = card.dataset.group || '';
-      const min = parseInt(card.dataset.ageMin || '0', 10);
-      const max = parseInt(card.dataset.ageMax || '0', 10);
-      Object.entries(targets).forEach(([key, list]) => {
-        if (!list) return;
-        // 主匹配：data-group 直接对得上
-        let match = (group === key);
-        // 兜底：recommend 卡按年龄重叠回退
-        if (!match && group === 'recommend') {
-          const [k1, k2] = key.split('-').map(Number);
-          match = (max >= k1 && min <= k2);
-        }
-        if (match) {
-          const clone = card.cloneNode(true);
-          clone.dataset.cloned = '1';
-          clone.dataset.panelKey = key;
-          // 卸掉 clone 内 video 的 src，防同图多倍加载（Task 9 IO 会按需挂回）
-          clone.querySelectorAll('video').forEach(v => {
-            v.removeAttribute('autoplay');
-            if (v.src && !v.dataset.src) {
-              v.dataset.src = v.src;
-              v.removeAttribute('src');
-              v.setAttribute('preload', 'none');
-            } else if (v.getAttribute('src')) {
-              // 兜底
-              v.dataset.src = v.getAttribute('src');
-              v.removeAttribute('src');
-              v.setAttribute('preload', 'none');
-            }
-          });
-          list.appendChild(clone);
+      const key = cardPrimaryPanel(card);
+      if (!key || key === 'all') return;
+      const list = targets[key];
+      if (!list) return;
+      const clone = card.cloneNode(true);
+      clone.dataset.cloned = '1';
+      clone.dataset.panelKey = key;
+      // 卸掉 clone 内 video 的 src，防同图多倍加载（IO 会按需挂回）
+      clone.querySelectorAll('video').forEach(v => {
+        v.removeAttribute('autoplay');
+        if (v.src && !v.dataset.src) {
+          v.dataset.src = v.src;
+          v.removeAttribute('src');
+          v.setAttribute('preload', 'none');
+        } else if (v.getAttribute('src')) {
+          v.dataset.src = v.getAttribute('src');
+          v.removeAttribute('src');
+          v.setAttribute('preload', 'none');
         }
       });
+      list.appendChild(clone);
     });
+  }
+
+  // 统一的「卡片归属哪个 panel」判定：每张卡只归属一个 panel（除 all）
+  function cardPrimaryPanel(card) {
+    const group = card.dataset.group || '';
+    if (group === '9-12' || group === '12-16' || group === '14-18') return group;
+    if (group === 'recommend') {
+      const min = parseInt(card.dataset.ageMin || '0', 10);
+      if (min === 9)  return '9-12';
+      if (min === 12) return '12-16';
+      if (min === 14) return '14-18';
+    }
+    return null;
+  }
+  function cardBelongsToPanel(card, panelKey) {
+    if (panelKey === 'all') return true;
+    return cardPrimaryPanel(card) === panelKey;
   }
 
   // 显式跑一次 applyFilters，确保任何浏览器初始都全部可见
@@ -3874,21 +3882,28 @@
       return ageOk && themeOk && locOk && dateOk;
     }
 
+    // 当前 panel 决定计数范围（all 数全部；其余 panel 只数本 panel 的原始卡）
+    const curPanel = (typeof PANEL_KEYS !== 'undefined' && PANEL_KEYS[_panelIndex]) || 'all';
+
     // 先按原始卡统计 + 标记 visibleGroups
     // count = 营期次数（一张卡 dates 有 N 个就算 N 期；若筛选了具体日期，只数那 1 期）
     originalCards.forEach(card => {
-      if (evalCard(card)) {
+      const visible = evalCard(card);
+      if (visible) {
         card.classList.remove('hidden');
         card.style.animationDelay = (count * 0.04) + 's';
+        visibleGroups.add(card.dataset.group);
+      } else {
+        card.classList.add('hidden');
+      }
+      // 计数：通过筛选 + 归属当前 panel
+      if (visible && cardBelongsToPanel(card, curPanel)) {
         const dates = (card.dataset.dates || '').split(',').map(s => s.trim()).filter(Boolean);
         if (state.selectedDateRange) {
           count += dates.includes(state.selectedDateRange) ? 1 : 0;
         } else {
           count += Math.max(1, dates.length);
         }
-        visibleGroups.add(card.dataset.group);
-      } else {
-        card.classList.add('hidden');
       }
     });
     // 同步克隆卡（不计数）
