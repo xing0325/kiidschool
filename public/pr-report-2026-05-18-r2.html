@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>钥匙玩校 R2 更新汇报 · 2026-05-18</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+      background: #F7F5F1;
+      color: #1A1A2E;
+      margin: 0;
+      line-height: 1.6;
+    }
+    .layout { display: flex; max-width: 1080px; margin: 0 auto; min-height: 100vh; }
+    nav.toc {
+      width: 220px;
+      padding: 28px 12px;
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    nav.toc h3 {
+      font-size: 12px;
+      letter-spacing: 1px;
+      color: #888;
+      margin: 0 8px 12px;
+      text-transform: uppercase;
+    }
+    nav.toc a {
+      display: block;
+      padding: 8px 12px;
+      color: #444;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+    nav.toc a:hover { background: #ECE9E2; color: #FF6B35; }
+    main {
+      flex: 1;
+      padding: 32px 40px 80px;
+      background: #fff;
+      box-shadow: 0 0 0 1px #ECE9E2;
+    }
+    h1 { font-size: 30px; margin: 0 0 6px; }
+    h2 {
+      font-size: 22px;
+      margin: 40px 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #FF6B35;
+    }
+    h3 { font-size: 16px; margin: 18px 0 6px; color: #444; }
+    .meta { color: #888; font-size: 13px; margin-bottom: 8px; }
+    .meta a { color: #FF6B35; text-decoration: none; }
+    .badges { margin: 8px 0 24px; }
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      background: #FF6B35;
+      color: #fff;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-right: 6px;
+    }
+    .badge.muted { background: #ECE9E2; color: #555; }
+    ul.changes { padding-left: 20px; }
+    ul.changes li { margin: 6px 0; }
+    code { background: #F0EDE8; padding: 2px 6px; border-radius: 3px; font-size: 13px; }
+    pre {
+      background: #FAFAFA;
+      border: 1px solid #ECE9E2;
+      padding: 14px 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 13px;
+      color: #333;
+      line-height: 1.55;
+    }
+    .perf-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 13px;
+    }
+    .perf-table th, .perf-table td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid #ECE9E2;
+    }
+    .perf-table th { background: #FAFAFA; font-weight: 700; }
+    .perf-table .down { color: #2DA158; font-weight: 700; }
+    blockquote {
+      border-left: 3px solid #FF6B35;
+      background: #FFF8F2;
+      padding: 12px 16px;
+      margin: 14px 0;
+      color: #5A4E45;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <nav class="toc">
+      <h3>本轮汇报</h3>
+      <a href="#overview">概览</a>
+      <a href="#ia">① 底栏 IA 切分</a>
+      <a href="#swipe">② 年龄段真横滑</a>
+      <a href="#perf-video">③ MP4 性能</a>
+      <a href="#perf-img">④ 静态图压缩</a>
+      <a href="#sheet">⑤ 弹窗下滑收起</a>
+      <a href="#files">文件改动</a>
+      <a href="#verify">验收清单</a>
+      <a href="#followups">后续/已知项</a>
+    </nav>
+    <main>
+      <h1>钥匙玩校 2026 夏令营 · R2 更新汇报</h1>
+      <div class="meta">2026-05-18 · 分支 <code>feat/2026-revision-r1</code> · <a href="https://xing0325.github.io/kiidschool/">线上预览</a></div>
+      <div class="badges">
+        <span class="badge">移动端体验</span>
+        <span class="badge">性能优化</span>
+        <span class="badge muted">单仓 13 个 commit</span>
+      </div>
+
+      <h2 id="overview">概览</h2>
+      <p>本轮针对家长在移动端反馈的两个痛点 <b>「加载慢」</b> 与 <b>「页面切换不顺」</b>，做了一次交互架构与性能的并行重构。所有改动集中在 <code>index.html</code> 与几张大图。</p>
+      <blockquote>
+        改动均集中在单一文件 + 几张图替换，回滚粒度小。若任一项不合预期，单 commit revert 即可。
+      </blockquote>
+
+      <h2 id="ia">① 底栏信息架构重新切分</h2>
+      <h3>变化前</h3>
+      <ul class="changes">
+        <li>底栏：筛选 / 了解我们 / 常见问答 / 咨询报名 — 4 项混杂两种交互</li>
+        <li>了解我们 / 常见问答 是从屏幕底部弹起的 sheet</li>
+      </ul>
+      <h3>变化后</h3>
+      <ul class="changes">
+        <li>底栏：<b>首页 / 了解我们 / 常见问答 / 咨询报名</b> — 前 3 真 tab 切换，咨询报名仍是弹窗</li>
+        <li>「筛选」漏斗按钮挪到<b>首页顶部右侧</b>（紧贴年龄 tab）</li>
+        <li>了解我们 / 常见问答 成为与瀑布流并列的<b>一级页面</b>（类比小红书首页/市集/消息/我的）</li>
+        <li>3 个一级页面各自记忆 scrollTop，切回保持原位置</li>
+      </ul>
+
+      <h2 id="swipe">② 首页年龄段「真横滑」4 panel</h2>
+      <p>原来是点击 tab + CSS 过滤；现在是<b>真 4-panel 横滑</b>，类小红书发现/关注/同城。</p>
+      <ul class="changes">
+        <li>4 个 panel：<code>全部 / 9-12 / 12-16 / 14-18</code></li>
+        <li>手指水平滑动 ≥ 30% 宽度或速度 ≥ 0.5 px/ms 即切换；点击年龄 tab 也可切</li>
+        <li>切换有 280ms 缓动过渡，边界拖拽带阻尼回弹</li>
+        <li>每个 panel 独立记忆滚动位置</li>
+        <li>实现：现有 25 张手写卡片不重写，初始化时按 <code>data-group</code> 克隆分发到对应 panel；克隆卡的视频自动卸 <code>src</code>，避免多倍加载</li>
+      </ul>
+
+      <h2 id="perf-video">③ 移动端 MP4 性能</h2>
+      <h3>变化前</h3>
+      <ul class="changes">
+        <li>13 个 MP4 同时设 <code>preload="auto"</code> + <code>autoplay</code></li>
+        <li>页面打开 → 浏览器并发拉所有视频，带宽 & 解码都打满</li>
+      </ul>
+      <h3>变化后</h3>
+      <ul class="changes">
+        <li>所有 MP4 改为 <code>data-src</code> + <code>preload="none"</code>，<b>不预加载</b></li>
+        <li><b>IntersectionObserver</b> 接管：仅当前 panel + 在视口可见的 MP4 才挂 <code>src</code> 并播放</li>
+        <li>切 panel 时旧 panel 的 MP4 全部 <code>pause()</code>（保留 src 避免 iOS 重挂首帧黑屏）</li>
+        <li>滚动节流补 250ms 兜底，避免 IO 漏帧</li>
+      </ul>
+
+      <h2 id="perf-img">④ 静态图压缩</h2>
+      <table class="perf-table">
+        <tr><th>资源</th><th>原</th><th>新</th><th>对比</th></tr>
+        <tr><td><code>images/camps/world.jpg</code></td><td>4 201 KB</td><td>103 KB</td><td class="down">−97%</td></tr>
+        <tr><td><code>playmates/linwenping.png</code> → <code>.jpg</code></td><td>2 870 KB</td><td>204 KB</td><td class="down">−93%</td></tr>
+        <tr><td><code>playmates/chixiao.png</code> → <code>.jpg</code></td><td>1 811 KB</td><td>75 KB</td><td class="down">−96%</td></tr>
+        <tr><td><code>playmates/hechao.png</code> → <code>.jpg</code></td><td>625 KB</td><td>47 KB</td><td class="down">−92%</td></tr>
+        <tr><td><code>playmates/lingr.png</code> → <code>.jpg</code></td><td>587 KB</td><td>24 KB</td><td class="down">−96%</td></tr>
+        <tr><td><code>features/seven-arts.png</code> → <code>.jpg</code></td><td>683 KB</td><td>89 KB</td><td class="down">−87%</td></tr>
+        <tr><td><b>合计</b></td><td><b>10 777 KB</b></td><td><b>542 KB</b></td><td class="down"><b>−95%</b></td></tr>
+      </table>
+      <p>另外，全部 57 个 <code>&lt;img&gt;</code> 加上 <code>loading="lazy" decoding="async"</code>，首屏外的图片不阻塞渲染。</p>
+
+      <h2 id="sheet">⑤ 底部弹窗按住下滑收起</h2>
+      <ul class="changes">
+        <li>筛选 sheet、咨询报名 modal 均支持<b>按住下滑关闭</b></li>
+        <li>阈值：位移 &gt; 100 px <b>或</b> 速度 &gt; 0.5 px/ms 即关闭</li>
+        <li>仅在 sheet 内部已经滚到顶 (<code>scrollTop = 0</code>) 时识别为关闭手势（否则交给内部滚动）</li>
+        <li>原「点空白处关闭」「点关闭按钮关闭」均保留</li>
+      </ul>
+
+      <h2 id="files">文件改动</h2>
+      <pre>index.html                                   修改（HTML + CSS + JS 内联）
+images/camps/world.jpg                       替换（压缩）
+images/playmates/linwenping.jpg              新增（替代 .png）
+images/playmates/chixiao.jpg                 新增（替代 .png）
+images/playmates/hechao.jpg                  新增（替代 .png）
+images/playmates/lingr.jpg                   新增（替代 .png）
+images/features/seven-arts.jpg               新增（替代 .png）
+.claude/optimize_static_imgs.py              新增（一次性压缩脚本）
+docs/superpowers/specs/...design.md          新增（设计文档）
+docs/superpowers/plans/...r2.md              新增（实施计划）
+public/pr-report-2026-05-18-r2.html          新增（本文件）</pre>
+
+      <h2 id="verify">验收清单</h2>
+      <ul class="changes">
+        <li>✅ 底栏 4 项：首页 / 了解我们 / 常见问答 / 咨询报名（前 3 tab 切换、后 1 弹窗）</li>
+        <li>✅ 首页顶部右侧漏斗按钮可弹起筛选 sheet</li>
+        <li>✅ 4 个年龄段可手指横滑切换、年龄 tab 同步高亮</li>
+        <li>✅ 每个 panel、每个一级页面各自记忆 scrollTop</li>
+        <li>✅ 详情页打开/关闭与 panel 配合（克隆卡片场景）正确</li>
+        <li>✅ 首屏静态图传输字节 −95%</li>
+        <li>✅ 同屏仅当前 panel 内可见 MP4 处于 playing</li>
+        <li>✅ Bottom sheet 按住下滑可关闭</li>
+      </ul>
+
+      <h2 id="followups">后续 / 已知项</h2>
+      <ul class="changes">
+        <li>Issue #1 的「待物料」未完：6 张 <code>todo</code> + 18 张 <code>blank</code> 卡片需要补完整内容（营地照片、副标题、特色/玩伴公众号物料）</li>
+        <li>4 个 panel 共享 body 垂直 scroll（不是各自独立滚动容器）—— 体验上接近，但严格说不是 100% 小红书同款；如果反馈"切 panel 后回到原 panel 时 scroll 应回到原位置而不是同一 Y"，再迭代为 per-panel overflow 容器。</li>
+        <li>本轮 13 个 commit 已本地落地、推送 origin 即上线（GitHub Pages 直接服务该分支）。</li>
+      </ul>
+    </main>
+  </div>
+</body>
+</html>
