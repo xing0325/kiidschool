@@ -352,9 +352,15 @@
     }
     /* body class 互斥控制 */
     body.view-about .home-view,
-    body.view-faq .home-view { display: none; }
+    body.view-faq .home-view,
+    body.view-signup .home-view { display: none; }
     body.view-home #view-about,
-    body.view-home #view-faq { display: none; }
+    body.view-home #view-faq,
+    body.view-home #view-signup,
+    body.view-about #view-signup,
+    body.view-faq #view-signup,
+    body.view-signup #view-about,
+    body.view-signup #view-faq { display: none; }
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
@@ -1894,12 +1900,187 @@
       0%   { background-position: -150% 0; }
       100% { background-position:  150% 0; }
     }
+    /* ═══════════════ 引导页 Onboarding ═══════════════ */
+    #onboarding {
+      position: fixed; inset: 0; z-index: 99999;
+      background: linear-gradient(155deg, #FFF8F2 0%, #FFE8D8 100%);
+      display: none;
+      flex-direction: column;
+      padding: 32px 22px 24px;
+      animation: onbFade 280ms ease;
+    }
+    #onboarding.show { display: flex; }
+    @keyframes onbFade { from { opacity: 0; } to { opacity: 1; } }
+    .onb-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .onb-title { font-size: 15px; font-weight: 800; color: #FF6B35; letter-spacing: 0.5px; }
+    .onb-skip {
+      background: none; border: none; padding: 4px 10px;
+      font-size: 12.5px; color: #8a847a; cursor: pointer;
+      border-bottom: 1px solid #ccc4b8;
+    }
+    .onb-skip:active { color: #FF6B35; border-color: #FF6B35; }
+    .onb-progress { display: flex; gap: 6px; margin-bottom: 24px; }
+    .onb-progress span {
+      flex: 1; height: 3px; border-radius: 2px;
+      background: rgba(0,0,0,0.08);
+      transition: background 300ms;
+    }
+    .onb-progress span.done { background: #FF6B35; }
+    .onb-step { display: none; flex-direction: column; flex: 1; animation: onbStepIn 360ms cubic-bezier(.2,.85,.25,1); }
+    .onb-step.active { display: flex; }
+    @keyframes onbStepIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .onb-q { font-size: 22px; font-weight: 800; color: #1a1a2e; line-height: 1.3; margin-bottom: 8px; letter-spacing: -0.2px; }
+    .onb-sub { font-size: 13px; color: #6b6258; margin-bottom: 26px; line-height: 1.55; }
+    .onb-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: auto; }
+    .onb-chip {
+      padding: 12px 18px; border-radius: 26px;
+      background: #fff; color: #2a2520;
+      border: 1.5px solid #E8E0D4;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; user-select: none;
+      transition: all 180ms;
+    }
+    .onb-chip:active { transform: scale(0.96); }
+    .onb-chip.selected {
+      background: linear-gradient(135deg, #FF6B35, #FF9233);
+      color: #fff; border-color: transparent;
+      box-shadow: 0 4px 14px rgba(255,107,53,0.35);
+    }
+    .onb-chip-big {
+      flex: 1 1 calc(50% - 5px);
+      padding: 18px 14px;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      font-size: 14.5px;
+    }
+    .onb-chip-big .icon { font-size: 28px; }
+    .onb-chip-big .desc { font-size: 11px; color: #8a847a; font-weight: 500; }
+    .onb-chip.selected .desc { color: rgba(255,255,255,0.85); }
+    .onb-foot { margin-top: 26px; display: flex; gap: 10px; }
+    .onb-btn {
+      flex: 1; padding: 14px 18px; border-radius: 14px;
+      font-size: 15px; font-weight: 800; cursor: pointer; border: none;
+      transition: transform 100ms, opacity 200ms;
+    }
+    .onb-btn:active { transform: scale(0.98); }
+    .onb-btn.primary {
+      background: linear-gradient(135deg, #FF6B35, #FF9233);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(255,107,53,0.4);
+    }
+    .onb-btn.primary[disabled] {
+      background: #DDD4C8; box-shadow: none; cursor: not-allowed;
+    }
+    .onb-btn.ghost {
+      background: rgba(0,0,0,0.04); color: #6b6258;
+    }
+
+    /* signup 集合页 */
+    #view-signup .view-page-body {
+      padding: 14px 14px 80px;
+    }
+    .signup-intro {
+      background: #fff; border-radius: 14px; padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .signup-intro h4 { font-size: 16px; font-weight: 800; color: #2a2520; margin-bottom: 6px; }
+    .signup-intro p { font-size: 13px; color: #6b6258; line-height: 1.55; }
+    .signup-group-h { font-size: 13px; font-weight: 700; color: #8a847a; margin: 18px 4px 8px; letter-spacing: 0.5px; }
+    .signup-row {
+      display: flex; align-items: center; gap: 12px;
+      background: #fff; border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: transform 150ms, box-shadow 150ms;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .signup-row:active { transform: scale(0.985); box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
+    .signup-row-main { flex: 1; min-width: 0; }
+    .signup-row-name { font-size: 14.5px; font-weight: 700; color: #2a2520; line-height: 1.3; }
+    .signup-row-meta { font-size: 11.5px; color: #8a847a; margin-top: 3px; }
+    .signup-row-price { font-size: 15px; font-weight: 800; color: #FF6B35; flex-shrink: 0; }
+    .signup-row-price .unit { font-size: 11px; font-weight: 500; }
+    .signup-row-cta { flex-shrink: 0; font-size: 12px; font-weight: 700; color: #FF6B35; padding: 6px 10px; border-radius: 8px; background: #FFF6F3; }
+    .signup-row.has-payment .signup-row-cta { background: linear-gradient(135deg, #FF6B35, #FF9233); color: #fff; }
   </style>
 </head>
 <body class="view-home">
 
 <!-- 全局阅读进度条（始终贴屏幕最顶端） -->
 <div class="global-progress"><div class="global-progress-fill" id="global-progress-fill"></div></div>
+
+<!-- 引导页 Onboarding（首次访问出现） -->
+<div id="onboarding">
+  <div class="onb-header">
+    <span class="onb-title">🔑 钥匙玩校 · 2026</span>
+    <button class="onb-skip" onclick="onbSkip()">跳过 · 随便看看 →</button>
+  </div>
+  <div class="onb-progress">
+    <span class="done" data-step="1"></span>
+    <span data-step="2"></span>
+    <span data-step="3"></span>
+  </div>
+
+  <!-- Step 1：年龄 -->
+  <div class="onb-step active" data-step="1">
+    <div class="onb-q">孩子几岁？</div>
+    <div class="onb-sub">不同年龄段的营期重点不一样，选一个最匹配的。</div>
+    <div class="onb-chips" id="onb-age">
+      <span class="onb-chip" data-val="9-12">9-12 岁</span>
+      <span class="onb-chip" data-val="12-16">12-16 岁</span>
+      <span class="onb-chip" data-val="14-18">14-18 岁</span>
+      <span class="onb-chip" data-val="all">几个孩子都有 / 不确定</span>
+    </div>
+    <div class="onb-foot">
+      <button class="onb-btn primary" id="onb-next-1" disabled onclick="onbNext(1)">下一步</button>
+    </div>
+  </div>
+
+  <!-- Step 2：兴趣 -->
+  <div class="onb-step" data-step="2">
+    <div class="onb-q">最关心什么？</div>
+    <div class="onb-sub">可多选。我们会按你的兴趣推荐营期。</div>
+    <div class="onb-chips" id="onb-interest">
+      <span class="onb-chip" data-val="经典招牌">⭐ 招牌长营</span>
+      <span class="onb-chip" data-val="学习方法">🧠 学习力 · 学霸方法</span>
+      <span class="onb-chip" data-val="跨学科通识">🌍 跨学科通识</span>
+      <span class="onb-chip" data-val="情绪">💛 心理 · 抗挫 · 情绪</span>
+      <span class="onb-chip" data-val="冒险">🏕️ 户外冒险</span>
+      <span class="onb-chip" data-val="AI">🤖 AI · 编程</span>
+      <span class="onb-chip" data-val="逻辑">🔍 思辨 · 解谜</span>
+      <span class="onb-chip" data-val="动手创造">🛠️ 动手创造</span>
+      <span class="onb-chip" data-val="财商">💰 财商 · 创业</span>
+      <span class="onb-chip" data-val="">🤷 没什么偏好 · 都看看</span>
+    </div>
+    <div class="onb-foot">
+      <button class="onb-btn ghost" onclick="onbBack(2)">返回</button>
+      <button class="onb-btn primary" id="onb-next-2" onclick="onbNext(2)">下一步</button>
+    </div>
+  </div>
+
+  <!-- Step 3：目的 -->
+  <div class="onb-step" data-step="3">
+    <div class="onb-q">你这次来想做什么？</div>
+    <div class="onb-sub">告诉我们去哪个页面对你最有帮助。</div>
+    <div class="onb-chips" id="onb-intent">
+      <span class="onb-chip onb-chip-big" data-val="browse">
+        <span class="icon">🔍</span>
+        <span>先了解 · 看看营期</span>
+        <span class="desc">进入主页，看完整 25 张营期卡</span>
+      </span>
+      <span class="onb-chip onb-chip-big" data-val="signup">
+        <span class="icon">📲</span>
+        <span>直接报名 · 找二维码</span>
+        <span class="desc">跳到报名集合页 · 按营期找 QR</span>
+      </span>
+    </div>
+    <div class="onb-foot">
+      <button class="onb-btn ghost" onclick="onbBack(3)">返回</button>
+      <button class="onb-btn primary" id="onb-finish" disabled onclick="onbFinish()">进入网站</button>
+    </div>
+  </div>
+</div>
 
 <div class="home-view"><!-- /.home-view 闭合在 contact-modal 之前 -->
 
@@ -3430,6 +3611,20 @@
   </div><!-- /.view-page-body -->
 </section><!-- /#view-faq -->
 
+<!-- 「直接报名」二维码集合页 -->
+<section class="view-page" id="view-signup" hidden>
+  <div class="view-page-head">
+    <span class="view-page-title">📲 直接报名 · 二维码</span>
+  </div>
+  <div class="view-page-body">
+    <div class="signup-intro">
+      <h4>找到你要报的营期</h4>
+      <p>下面按年龄分组列出全部 25 个营期。点哪个，就弹出对应的二维码。带橙色「付款」标签的是直接付款二维码；其它是客服 QR，扫码加客服后由客服推送付款方式。</p>
+    </div>
+    <div id="signup-list"><!-- JS 填充 --></div>
+  </div>
+</section>
+
 
 <script>
   const state = {
@@ -3513,38 +3708,35 @@
     document.body.style.overflow = '';
     updateFilterBadge();
   }
-  // 视图切换：home / about / faq —— 一级页面互斥（不再是底部弹起 sheet）
-  const _viewScroll = { home: 0, about: 0, faq: 0 };
+  // 视图切换：home / about / faq / signup
+  const _viewScroll = { home: 0, about: 0, faq: 0, signup: 0 };
   let _currentView = 'home';
   function toggleView(name) {
-    const valid = ['home', 'about', 'faq'];
+    const valid = ['home', 'about', 'faq', 'signup'];
     if (!valid.includes(name)) return;
     if (name === _currentView) return;
 
-    // 保存当前 view 的滚动位置
     _viewScroll[_currentView] = window.scrollY;
 
-    // 先淡出当前 view
     document.body.classList.add('view-switching');
     setTimeout(() => {
       _currentView = name;
-      document.body.classList.remove('view-home', 'view-about', 'view-faq');
+      document.body.classList.remove('view-home', 'view-about', 'view-faq', 'view-signup');
       document.body.classList.add('view-' + name);
 
       const about = document.getElementById('view-about');
       const faq   = document.getElementById('view-faq');
-      if (about) about.hidden = (name !== 'about');
-      if (faq)   faq.hidden   = (name !== 'faq');
+      const signup= document.getElementById('view-signup');
+      if (about)  about.hidden  = (name !== 'about');
+      if (faq)    faq.hidden    = (name !== 'faq');
+      if (signup) signup.hidden = (name !== 'signup');
 
-      // 底栏激活态
       document.querySelectorAll('.bottom-bar-btn').forEach(b => b.classList.remove('tab-active'));
       document.querySelector(`.bottom-bar-btn[data-view-tab="${name}"]`)?.classList.add('tab-active');
       document.body.style.overflow = '';
 
-      // 恢复目标 view 的 scroll
       window.scrollTo(0, _viewScroll[name] || 0);
 
-      // 下一帧淡入（带 setTimeout 兜底防 RAF 节流环境）
       requestAnimationFrame(() => {
         document.body.classList.remove('view-switching');
       });
@@ -3931,7 +4123,166 @@
     document.querySelectorAll('.camp-card').forEach(c => cardIO.observe(c));
 
     // 营地视差已关闭（scroll handler 在移动端低端机会拖累滚动流畅度）
+
+    // 渲染 signup 集合页列表
+    renderSignupList();
+
+    // 引导页判定：未引导过且没带 ?skip 才显示
+    const url = new URL(location.href);
+    if (!localStorage.getItem('kiidschool_onboarded_v1') && !url.searchParams.has('skip')) {
+      onbShow();
+    }
   });
+
+  // ───────── 引导页 Onboarding ─────────
+  const _onbAns = { age: '', interests: [], intent: '' };
+
+  function onbShow() {
+    document.getElementById('onboarding').classList.add('show');
+    document.body.style.overflow = 'hidden';
+    // chip 点击委托
+    document.getElementById('onb-age').addEventListener('click', (e) => {
+      const c = e.target.closest('.onb-chip'); if (!c) return;
+      const wrap = c.parentElement;
+      wrap.querySelectorAll('.onb-chip').forEach(x => x.classList.remove('selected'));
+      c.classList.add('selected');
+      _onbAns.age = c.dataset.val;
+      document.getElementById('onb-next-1').disabled = false;
+    });
+    document.getElementById('onb-interest').addEventListener('click', (e) => {
+      const c = e.target.closest('.onb-chip'); if (!c) return;
+      const v = c.dataset.val;
+      if (v === '') {
+        // "没什么偏好" 独占
+        c.parentElement.querySelectorAll('.onb-chip').forEach(x => x.classList.remove('selected'));
+        c.classList.add('selected');
+        _onbAns.interests = [];
+      } else {
+        c.parentElement.querySelector('.onb-chip[data-val=""]')?.classList.remove('selected');
+        c.classList.toggle('selected');
+        _onbAns.interests = Array.from(c.parentElement.querySelectorAll('.onb-chip.selected'))
+          .map(x => x.dataset.val).filter(Boolean);
+      }
+    });
+    document.getElementById('onb-intent').addEventListener('click', (e) => {
+      const c = e.target.closest('.onb-chip'); if (!c) return;
+      c.parentElement.querySelectorAll('.onb-chip').forEach(x => x.classList.remove('selected'));
+      c.classList.add('selected');
+      _onbAns.intent = c.dataset.val;
+      document.getElementById('onb-finish').disabled = false;
+    });
+
+    // 后台 prefetch：用户在引导页这 10-30 秒，把主页前 6 张卡封面+前 2 篇详情文章先下载下来
+    setTimeout(onbPrefetch, 300);
+  }
+  function onbNext(step) {
+    document.querySelector(`.onb-step[data-step="${step}"]`).classList.remove('active');
+    document.querySelector(`.onb-step[data-step="${step+1}"]`).classList.add('active');
+    document.querySelector(`.onb-progress span[data-step="${step+1}"]`).classList.add('done');
+  }
+  function onbBack(step) {
+    document.querySelector(`.onb-step[data-step="${step}"]`).classList.remove('active');
+    document.querySelector(`.onb-step[data-step="${step-1}"]`).classList.add('active');
+    document.querySelector(`.onb-progress span[data-step="${step}"]`).classList.remove('done');
+  }
+  function onbSkip() {
+    localStorage.setItem('kiidschool_onboarded_v1', '1');
+    document.getElementById('onboarding').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+  function onbFinish() {
+    localStorage.setItem('kiidschool_onboarded_v1', '1');
+    localStorage.setItem('kiidschool_ans', JSON.stringify(_onbAns));
+
+    // 应用筛选到主页
+    if (_onbAns.age && _onbAns.age !== 'all' && typeof selectAgeTab === 'function') {
+      selectAgeTab(_onbAns.age);
+    }
+    if (_onbAns.interests.length && typeof state !== 'undefined') {
+      state.themes.clear();
+      _onbAns.interests.forEach(t => state.themes.add(t));
+      // 标记 chip
+      document.querySelectorAll('#theme-chips-wrap .chip').forEach(c => {
+        c.classList.toggle('active', _onbAns.interests.includes(c.dataset.theme));
+        if (c.dataset.theme === 'all') c.classList.remove('active');
+      });
+      if (typeof applyFilters === 'function') applyFilters();
+      if (typeof updateFilterBadge === 'function') updateFilterBadge();
+    }
+
+    document.getElementById('onboarding').classList.remove('show');
+    document.body.style.overflow = '';
+
+    // 按目的路由
+    if (_onbAns.intent === 'signup') {
+      setTimeout(() => toggleView('signup'), 80);
+    }
+  }
+  function onbPrefetch() {
+    // prefetch 前 6 张卡的封面图（已经懒加载的会因为 cache 命中而提速）
+    const imgs = Array.from(document.querySelectorAll('#camps-list > .camp-card img.poster-img')).slice(0, 6);
+    imgs.forEach(img => {
+      const src = img.getAttribute('src') || img.dataset.src;
+      if (src) { const i = new Image(); i.src = src; }
+    });
+    // prefetch 前 2 篇详情文章 HTML
+    const slugs = Array.from(document.querySelectorAll('#camps-list > .camp-card[data-slug]'))
+      .slice(0, 2).map(c => c.dataset.slug);
+    slugs.forEach(s => {
+      fetch(`articles/${s}/article.html`).catch(() => {});
+    });
+  }
+
+  // ───────── signup 集合页列表渲染 ─────────
+  function renderSignupList() {
+    const list = document.getElementById('signup-list');
+    if (!list) return;
+    const cards = document.querySelectorAll('#camps-list > .camp-card');
+    const groups = { '9-12': [], '12-16': [], '14-18': [] };
+    cards.forEach(c => {
+      const min = parseInt(c.dataset.ageMin || '0', 10);
+      const grp = (min === 9) ? '9-12' : (min === 12 ? '12-16' : (min === 14 ? '14-18' : 'other'));
+      if (groups[grp]) groups[grp].push(c);
+    });
+    const labels = { '9-12': '👦 9-12 岁营期', '12-16': '🧑 12-16 岁营期', '14-18': '👨 14-18 岁营期' };
+    let html = '';
+    for (const k of ['9-12', '12-16', '14-18']) {
+      if (!groups[k].length) continue;
+      html += `<div class="signup-group-h">${labels[k]} · ${groups[k].length} 个营期</div>`;
+      for (const c of groups[k]) {
+        const name = c.querySelector('.card-name')?.textContent.trim() || '';
+        const sub  = c.querySelector('.card-subtitle')?.textContent.trim() || '';
+        const dates = (c.dataset.dates || '').split(',').filter(d => d.trim()).join(' · ');
+        const price = c.querySelector('.card-price')?.textContent.trim() || '';
+        const hasPay = !!c.dataset.paymentQr;
+        // 用 data-card-name 关联回原卡片，点击触发 goToContact 时找到对应 card
+        html += `
+          <div class="signup-row${hasPay ? ' has-payment' : ''}" data-card-name="${name.replace(/"/g,'')}">
+            <div class="signup-row-main">
+              <div class="signup-row-name">${name}</div>
+              <div class="signup-row-meta">${dates}${sub ? ' · ' + sub : ''}</div>
+            </div>
+            <div class="signup-row-price">${price}<span class="unit">元起</span></div>
+            <div class="signup-row-cta">${hasPay ? '💳 付款' : '📲 报名'}</div>
+          </div>`;
+      }
+    }
+    list.innerHTML = html;
+    // 委托点击：在 list 上点 → 找回原 card，触发 goToContact
+    list.addEventListener('click', (e) => {
+      const row = e.target.closest('.signup-row');
+      if (!row) return;
+      const name = row.dataset.cardName;
+      const card = Array.from(document.querySelectorAll('#camps-list > .camp-card'))
+        .find(c => c.querySelector('.card-name')?.textContent.trim() === name);
+      if (card) {
+        // 临时把 card 作为参数传入 goToContact（它会读 paymentQr 等）
+        const fakeBtn = card.querySelector('.card-contact-btn');
+        if (fakeBtn) goToContact(fakeBtn);
+        else goToContact(card);
+      }
+    });
+  }
 
   // H · chip 选中弹簧（通用）
   function popChip(el) {
