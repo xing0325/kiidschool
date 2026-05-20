@@ -1900,43 +1900,47 @@
       0%   { background-position: -150% 0; }
       100% { background-position:  150% 0; }
     }
-    /* ═══════════════ 引导页 Onboarding ═══════════════ */
+    /* ═══════════════ 引导页 Onboarding · 3 题压 1 屏 ═══════════════ */
     #onboarding {
       position: fixed; inset: 0; z-index: 99999;
       background: linear-gradient(155deg, #FFF8F2 0%, #FFE8D8 100%);
       display: none;
       flex-direction: column;
-      padding: 32px 22px 24px;
       animation: onbFade 280ms ease;
     }
     #onboarding.show { display: flex; }
     @keyframes onbFade { from { opacity: 0; } to { opacity: 1; } }
-    .onb-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
-    .onb-title { font-size: 15px; font-weight: 800; color: #FF6B35; letter-spacing: 0.5px; }
+    .onb-header {
+      flex-shrink: 0;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 20px 8px;
+    }
+    .onb-title { font-size: 14px; font-weight: 800; color: #FF6B35; letter-spacing: 0.5px; }
     .onb-skip {
       background: none; border: none; padding: 4px 10px;
       font-size: 12.5px; color: #8a847a; cursor: pointer;
       border-bottom: 1px solid #ccc4b8;
     }
     .onb-skip:active { color: #FF6B35; border-color: #FF6B35; }
-    .onb-progress { display: flex; gap: 6px; margin-bottom: 24px; }
-    .onb-progress span {
-      flex: 1; height: 3px; border-radius: 2px;
-      background: rgba(0,0,0,0.08);
-      transition: background 300ms;
+    .onb-scroll {
+      flex: 1; overflow-y: auto;
+      padding: 8px 22px 16px;
+      -webkit-overflow-scrolling: touch;
     }
-    .onb-progress span.done { background: #FF6B35; }
-    .onb-step { display: none; flex-direction: column; flex: 1; animation: onbStepIn 360ms cubic-bezier(.2,.85,.25,1); }
-    .onb-step.active { display: flex; }
-    @keyframes onbStepIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-    .onb-q { font-size: 22px; font-weight: 800; color: #1a1a2e; line-height: 1.3; margin-bottom: 8px; letter-spacing: -0.2px; }
-    .onb-sub { font-size: 13px; color: #6b6258; margin-bottom: 26px; line-height: 1.55; }
-    .onb-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: auto; }
+    .onb-h {
+      font-size: 22px; font-weight: 800; color: #1a1a2e;
+      line-height: 1.35; letter-spacing: -0.2px;
+      margin: 4px 0 18px;
+    }
+    .onb-q-block { margin-bottom: 18px; }
+    .onb-q-mini { font-size: 14.5px; font-weight: 800; color: #2a2520; margin-bottom: 10px; display: flex; align-items: baseline; gap: 8px; }
+    .onb-q-hint { font-size: 11.5px; color: #8a847a; font-weight: 500; }
+    .onb-chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .onb-chip {
-      padding: 12px 18px; border-radius: 26px;
+      padding: 9px 15px; border-radius: 22px;
       background: #fff; color: #2a2520;
       border: 1.5px solid #E8E0D4;
-      font-size: 14px; font-weight: 600;
+      font-size: 13px; font-weight: 600;
       cursor: pointer; user-select: none;
       transition: all 180ms;
     }
@@ -1946,32 +1950,33 @@
       color: #fff; border-color: transparent;
       box-shadow: 0 4px 14px rgba(255,107,53,0.35);
     }
+    .onb-intent-row { gap: 10px; }
     .onb-chip-big {
-      flex: 1 1 calc(50% - 5px);
-      padding: 18px 14px;
-      display: flex; flex-direction: column; align-items: center; gap: 6px;
-      font-size: 14.5px;
+      flex: 1; padding: 14px 14px;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      font-size: 13px;
+      border-radius: 14px;
     }
-    .onb-chip-big .icon { font-size: 28px; }
+    .onb-chip-big .icon { font-size: 26px; line-height: 1; }
+    .onb-chip-big .onb-chip-title { font-weight: 800; font-size: 14px; }
     .onb-chip-big .desc { font-size: 11px; color: #8a847a; font-weight: 500; }
     .onb-chip.selected .desc { color: rgba(255,255,255,0.85); }
-    .onb-foot { margin-top: 26px; display: flex; gap: 10px; }
+    .onb-foot-sticky {
+      flex-shrink: 0;
+      padding: 12px 22px 18px;
+      background: linear-gradient(to top, #FFE8D8 70%, rgba(255,232,216,0));
+    }
     .onb-btn {
-      flex: 1; padding: 14px 18px; border-radius: 14px;
+      width: 100%;
+      padding: 14px 18px; border-radius: 14px;
       font-size: 15px; font-weight: 800; cursor: pointer; border: none;
-      transition: transform 100ms, opacity 200ms;
+      transition: transform 100ms;
     }
     .onb-btn:active { transform: scale(0.98); }
     .onb-btn.primary {
       background: linear-gradient(135deg, #FF6B35, #FF9233);
       color: #fff;
       box-shadow: 0 6px 18px rgba(255,107,53,0.4);
-    }
-    .onb-btn.primary[disabled] {
-      background: #DDD4C8; box-shadow: none; cursor: not-allowed;
-    }
-    .onb-btn.ghost {
-      background: rgba(0,0,0,0.04); color: #6b6258;
     }
 
     /* signup 集合页 */
@@ -2014,71 +2019,54 @@
 <div id="onboarding">
   <div class="onb-header">
     <span class="onb-title">🔑 钥匙玩校 · 2026</span>
-    <button class="onb-skip" onclick="onbSkip()">跳过 · 随便看看 →</button>
+    <button class="onb-skip" onclick="onbSkip()">跳过 →</button>
   </div>
-  <div class="onb-progress">
-    <span class="done" data-step="1"></span>
-    <span data-step="2"></span>
-    <span data-step="3"></span>
-  </div>
+  <div class="onb-scroll">
+    <h2 class="onb-h">3 个小问题<br>给你最对口的营期</h2>
 
-  <!-- Step 1：年龄 -->
-  <div class="onb-step active" data-step="1">
-    <div class="onb-q">孩子几岁？</div>
-    <div class="onb-sub">不同年龄段的营期重点不一样，选一个最匹配的。</div>
-    <div class="onb-chips" id="onb-age">
-      <span class="onb-chip" data-val="9-12">9-12 岁</span>
-      <span class="onb-chip" data-val="12-16">12-16 岁</span>
-      <span class="onb-chip" data-val="14-18">14-18 岁</span>
-      <span class="onb-chip" data-val="all">几个孩子都有 / 不确定</span>
-    </div>
-    <div class="onb-foot">
-      <button class="onb-btn primary" id="onb-next-1" disabled onclick="onbNext(1)">下一步</button>
-    </div>
-  </div>
+    <section class="onb-q-block">
+      <div class="onb-q-mini">① 孩子几岁？</div>
+      <div class="onb-chips" id="onb-age">
+        <span class="onb-chip" data-val="9-12">9-12 岁</span>
+        <span class="onb-chip" data-val="12-16">12-16 岁</span>
+        <span class="onb-chip" data-val="14-18">14-18 岁</span>
+        <span class="onb-chip" data-val="all">混龄 / 不确定</span>
+      </div>
+    </section>
 
-  <!-- Step 2：兴趣 -->
-  <div class="onb-step" data-step="2">
-    <div class="onb-q">最关心什么？</div>
-    <div class="onb-sub">可多选。我们会按你的兴趣推荐营期。</div>
-    <div class="onb-chips" id="onb-interest">
-      <span class="onb-chip" data-val="经典招牌">⭐ 招牌长营</span>
-      <span class="onb-chip" data-val="学习方法">🧠 学习力 · 学霸方法</span>
-      <span class="onb-chip" data-val="跨学科通识">🌍 跨学科通识</span>
-      <span class="onb-chip" data-val="情绪">💛 心理 · 抗挫 · 情绪</span>
-      <span class="onb-chip" data-val="冒险">🏕️ 户外冒险</span>
-      <span class="onb-chip" data-val="AI">🤖 AI · 编程</span>
-      <span class="onb-chip" data-val="逻辑">🔍 思辨 · 解谜</span>
-      <span class="onb-chip" data-val="动手创造">🛠️ 动手创造</span>
-      <span class="onb-chip" data-val="财商">💰 财商 · 创业</span>
-      <span class="onb-chip" data-val="">🤷 没什么偏好 · 都看看</span>
-    </div>
-    <div class="onb-foot">
-      <button class="onb-btn ghost" onclick="onbBack(2)">返回</button>
-      <button class="onb-btn primary" id="onb-next-2" onclick="onbNext(2)">下一步</button>
-    </div>
-  </div>
+    <section class="onb-q-block">
+      <div class="onb-q-mini">② 最关心什么？<span class="onb-q-hint">可多选 · 可不选</span></div>
+      <div class="onb-chips" id="onb-interest">
+        <span class="onb-chip" data-val="经典招牌">⭐ 招牌长营</span>
+        <span class="onb-chip" data-val="学习方法">🧠 学习力</span>
+        <span class="onb-chip" data-val="跨学科通识">🌍 跨学科</span>
+        <span class="onb-chip" data-val="情绪">💛 心理抗挫</span>
+        <span class="onb-chip" data-val="冒险">🏕️ 户外冒险</span>
+        <span class="onb-chip" data-val="AI">🤖 AI 编程</span>
+        <span class="onb-chip" data-val="逻辑">🔍 思辨解谜</span>
+        <span class="onb-chip" data-val="动手创造">🛠️ 动手创造</span>
+        <span class="onb-chip" data-val="财商">💰 财商</span>
+      </div>
+    </section>
 
-  <!-- Step 3：目的 -->
-  <div class="onb-step" data-step="3">
-    <div class="onb-q">你这次来想做什么？</div>
-    <div class="onb-sub">告诉我们去哪个页面对你最有帮助。</div>
-    <div class="onb-chips" id="onb-intent">
-      <span class="onb-chip onb-chip-big" data-val="browse">
-        <span class="icon">🔍</span>
-        <span>先了解 · 看看营期</span>
-        <span class="desc">进入主页，看完整 25 张营期卡</span>
-      </span>
-      <span class="onb-chip onb-chip-big" data-val="signup">
-        <span class="icon">📲</span>
-        <span>直接报名 · 找二维码</span>
-        <span class="desc">跳到报名集合页 · 按营期找 QR</span>
-      </span>
-    </div>
-    <div class="onb-foot">
-      <button class="onb-btn ghost" onclick="onbBack(3)">返回</button>
-      <button class="onb-btn primary" id="onb-finish" disabled onclick="onbFinish()">进入网站</button>
-    </div>
+    <section class="onb-q-block">
+      <div class="onb-q-mini">③ 你这次来…</div>
+      <div class="onb-chips onb-intent-row" id="onb-intent">
+        <span class="onb-chip onb-chip-big" data-val="browse">
+          <span class="icon">🔍</span>
+          <span class="onb-chip-title">先了解</span>
+          <span class="desc">看营期</span>
+        </span>
+        <span class="onb-chip onb-chip-big" data-val="signup">
+          <span class="icon">📲</span>
+          <span class="onb-chip-title">直接报名</span>
+          <span class="desc">找 QR</span>
+        </span>
+      </div>
+    </section>
+  </div>
+  <div class="onb-foot-sticky">
+    <button class="onb-btn primary" id="onb-finish" onclick="onbFinish()">进入网站 →</button>
   </div>
 </div>
 
@@ -2153,7 +2141,7 @@
   </div>
 
   <!-- 六艺通识营 -->
-  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="跨学科通识" data-dates="7.4-7.10,7.11-7.17" data-group="9-12" data-slug="liuyi">
+  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="跨学科通识" data-dates="7.4-7.10,7.11-7.17" data-group="9-12" data-slug="liuyi" data-payment-qr="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/articles/_shared/31b46612fbbe2a38.png" data-payment-label="扫码报名 · 六艺通识营">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
         <span class="card-status done">✓</span>
@@ -2198,7 +2186,7 @@
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact(this);">咨询 / 报名</button></div>
 
   <!-- 头脑特工队 -->
-  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="情绪" data-dates="7.4-7.10,7.11-7.17,7.18-7.24,7.25-7.31" data-group="9-12" data-slug="emotion-team">
+  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="情绪" data-dates="7.4-7.10,7.11-7.17,7.18-7.24,7.25-7.31" data-group="9-12" data-slug="emotion-team" data-payment-qr="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/articles/_shared/19e2955ca60dc88f.png" data-payment-label="扫码报名 · 头脑特工队">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#6C5CE7,#A29BFE);">
         <span class="card-status done">✓</span>
@@ -2288,7 +2276,7 @@
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact(this);">咨询 / 报名</button></div>
 
   <!-- 招牌通识营·世界重启 -->
-  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="动手创造" data-dates="7.11-7.17,7.25-7.31" data-group="9-12" data-slug="world-restart">
+  <div class="camp-card" data-status="done" data-age-min="9" data-age-max="12" data-themes="动手创造" data-dates="7.11-7.17,7.25-7.31" data-group="9-12" data-slug="world-restart" data-payment-qr="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/articles/_shared/31248ddd474fc507.png" data-payment-label="扫码报名 · 招牌通识营 · 世界重启">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#00B894,#00CEC9);">
         <span class="card-status done">✓</span>
@@ -2423,7 +2411,7 @@
     </div>
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact(this);">咨询 / 报名</button></div>
   <!-- 招牌通识 · 重走人类创造之路 -->
-  <div class="camp-card" data-slug="human-history" data-status="done" data-age-min="9" data-age-max="12" data-themes="动手创造" data-dates="7.4-7.10,7.18-7.24" data-group="9-12">
+  <div class="camp-card" data-slug="human-history" data-status="done" data-age-min="9" data-age-max="12" data-themes="动手创造" data-dates="7.4-7.10,7.18-7.24" data-group="9-12" data-payment-qr="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/articles/_shared/cc889ba154b49c26.png" data-payment-label="扫码报名 · 招牌通识 · 重走人类创造之路">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#A8E6CF,#7FCDCD);">
         <span class="card-status done">✓</span>
@@ -2456,7 +2444,7 @@
   </div>
 
   <!-- 硬核成长营 · 命运手斧 -->
-  <div class="camp-card" data-slug="fate-axe" data-status="done" data-age-min="9" data-age-max="12" data-themes="跨学科通识" data-dates="7.11-7.17" data-group="9-12">
+  <div class="camp-card" data-slug="fate-axe" data-status="done" data-age-min="9" data-age-max="12" data-themes="跨学科通识" data-dates="7.11-7.17" data-group="9-12" data-payment-qr="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/articles/_shared/e8973e403d2519fa.png" data-payment-label="扫码报名 · 硬核成长营 · 命运手斧">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#F77F3C,#FFB347);">
         <span class="card-status done">✓</span>
@@ -2814,7 +2802,7 @@
     </div>
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact(this);">咨询 / 报名</button></div>
   <!-- 招牌跨学科 · 运气秘籍 -->
-  <div class="camp-card" data-slug="luck-recipe" data-status="done" data-age-min="12" data-age-max="16" data-themes="跨学科通识" data-dates="7.25-7.31" data-group="12-16">
+  <div class="camp-card" data-slug="luck-recipe" data-status="done" data-age-min="12" data-age-max="16" data-themes="跨学科通识" data-dates="7.25-7.31" data-group="12-16" data-payment-qr="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/articles/_shared/c9d9788cdf06e286.png" data-payment-label="扫码报名 · 招牌跨学科 · 运气秘籍">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF9F43,#FECA57);">
         <span class="card-status done">✓</span>
@@ -2847,7 +2835,7 @@
   </div>
 
   <!-- 玩笑盲盒营 · 玩耍抗抑 -->
-  <div class="camp-card" data-slug="joy-blindbox" data-status="done" data-age-min="12" data-age-max="16" data-themes="跨学科通识" data-dates="8.1-8.7" data-group="12-16">
+  <div class="camp-card" data-slug="joy-blindbox" data-status="done" data-age-min="12" data-age-max="16" data-themes="跨学科通识" data-dates="8.1-8.7" data-group="12-16" data-payment-qr="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/articles/_shared/6084735cbeb0cf49.png" data-payment-label="扫码报名 · 玩笑盲盒营">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#FF6B9D,#FFA8A8);">
         <span class="card-status done">✓</span>
@@ -3088,7 +3076,7 @@
     <button class="card-contact-btn" onclick="event.stopPropagation();goToContact(this);">咨询 / 报名</button></div>
 
   <!-- 龙与地下城跑团营 -->
-  <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="跑团" data-dates="8.1-8.7" data-group="14-18" data-slug="dnd">
+  <div class="camp-card" data-status="done" data-age-min="14" data-age-max="18" data-themes="跑团" data-dates="8.1-8.7" data-group="14-18" data-slug="dnd" data-payment-qr="https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/articles/_shared/47248d048c561c61.png" data-payment-label="扫码报名 · 龙与地下城跑团营">
     <div class="card-main">
       <div class="card-poster" style="background:linear-gradient(150deg,#4A0E8F,#B01E38);">
         <span class="card-status done">✓</span>
@@ -3763,19 +3751,26 @@
     const tipEl = modal.querySelector('.contact-modal-tip');
 
     if (paymentQr) {
-      // 付款 QR 模式
-      if (titleEl) titleEl.textContent = '💳 ' + (paymentLabel || '付款二维码');
-      if (subtitleEl) subtitleEl.textContent = '微信扫码直接付款 · 锁定席位';
+      // 报名 / 付款 QR 模式（按 label 区分图标和文案）
+      const isPayment = (paymentLabel || '').includes('付款');
+      const emoji = isPayment ? '💳' : '📲';
+      const action = isPayment ? '微信扫码直接付款 · 锁定席位' : '微信扫码 · 填写报名表 · 锁定席位';
+      const altText = isPayment ? '付款二维码' : '报名二维码';
+      const labelHint = isPayment ? '长按识别 · 微信付款' : '长按识别 · 填写报名表';
+      const tipText = isPayment ? '📲 长按二维码 · 微信付款 · 学费到账即锁定席位'
+                                : '📲 长按二维码 · 进入报名表 · 10 分钟内完成提交';
+      if (titleEl) titleEl.textContent = emoji + ' ' + (paymentLabel || '扫码报名');
+      if (subtitleEl) subtitleEl.textContent = action;
       if (gridEl) {
         gridEl.dataset.savedHtml = gridEl.dataset.savedHtml || gridEl.innerHTML;
         gridEl.innerHTML = `
           <div class="contact-qr-item" style="flex: 1;">
-            <img decoding="async" src="${paymentQr}" alt="付款二维码" style="width: 220px; height: 220px; max-width: 100%; border-radius: 12px;">
-            <div class="contact-qr-label" style="margin-top: 12px; font-size: 13px; color: #666;">长按识别 · 微信付款</div>
+            <img decoding="async" src="${paymentQr}" alt="${altText}" style="width: 220px; height: 220px; max-width: 100%; border-radius: 12px;">
+            <div class="contact-qr-label" style="margin-top: 12px; font-size: 13px; color: #666;">${labelHint}</div>
           </div>
         `;
       }
-      if (tipEl) tipEl.textContent = '📲 长按二维码 · 微信付款 · 学费到账即锁定席位';
+      if (tipEl) tipEl.textContent = tipText;
     } else {
       // 默认客服 QR 模式（如被改过，恢复保存的 HTML）
       if (titleEl) titleEl.textContent = '💬 扫码咨询';
@@ -4140,50 +4135,29 @@
   function onbShow() {
     document.getElementById('onboarding').classList.add('show');
     document.body.style.overflow = 'hidden';
-    // chip 点击委托
+    // Q1 年龄（单选）
     document.getElementById('onb-age').addEventListener('click', (e) => {
       const c = e.target.closest('.onb-chip'); if (!c) return;
-      const wrap = c.parentElement;
-      wrap.querySelectorAll('.onb-chip').forEach(x => x.classList.remove('selected'));
+      c.parentElement.querySelectorAll('.onb-chip').forEach(x => x.classList.remove('selected'));
       c.classList.add('selected');
       _onbAns.age = c.dataset.val;
-      document.getElementById('onb-next-1').disabled = false;
     });
+    // Q2 兴趣（多选，可全不选）
     document.getElementById('onb-interest').addEventListener('click', (e) => {
       const c = e.target.closest('.onb-chip'); if (!c) return;
-      const v = c.dataset.val;
-      if (v === '') {
-        // "没什么偏好" 独占
-        c.parentElement.querySelectorAll('.onb-chip').forEach(x => x.classList.remove('selected'));
-        c.classList.add('selected');
-        _onbAns.interests = [];
-      } else {
-        c.parentElement.querySelector('.onb-chip[data-val=""]')?.classList.remove('selected');
-        c.classList.toggle('selected');
-        _onbAns.interests = Array.from(c.parentElement.querySelectorAll('.onb-chip.selected'))
-          .map(x => x.dataset.val).filter(Boolean);
-      }
+      c.classList.toggle('selected');
+      _onbAns.interests = Array.from(c.parentElement.querySelectorAll('.onb-chip.selected'))
+        .map(x => x.dataset.val).filter(Boolean);
     });
+    // Q3 目的（单选）
     document.getElementById('onb-intent').addEventListener('click', (e) => {
       const c = e.target.closest('.onb-chip'); if (!c) return;
       c.parentElement.querySelectorAll('.onb-chip').forEach(x => x.classList.remove('selected'));
       c.classList.add('selected');
       _onbAns.intent = c.dataset.val;
-      document.getElementById('onb-finish').disabled = false;
     });
-
-    // 后台 prefetch：用户在引导页这 10-30 秒，把主页前 6 张卡封面+前 2 篇详情文章先下载下来
+    // 后台 prefetch
     setTimeout(onbPrefetch, 300);
-  }
-  function onbNext(step) {
-    document.querySelector(`.onb-step[data-step="${step}"]`).classList.remove('active');
-    document.querySelector(`.onb-step[data-step="${step+1}"]`).classList.add('active');
-    document.querySelector(`.onb-progress span[data-step="${step+1}"]`).classList.add('done');
-  }
-  function onbBack(step) {
-    document.querySelector(`.onb-step[data-step="${step}"]`).classList.remove('active');
-    document.querySelector(`.onb-step[data-step="${step-1}"]`).classList.add('active');
-    document.querySelector(`.onb-progress span[data-step="${step}"]`).classList.remove('done');
   }
   function onbSkip() {
     localStorage.setItem('kiidschool_onboarded_v1', '1');
