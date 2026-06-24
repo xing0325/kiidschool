@@ -3,8 +3,8 @@
     "slug": "luck-recipe",
     "title": "12-16岁｜钥匙玩校招牌跨学科夏令营｜运气秘籍：用反脆弱设计开挂人生",
     "url": "https://mp.weixin.qq.com/s/GHVQJnHZRd5N0GKt-4dGcQ",
-    "cover": "_shared/192ac88aac606f73.gif",
     "html_path": "articles/luck-recipe/article.html",
+    "qr_shared": "c9d9788cdf06e286.png",
     "img_replaced": 102,
     "img_remote_left": 0
   },
@@ -12,8 +12,8 @@
     "slug": "joy-blindbox",
     "title": "12-16岁 | 钥匙玩校玩笑盲盒营丨学会玩耍抗抑，学会“有笑”学习",
     "url": "https://mp.weixin.qq.com/s/OTHpdY7ngp2ETDiYuQJ_9w",
-    "cover": "_shared/ff0fb08683c17ea4.gif",
     "html_path": "articles/joy-blindbox/article.html",
+    "qr_shared": "6084735cbeb0cf49.png",
     "img_replaced": 79,
     "img_remote_left": 0
   },
@@ -21,8 +21,8 @@
     "slug": "human-history",
     "title": "9-12岁｜钥匙玩校招牌跨学科夏令营｜重走人类创造之路",
     "url": "https://mp.weixin.qq.com/s/lDZ8WT5idFfzo10ihx45gw",
-    "cover": "_shared/ff0fb08683c17ea4.gif",
     "html_path": "articles/human-history/article.html",
+    "qr_shared": "cc889ba154b49c26.png",
     "img_replaced": 103,
     "img_remote_left": 0
   },
@@ -30,8 +30,8 @@
     "slug": "emotion-team",
     "title": "9-12岁｜钥匙玩校头脑特工队｜在游戏中激发情绪的力量",
     "url": "https://mp.weixin.qq.com/s/7MPHRkA5f6mZ7uvp6MASmQ",
-    "cover": "_shared/ff0fb08683c17ea4.gif",
     "html_path": "articles/emotion-team/article.html",
+    "qr_shared": "19e2955ca60dc88f.png",
     "img_replaced": 107,
     "img_remote_left": 0
   },
@@ -39,8 +39,8 @@
     "slug": "fate-axe",
     "title": "9-12岁｜钥匙玩校硬核成长营｜命运手斧：拒绝内耗，在荒野中长出自我效能感",
     "url": "https://mp.weixin.qq.com/s/L_Rhv0kE7_f5QFapjrWfvQ",
-    "cover": "_shared/ff0fb08683c17ea4.gif",
     "html_path": "articles/fate-axe/article.html",
+    "qr_shared": "e8973e403d2519fa.png",
     "img_replaced": 103,
     "img_remote_left": 0
   },
@@ -48,35 +48,35 @@
     "slug": "liuyi",
     "title": "9-12岁｜钥匙玩校六艺通识营｜在游戏和创造中锤炼通用技能",
     "url": "https://mp.weixin.qq.com/s/6ZczzM2Sn3BtXw5hOlL5Kw",
-    "cover": "_shared/739d2c50a1c0ff0a.gif",
     "html_path": "articles/liuyi/article.html",
-    "img_replaced": 106,
+    "qr_shared": "31b46612fbbe2a38.png",
+    "img_replaced": 107,
     "img_remote_left": 0
   },
   {
     "slug": "world-restart",
     "title": "9-12岁｜钥匙玩校2026招牌通识营｜万物复苏 世界重启",
-    "url": "https://mp.weixin.qq.com/s/clrDnH_xjB15lE-0FKAxVA",
-    "cover": "_shared/ff0fb08683c17ea4.gif",
+    "url": "https://mp.weixin.qq.com/s/YKPE3hlt2DbBwYMzPKUFLQ",
     "html_path": "articles/world-restart/article.html",
-    "img_replaced": 103,
+    "qr_shared": "31248ddd474fc507.png",
+    "img_replaced": 94,
     "img_remote_left": 0
   },
   {
     "slug": "ai-game",
     "title": "14-18岁 | 钥匙玩校AI游戏设计营：从玩游戏到做游戏，掌握AI时代的硬核创造力",
     "url": "https://mp.weixin.qq.com/s/yIX0Mpx3Lmxocd8fJGtKsA",
-    "cover": "_shared/963e170417fc0872.gif",
     "html_path": "articles/ai-game/article.html",
-    "img_replaced": 117,
+    "qr_shared": "0e9915d4d66e44aa.jpg",
+    "img_replaced": 118,
     "img_remote_left": 0
   },
   {
     "slug": "dnd",
     "title": "14-18岁 | 钥匙玩校龙与地下城跑团营 | 做自己故事的主角",
     "url": "https://mp.weixin.qq.com/s/dV_6cRdyyznBvrldFugbMA",
-    "cover": "_shared/8172657b860078a8.gif",
     "html_path": "articles/dnd/article.html",
+    "qr_shared": "47248d048c561c61.png",
     "img_replaced": 121,
     "img_remote_left": 0
   },
@@ -84,9 +84,153 @@
     "slug": "learning-method",
     "title": "14-18岁 | 钥匙玩校袖珍营 | 学习方法升级营：从被动学习到主动学习(第十四期）",
     "url": "https://mp.weixin.qq.com/s/7Z2RsAS3kqZxrHMh9NAoFg",
-    "cover": "_shared/fb9fcae86d4fbc65.jpg",
     "html_path": "articles/learning-method/article.html",
-    "img_replaced": 90,
+    "qr_shared": "16fe992bfa23b8f4.png",
+    "img_replaced": 95,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "orienteering",
+    "title": "9-12岁｜钥匙玩校定向越野营｜识别天赋，在AI荒野中笃定方向",
+    "url": "https://mp.weixin.qq.com/s/FHnw_rVecGgMP79iN6UDBw",
+    "html_path": "articles/orienteering/article.html",
+    "qr_shared": "d806b30897566f6c.png",
+    "img_replaced": 107,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "math-war",
+    "title": "9-12岁｜钥匙玩校2026数学战争主题营｜在策略游戏中重新爱上数学",
+    "url": "https://mp.weixin.qq.com/s/ObUfyOI1nq-o24scePpy9A",
+    "html_path": "articles/math-war/article.html",
+    "qr_shared": "71d4505670cd1ecd.png",
+    "img_replaced": 109,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "boat-pbl",
+    "title": "9-12岁｜钥匙玩校2026硬核创造营｜亲手造一艘船，在真实世界里乘风破浪",
+    "url": "https://mp.weixin.qq.com/s/Ckzv7jy5qh4QuRiOjpp1cA",
+    "html_path": "articles/boat-pbl/article.html",
+    "qr_shared": "3c26f657f2423fa4.jpg",
+    "img_replaced": 107,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "detective",
+    "title": "12-16岁 | 少年侦探学院 | 钥匙玩校跨学科夏令营 | 在科学推理中学会主动解决问题",
+    "url": "https://mp.weixin.qq.com/s/lnVdJvvl8n9Ml3DSwMe-dg",
+    "html_path": "articles/detective/article.html",
+    "qr_shared": "6e471ac8d4cfa52c.png",
+    "img_replaced": 109,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "camp-ea97bc",
+    "title": "9-12岁 | 钥匙玩校2026学院制夏令营 | 在创造性的玩耍中成就发光童年",
+    "url": "https://mp.weixin.qq.com/s/xnV8UZUWIhfCzVtd0dU-ZA",
+    "html_path": "articles/camp-ea97bc/article.html",
+    "qr_shared": "a5fd106ddc55d96c.png",
+    "img_replaced": 144,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "career-explore",
+    "title": "14-18岁 | 钥匙玩校职业探索学院制夏令营3.0 | 在职业“大航海”中发现自己的天赋和志向",
+    "url": "https://mp.weixin.qq.com/s/SYsuwTCqp7bH3dNCy08kXg",
+    "html_path": "articles/career-explore/article.html",
+    "qr_shared": "2b607d3110020d05.png",
+    "img_replaced": 174,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "brave-game",
+    "title": "9-12岁｜钥匙玩校剧本营｜勇敢者游戏：挑战赫拉克勒斯的6大试炼，觉醒12项英雄之力",
+    "url": "https://mp.weixin.qq.com/s/AOQix7G4GJn3OfE-0J41og",
+    "html_path": "articles/brave-game/article.html",
+    "qr_shared": "802120daa6c9be6a.png",
+    "img_replaced": 105,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "tycoon",
+    "title": "9-12岁｜钥匙玩校少年大富翁创业营：在行动中培养创造幸福的能力",
+    "url": "https://mp.weixin.qq.com/s/RsQwSgOiCICxxoscXpJsyQ",
+    "html_path": "articles/tycoon/article.html",
+    "qr_shared": "da7db49f33f6a6c4.png",
+    "img_replaced": 105,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "funny-nobel",
+    "title": "9-12岁｜钥匙玩校搞笑诺贝尔科学素养营｜发现的乐趣：玩耍中的科研思维",
+    "url": "https://mp.weixin.qq.com/s/UIAF_xJb4CdgRcflBcGmJA",
+    "html_path": "articles/funny-nobel/article.html",
+    "qr_shared": "d8a89f1347954a77.jpg",
+    "img_replaced": 107,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "water-oasis",
+    "title": "9-12岁｜钥匙玩校2026跨学科通识营｜绿洲水人节｜在沉浸挑战中培养专注力和应变力",
+    "url": "https://mp.weixin.qq.com/s/nJiK4aCEa9QTcasW612LCQ",
+    "html_path": "articles/water-oasis/article.html",
+    "qr_shared": "37de393764959f0b.png",
+    "img_replaced": 112,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "hunger-games",
+    "title": "12-18岁丨饥饿游戏挑战营丨如何在变局中磨炼不被替代的竞争力",
+    "url": "https://mp.weixin.qq.com/s/mHehXf1ZG5836FhXVXFlVg",
+    "html_path": "articles/hunger-games/article.html",
+    "qr_shared": "2ec00e381838b5d5.png",
+    "img_replaced": 79,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "first-gold",
+    "title": "12-16岁 | 钥匙玩校财富通识营 | 从第一桶金到长期主义",
+    "url": "https://mp.weixin.qq.com/s/7Ro8_h7oyK9k3mmxEGo4gg",
+    "html_path": "articles/first-gold/article.html",
+    "qr_shared": "697b7cf18158adf4.png",
+    "img_replaced": 79,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "academy-6",
+    "title": "12-16岁 | 钥匙玩校学院制夏令营6.0 | 在节日般的学习体验中延伸童年",
+    "url": "https://mp.weixin.qq.com/s/qXhbx16nfpIs4JwiUyzhIg",
+    "html_path": "articles/academy-6/article.html",
+    "qr_shared": "f38d38feb5f022f9.png",
+    "img_replaced": 146,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "mars",
+    "title": "9-12岁｜钥匙玩校2026跨学科通识营｜火星生存指南｜告别温室，激活AI时代的竞争力",
+    "url": "https://mp.weixin.qq.com/s/zwuQZzn72rguGH70ootN5w",
+    "html_path": "articles/mars/article.html",
+    "qr_shared": "9f296f20b4682b4a.png",
+    "img_replaced": 107,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "time-player",
+    "title": "9-12岁｜钥匙玩校跨学科通识营｜时间玩家：在游戏中感知时间，点燃成长内驱力",
+    "url": "https://mp.weixin.qq.com/s/cFJsXC_aRMNWiprTlDawfA",
+    "html_path": "articles/time-player/article.html",
+    "qr_shared": "38200b46c148d9db.png",
+    "img_replaced": 107,
+    "img_remote_left": 0
+  },
+  {
+    "slug": "world-restart-alt",
+    "title": "9-12岁｜钥匙玩校2026招牌通识营｜万物复苏 世界重启",
+    "url": "https://mp.weixin.qq.com/s/clrDnH_xjB15lE-0FKAxVA",
+    "html_path": "articles/world-restart-alt/article.html",
+    "qr_shared": "31248ddd474fc507.png",
+    "img_replaced": 94,
     "img_remote_left": 0
   }
 ]
