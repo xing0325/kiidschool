@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>钥匙玩校 · 2026夏令营</title>
+  <link rel="icon" href="data:,">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
@@ -1201,35 +1202,8 @@
       padding: 4px 11px;
     }
 
-    /* === 卡片状态标记 (右上角) === */
-    .card-status {
-      position: absolute;
-      top: 6px; right: 6px;
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 900;
-      z-index: 5;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
-      backdrop-filter: blur(2px);
-    }
-    .card-status.done { background: #4CAF50; color: #fff; }
-    .card-status.todo { background: #FFA726; color: #fff; }
-    .card-status.blank {
-      background: rgba(255,255,255,0.92);
-      color: #8B7B5C;
-      border: 1.5px dashed #C0B7A5;
-      box-shadow: none;
-      width: 26px; height: 26px;
-      font-size: 16px; font-weight: 900;
-      font-family: Arial, sans-serif;  /* 避免中文字体 fallback */
-    }
-    .card-status.blank::before {
-      content: '?';
-      line-height: 1;
-    }
-    /* featured 的 ::before 在 top:6 right:0，避免和 status 重叠 → status 下移到 top:32 */
-    .camp-card.featured .card-status { top: 32px; }
+    /* 完工状态只供数据维护使用，不在用户侧卡片展示。 */
+    .card-status { display: none; }
 
     /* 毛坯房卡片 (data-status="blank") 的整体外观 */
     .camp-card[data-status="blank"] {
@@ -1379,48 +1353,6 @@
     }
     .fab:active { transform: scale(0.97); }
     body.detail-open .fab { display: none; }
-
-    /* ========================================
-       卡片完工状态角标（右上角徽章）
-       ✓ 绿色 = 有详情 (data-slug 设置)
-       ✗ 红色 = 缺详情
-       🚧 灰色 = 毛坯卡（data-blank）
-       ======================================== */
-    .camp-card { position: relative; }
-    .camp-card::after {
-      position: absolute;
-      top: 6px; right: 6px;
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      font-size: 12px;
-      font-weight: 900;
-      line-height: 20px;
-      text-align: center;
-      z-index: 5;
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(4px);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-      pointer-events: none;
-    }
-    .camp-card[data-slug]::after {
-      content: '✓';
-      color: #2BB673;
-    }
-    .camp-card:not([data-slug]):not([data-blank])::after {
-      content: '✗';
-      color: #E74C3C;
-    }
-    .camp-card[data-blank]::after {
-      content: '🚧';
-      font-size: 11px;
-      background: rgba(245,243,239,0.95);
-    }
-    /* featured 卡片的"热门"丝带在 top:6px right:0，把状态标记下移避免叠加 */
-    .camp-card.featured::after {
-      top: 28px;
-    }
-    /* 详情层里隐藏角标（避免干扰阅读） */
-    .detail-overlay .camp-card::after { display: none; }
 
     /* ========================================
        详情页：阅读进度条 / 侧边 TOC / 微信原文
@@ -3967,10 +3899,15 @@
   }
 
   // === Video 懒挂载 + IO 视口控制 + panel 双重门控 ===
+  function isOnboardingOpen() {
+    const onboarding = document.getElementById('onboarding');
+    return onboarding && onboarding.classList.contains('show');
+  }
+
   const _videoIO = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       const v = entry.target;
-      if (!entry.isIntersecting) {
+      if (!entry.isIntersecting || isOnboardingOpen() || document.hidden) {
         try { v.pause(); } catch (e) {}
         return;
       }
@@ -4003,8 +3940,14 @@
 
   // 视口内卡片视频按需启播（IO 兜底，scroll 也评估一次）
   // 同屏并发 video ≤ MAX_CONCURRENT_VIDEOS。按距屏幕中心的距离排序，最近 N 个 play，其余 pause。
-  const MAX_CONCURRENT_VIDEOS = 2;
+  const MAX_CONCURRENT_VIDEOS = 1;
   function reevaluateVideos() {
+    if (isOnboardingOpen() || document.hidden) {
+      document.querySelectorAll('video.poster-img').forEach(v => {
+        try { v.pause(); } catch (e) {}
+      });
+      return;
+    }
     const vh = window.innerHeight;
     const center = vh / 2;
     const candidates = [];
@@ -4036,6 +3979,8 @@
       reevaluateVideos();
     }, 250);
   }, { passive: true });
+
+  document.addEventListener('visibilitychange', reevaluateVideos);
 
   // 显式跑一次 applyFilters，确保任何浏览器初始都全部可见
   // #2 Material Ripple —— 全局事件委托，按 .has-ripple 触发
@@ -4074,13 +4019,18 @@
   }
 
   window.addEventListener('DOMContentLoaded', () => {
+    // 先展示引导层，避免首屏被遮住时仍在背后下载和播放视频。
+    const url = new URL(location.href);
+    const shouldShowOnboarding = !localStorage.getItem('kiidschool_onboarded_v1') && !url.searchParams.has('skip');
+    if (shouldShowOnboarding) onbShow();
+
     if (typeof applyFilters === 'function') applyFilters();
     document.querySelectorAll('.camp-card').forEach(c => c.classList.remove('hidden'));
     document.querySelectorAll('.age-group-divider').forEach(d => d.style.display = 'flex');
     if (typeof buildWeekTabs === 'function') buildWeekTabs();
     if (typeof toggleView === 'function') toggleView('home');
     rebindVideoIO();
-    reevaluateVideos();
+    if (!shouldShowOnboarding) reevaluateVideos();
     attachDragDismiss(document.getElementById('filter-sheet'),  '.filter-sheet-content',  () => closeFilterSheet());
     attachDragDismiss(document.getElementById('contact-modal'), '.contact-modal-content', () => closeContactModal());
 
@@ -4135,11 +4085,6 @@
     // 渲染 signup 集合页列表
     renderSignupList();
 
-    // 引导页判定：未引导过且没带 ?skip 才显示
-    const url = new URL(location.href);
-    if (!localStorage.getItem('kiidschool_onboarded_v1') && !url.searchParams.has('skip')) {
-      onbShow();
-    }
   });
 
   // ───────── 引导页 Onboarding ─────────
@@ -4169,13 +4114,12 @@
       c.classList.add('selected');
       _onbAns.intent = c.dataset.val;
     });
-    // 后台 prefetch
-    setTimeout(onbPrefetch, 300);
   }
   function onbSkip() {
     localStorage.setItem('kiidschool_onboarded_v1', '1');
     document.getElementById('onboarding').classList.remove('show');
     document.body.style.overflow = '';
+    requestAnimationFrame(reevaluateVideos);
   }
   function onbFinish() {
     localStorage.setItem('kiidschool_onboarded_v1', '1');
@@ -4199,27 +4143,13 @@
 
     document.getElementById('onboarding').classList.remove('show');
     document.body.style.overflow = '';
+    requestAnimationFrame(reevaluateVideos);
 
     // 按目的路由
     if (_onbAns.intent === 'signup') {
       setTimeout(() => toggleView('signup'), 80);
     }
   }
-  function onbPrefetch() {
-    // prefetch 前 6 张卡的封面图（已经懒加载的会因为 cache 命中而提速）
-    const imgs = Array.from(document.querySelectorAll('#camps-list > .camp-card img.poster-img')).slice(0, 6);
-    imgs.forEach(img => {
-      const src = img.getAttribute('src') || img.dataset.src;
-      if (src) { const i = new Image(); i.src = src; }
-    });
-    // prefetch 前 2 篇详情文章 HTML
-    const slugs = Array.from(document.querySelectorAll('#camps-list > .camp-card[data-slug]'))
-      .slice(0, 2).map(c => c.dataset.slug);
-    slugs.forEach(s => {
-      fetch(`../articles/${s}/article.html`).catch(() => {});
-    });
-  }
-
   // ───────── signup 集合页列表渲染 ─────────
   function renderSignupList() {
     const list = document.getElementById('signup-list');
@@ -4467,6 +4397,43 @@
   let _detailOriginParent = null;
   let _detailOriginNextSibling = null;
 
+  const ARTICLE_FETCH_MAX_ATTEMPTS = 3;
+  const ARTICLE_FETCH_TIMEOUT_MS = 12000;
+
+  function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function fetchArticleText(slug, onAttempt) {
+    const articleUrl = new URL(`../articles/${encodeURIComponent(slug)}/article.html`, location.href);
+    let lastError = null;
+
+    for (let attempt = 1; attempt <= ARTICLE_FETCH_MAX_ATTEMPTS; attempt += 1) {
+      if (onAttempt) onAttempt(attempt);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), ARTICLE_FETCH_TIMEOUT_MS);
+
+      try {
+        const res = await fetch(articleUrl, { signal: controller.signal });
+        if (!res.ok) {
+          const error = new Error('HTTP ' + res.status);
+          error.retryable = res.status === 408 || res.status === 429 || res.status >= 500;
+          throw error;
+        }
+        return await res.text();
+      } catch (error) {
+        lastError = error;
+        const retryable = error.name === 'AbortError' || error instanceof TypeError || error.retryable;
+        if (!retryable || attempt === ARTICLE_FETCH_MAX_ATTEMPTS) break;
+        await wait(attempt * 700);
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    }
+
+    throw lastError || new Error('Article request failed');
+  }
+
   async function openDetail(card) {
     if (!card) return;
     const overlay = document.getElementById('detail-overlay');
@@ -4512,12 +4479,20 @@
     // 异步加载微信原文
     const slug = card.dataset.slug;
     if (slug) {
+      const loading = document.createElement('div');
+      loading.className = 'detail-article';
+      loading.innerHTML = '<p style="color:#999;text-align:center;padding:24px 0;">正在加载营期介绍…</p>';
+      body.appendChild(loading);
+
       try {
-        const res = await fetch(`../articles/${slug}/article.html`);
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const text = await res.text();
+        const text = await fetchArticleText(slug, attempt => {
+          if (attempt > 1) {
+            loading.innerHTML = `<p style="color:#999;text-align:center;padding:24px 0;">网络有些慢，正在第 ${attempt} 次重试…</p>`;
+          }
+        });
         // 提取 <article class="wechat-article">...</article>
         const m = text.match(/<article[^>]*class="wechat-article"[^>]*>([\s\S]+?)<\/article>/);
+        if (!m) throw new Error('Article markup not found');
         let inner = m ? m[1] : '';
         // 文章 HTML 注入主页后，内部 ../_shared/ 相对路径会相对主页错位。
         // 用当前页面 location 动态算出 _shared 的绝对路径（Pages 子路径 / 服务器根 都正确）。
@@ -4542,7 +4517,7 @@
           </div>
           <article class="wechat-article">${inner}</article>
         `;
-        body.appendChild(wrapper);
+        loading.replaceWith(wrapper);
         meta.textContent = `约 ${readMin} 分钟`;
 
         // 构建 TOC
@@ -4554,8 +4529,8 @@
         console.warn('Article load failed:', e);
         const empty = document.createElement('div');
         empty.className = 'detail-article';
-        empty.innerHTML = '<p style="color:#999;text-align:center;padding:20px 0;">该营期详细介绍未能加载（可能是网络问题）</p>';
-        body.appendChild(empty);
+        empty.innerHTML = '<p style="color:#999;text-align:center;padding:20px 0;line-height:1.7;">营期介绍暂时加载失败<br><span style="font-size:12px;color:#C0B7A5;">已自动重试 3 次，请返回后再试</span></p>';
+        loading.replaceWith(empty);
       }
     } else {
       // 没有 slug 的卡片：显示"详情待补"占位
