@@ -393,7 +393,7 @@
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 88%; max-width: 380px;
+      width: 92%; max-width: 420px;
       background: #fff;
       border-radius: 18px;
       padding: 18px 16px 16px;
@@ -410,6 +410,7 @@
     }
     .contact-modal-title {
       font-size: 16px; font-weight: 800; color: #1A1A2E;
+      line-height: 1.35;
     }
     .contact-modal-close {
       width: 28px; height: 28px; padding: 0;
@@ -431,6 +432,11 @@
       padding: 10px 8px 12px;
       text-align: center;
     }
+    .contact-qr-item.service {
+      background: linear-gradient(150deg, #F4F9FF, #E8F3FF);
+      border-color: #B9D8F5;
+    }
+    .contact-qr-item.service .contact-qr-label { color: #2771A8; }
     .contact-qr-item img {
       width: 100%; aspect-ratio: 1;
       object-fit: contain;
@@ -3652,40 +3658,45 @@
   function openFaqSheet() { toggleView('faq'); }
   function closeFaqSheet() { toggleView('home'); }
 
-  // 咨询：默认弹两个客服二维码；若卡片带 data-payment-qr 则改弹付款 QR
+  // 咨询：默认显示两个客服二维码；营期卡片同时显示付款码和对应年龄段客服码
   function goToContact(btnEl) {
     const modal = document.getElementById('contact-modal');
     const card = btnEl?.closest?.('.camp-card');
     const paymentQr = card?.dataset?.paymentQr;
-    const paymentLabel = card?.dataset?.paymentLabel;
 
-    // 还原标题（防止前一次被改）
     const titleEl = modal.querySelector('.contact-modal-title');
     const subtitleEl = modal.querySelector('.contact-modal-subtitle');
     const gridEl = modal.querySelector('.contact-qr-grid');
     const tipEl = modal.querySelector('.contact-modal-tip');
 
     if (paymentQr) {
-      // 报名 / 付款 QR 模式（按 label 区分图标和文案）
-      const isPayment = (paymentLabel || '').includes('付款');
-      const emoji = isPayment ? '💳' : '📲';
-      const action = isPayment ? '微信扫码直接付款 · 锁定席位' : '微信扫码 · 填写报名表 · 锁定席位';
-      const altText = isPayment ? '付款二维码' : '报名二维码';
-      const labelHint = isPayment ? '长按识别 · 微信付款' : '长按识别 · 填写报名表';
-      const tipText = isPayment ? '📲 长按二维码 · 微信付款 · 学费到账即锁定席位'
-                                : '📲 长按二维码 · 进入报名表 · 10 分钟内完成提交';
-      if (titleEl) titleEl.textContent = emoji + ' ' + (paymentLabel || '扫码报名');
-      if (subtitleEl) subtitleEl.textContent = action;
+      const ageMax = Number(card.dataset.ageMax || 18);
+      const isJunior = ageMax <= 12;
+      const serviceAge = isJunior ? '9-12 岁' : '12-18 岁';
+      const serviceName = isJunior ? '钥匙君' : '小钥匙';
+      const serviceQr = isJunior
+        ? 'https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr/cs-9-12.jpg'
+        : 'https://cdn.jsdelivr.net/gh/xing0325/kiidschool@71c078e2dc6efafa945fa2bba96e5d2637daae14/images/qr/cs-12-18.jpg';
+      const campName = card.querySelector('.card-name')?.textContent?.trim() || '本营期';
+
+      if (titleEl) titleEl.textContent = '💳 付款与报名确认';
+      if (subtitleEl) subtitleEl.textContent = `${campName} · 左侧付款，右侧联系客服确认`;
       if (gridEl) {
         gridEl.dataset.savedHtml = gridEl.dataset.savedHtml || gridEl.innerHTML;
         gridEl.innerHTML = `
-          <div class="contact-qr-item" style="flex: 1;">
-            <img decoding="async" src="${paymentQr}" alt="${altText}" style="width: 220px; height: 220px; max-width: 100%; border-radius: 12px;">
-            <div class="contact-qr-label" style="margin-top: 12px; font-size: 13px; color: #666;">${labelHint}</div>
+          <div class="contact-qr-item payment">
+            <img decoding="async" src="${paymentQr}" alt="营期付款二维码">
+            <div class="contact-qr-label">营期付款码</div>
+            <div class="contact-qr-hint">长按识别 · 微信付款</div>
+          </div>
+          <div class="contact-qr-item service">
+            <img decoding="async" src="${serviceQr}" alt="${serviceAge}客服二维码">
+            <div class="contact-qr-label">${serviceAge}客服</div>
+            <div class="contact-qr-hint">${serviceName} · 咨询确认</div>
           </div>
         `;
       }
-      if (tipEl) tipEl.textContent = tipText;
+      if (tipEl) tipEl.textContent = '付款后，请将付款截图和孩子信息发给右侧客服，完成报名确认';
     } else {
       // 默认客服 QR 模式（如被改过，恢复保存的 HTML）
       if (titleEl) titleEl.textContent = '💬 扫码咨询';
