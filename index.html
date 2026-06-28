@@ -3904,20 +3904,39 @@
     return onboarding && onboarding.classList.contains('show');
   }
 
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const HOVER_PLAY_POSTER_VIDEOS = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    && !(connection && connection.saveData);
+
+  function preparePosterVideos() {
+    const posterBase = new URL('../images/camps/posters/', location.href);
+    document.querySelectorAll('video.poster-img[data-src]').forEach(video => {
+      try {
+        const filename = new URL(video.dataset.src, location.href).pathname.split('/').pop();
+        video.poster = new URL(filename.replace(/\.mp4$/i, '.webp'), posterBase).href;
+      } catch (e) {}
+      video.preload = 'none';
+      if (HOVER_PLAY_POSTER_VIDEOS) {
+        const card = video.closest('.camp-card');
+        card?.addEventListener('mouseenter', () => {
+          if (!video.getAttribute('src') && video.dataset.src) video.src = video.dataset.src;
+          const play = video.play();
+          if (play && play.catch) play.catch(() => {});
+        });
+        card?.addEventListener('mouseleave', () => {
+          try { video.pause(); } catch (e) {}
+        });
+      }
+    });
+  }
+
   const _videoIO = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       const v = entry.target;
       if (!entry.isIntersecting || isOnboardingOpen() || document.hidden) {
         try { v.pause(); } catch (e) {}
-        return;
       }
-      // hidden 卡片不播
-      if (v.closest('.camp-card.hidden')) return;
-      if (!v.getAttribute('src') && v.dataset.src) {
-        v.src = v.dataset.src;
-      }
-      const p = v.play();
-      if (p && p.catch) p.catch(() => {});
     });
   }, { rootMargin: '100px 0px', threshold: 0.1 });
 
@@ -3938,9 +3957,7 @@
     (scope || document).querySelectorAll('video[data-src]:not(.poster-img)').forEach(v => _detailVideoIO.observe(v));
   }
 
-  // 视口内卡片视频按需启播（IO 兜底，scroll 也评估一次）
-  // 同屏并发 video ≤ MAX_CONCURRENT_VIDEOS。按距屏幕中心的距离排序，最近 N 个 play，其余 pause。
-  const MAX_CONCURRENT_VIDEOS = 1;
+  // 滚动或切后台时暂停离屏视频；视频只会在桌面端悬停后加载。
   function reevaluateVideos() {
     if (isOnboardingOpen() || document.hidden) {
       document.querySelectorAll('video.poster-img').forEach(v => {
@@ -3949,25 +3966,11 @@
       return;
     }
     const vh = window.innerHeight;
-    const center = vh / 2;
-    const candidates = [];
     document.querySelectorAll('video.poster-img').forEach(v => {
       if (v.closest('.camp-card.hidden')) { try { v.pause(); } catch(e){} return; }
       const rect = v.getBoundingClientRect();
       const inViewport = rect.top < vh && rect.bottom > 0;
       if (!inViewport) { try { v.pause(); } catch(e){} return; }
-      const dist = Math.abs((rect.top + rect.bottom) / 2 - center);
-      candidates.push({ v, dist });
-    });
-    candidates.sort((a, b) => a.dist - b.dist);
-    candidates.forEach(({ v }, idx) => {
-      if (idx < MAX_CONCURRENT_VIDEOS) {
-        if (!v.getAttribute('src') && v.dataset.src) v.src = v.dataset.src;
-        const p = v.play();
-        if (p && p.catch) p.catch(() => {});
-      } else {
-        try { v.pause(); } catch(e){}
-      }
     });
   }
   let _scrollTick = false;
@@ -4029,6 +4032,7 @@
     document.querySelectorAll('.age-group-divider').forEach(d => d.style.display = 'flex');
     if (typeof buildWeekTabs === 'function') buildWeekTabs();
     if (typeof toggleView === 'function') toggleView('home');
+    preparePosterVideos();
     rebindVideoIO();
     if (!shouldShowOnboarding) reevaluateVideos();
     attachDragDismiss(document.getElementById('filter-sheet'),  '.filter-sheet-content',  () => closeFilterSheet());
@@ -4517,6 +4521,22 @@
           </div>
           <article class="wechat-article">${inner}</article>
         `;
+
+        // 微信文章通常包含大量媒体。注入页面前先改成真正的懒加载，
+        // 避免几十张图片和多个视频在打开详情时同时抢带宽。
+        wrapper.querySelectorAll('img').forEach(img => {
+          img.loading = 'lazy';
+          img.decoding = 'async';
+        });
+        wrapper.querySelectorAll('video').forEach(video => {
+          const src = video.getAttribute('src');
+          if (src && !video.dataset.src) video.dataset.src = src;
+          video.removeAttribute('src');
+          video.removeAttribute('autoplay');
+          video.autoplay = false;
+          video.preload = 'none';
+        });
+
         loading.replaceWith(wrapper);
         meta.textContent = `约 ${readMin} 分钟`;
 
